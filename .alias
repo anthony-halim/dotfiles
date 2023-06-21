@@ -1,0 +1,15 @@
+
+if ! command -v "explorer.exe" &> /dev/null
+then
+    alias open="explorer.exe $1"
+fi
+
+alias sush="sudo su -"
+
+alias src="source ~/.zshrc"
+
+alias syncclock="sudo hwclock -s"
+
+alias vim="nvim"
+
+alias lsd="ls -alrt"
