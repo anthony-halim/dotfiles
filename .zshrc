@@ -116,7 +116,7 @@ eval "$(pyenv init -)"
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
-[[ ! -f ~/.aliasconf ]] || source ~/.aliasconf
+[[ ! -f ~/.alias ]] || source ~/.alias
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
