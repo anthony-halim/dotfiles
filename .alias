@@ -13,3 +13,5 @@ alias syncclock="sudo hwclock -s"
 alias vim="nvim"
 
 alias lsd="ls -alrt"
+
+alias repodir="cd ~/repos"
