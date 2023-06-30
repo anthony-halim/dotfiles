@@ -10,3 +10,5 @@
 	insteadOf = https://github.com/
 [core]
 	editor = vim
+[pull]
+	rebase = true
