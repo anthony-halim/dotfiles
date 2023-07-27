@@ -117,6 +117,9 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
 [[ ! -f ~/.alias ]] || source ~/.alias
+[[ ! -f ~/.work_alias ]] || source ~/.work_alias
+[[ ! -f ~/.util_fn ]] || source ~/.util_fn
+[[ ! -f ~/.work_util_fn ]] || source ~/.work_util_fn
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

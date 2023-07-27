@@ -17,3 +17,6 @@ alias vi="nvim"
 alias lsd="ls -alrt"
 
 alias repodir="cd ~/repos"
+
+alias lg="lazygit"
+
