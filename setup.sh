@@ -7,11 +7,11 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
-Usage: $(
-		basename "${BASH_SOURCE[0]}"
-	)
+Setup dependencies and personal configuration.
 
-Setup local home_configuration.
+Available options:
+
+-h, --help      Print this help and exit
 EOF
 	exit
 }
@@ -48,7 +48,6 @@ parse_params() {
 	while :; do
 		case "${1-}" in
 		-h | --help) usage ;;
-		-?*) die "Unknown option: $1" ;;
 		*) break ;;
 		esac
 		shift
@@ -66,56 +65,32 @@ parse_params() {
 parse_params "$@"
 setup_colors
 
-# Find package manager
+YUM_CMD=$(which yum)
+APT_GET_CMD=$(which apt)
+BREW_CMD=$(which brew)
 
-pkg_manager_install_cmd=""
+pkg_manager=""
+
 if [[ -z $(which yum) ]]; then
-	pkg_manager_install_cmd="yum install"
-elif [[ -z $(which apt-get) ]]; then
-	pkg_manager_install_cmd="apt-get install -y"
-elif [[ -z $(which brew) ]]; then
-	pkg_manager_install_cmd="brew install"
-else
-	die "no known package manager detected"
-fi
 
 # Install dependencies
+dependencies=( "fzf" "ripgrep" )
 
-dependencies=("zsh" "git" "fzf" "ripgrep" "lazygit")
-
-for dependency in "${!dependencies[@]}"; do
-	${pkg_manager_install_cmd} ${dependency}
+for dependency in "${!dependencies[@]}"
+do  
+  if [[ ! -z $YUM_CMD ]]; then
+    yum Install "$dependency"
+  elif [[ ! -z $APT_GET_CMD ]]; then
+    apt install -y "$dependency"
+  elif [[ ! -z $BREW_CMD ]]; then
+    brew install "$dependency"
+  else
+    die "unable to find package manager"
 done
 
-# Setup no password access to sudo
+# Create softlinks
+[[ ! -f "${script_dir}/.p10k.zsh" ]] || ln -s "${script_dir}/.p10k.zsh" "${HOME}/.p10k.zsh"
+[[ ! -f "${script_dir}/.gitconfig" ]] || ln -s "${script_dir}/.gitconfig" "${HOME}/.gitconfig"
+[[ ! -f "${script_dir}/.alias" ]] || ln -s "${script_dir}/.alias" "${HOME}/.alias"
+[[ ! -f "${script_dir}/.zshrc" ]] || ln -s "${script_dir}/.zshrc" "${HOME}/.zshrc"
 
-# Install pyenv
-
-pyenv_script=$(curl https://pyenv.run)
-sh
-pyenv install 3.8.5
-pyenv global 3.8.5
-
-# Setup ZSH terminal
-
-### Setup ZSH as default
-
-chsh -s $(which zsh)
-
-### Install OMZ and update
-
-sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-omz update
-
-### Install p10k theme
-
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
-
-# Create softlinks for configurations
-
-home_configurations=(".p10k.zsh" ".gitconfig" ".alias" ".zshrc")
-
-for home_configuration in "${!home_configurations[@]}"; do
-	[[ ! -f "${script_dir}/${home_configuration}" ]] || ln -s "${script_dir}/${home_configuration}" "${HOME}/${home_configuration}"
-done
