@@ -6,7 +6,7 @@ fi
 
 alias sush="sudo su -"
 
-alias src="source ~/.zshrc"
+alias src="source $HOME/.zshrc"
 
 alias syncclock="sudo hwclock -s"
 
@@ -16,7 +16,13 @@ alias vi="nvim"
 
 alias lsd="ls -alrt"
 
-alias repodir="cd ~/repos"
+alias repodir="cd $HOME/repos"
 
 alias lg="lazygit"
+
+alias sshconfig="cat $HOME/.ssh/config"
+
+alias gitconfig="git config --list --show-origin"
+
+alias dateunixnow="date '+%s'"
 
