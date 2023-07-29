@@ -7,7 +7,7 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
-Setup dependencies and personal configuration.
+Setup dependencies and personal configurations.
 
 Available options:
 
