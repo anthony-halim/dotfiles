@@ -22,6 +22,7 @@ config.exit_behavior = "Close"
 config.window_close_confirmation = "NeverPrompt"
 
 -- Editor
+config.hide_tab_bar_if_only_one_tab = true
 config.window_background_opacity = 0.8
 config.color_scheme = "Catppuccin Mocha"
 config.font = wezterm.font("JetBrains Mono")
