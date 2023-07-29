@@ -56,7 +56,7 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 
 - Configure passwordless sudo for the user that is executing the script, can be disabled by supplying *--disable_pwless_sudo*.
 - Install dependencies.
-- Install Python, with pyenv and setup python version globally to *--python_version*. Defaults to 3.8.5.
+- Install Python, with pyenv and setup python version globally to *--py_version*. Defaults to 3.8.5.
 - Install NeoVim, with tags equal to *--neovim_tag*. Defaults to latest.
 - Install ZSH, with OMZ as package manager, as default terminal.
 - Configure ZSH configuration.
@@ -72,4 +72,4 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 
 You may refer to *setup.sh -h* to see the full range of options.
 
-For NeoVim configuration setup, please setup separately as per directed in [Nvim Repo](https://github.com/anthony-halim/nvim).
+For NeoVim configuration setup, please setup separately as per directed in the [Nvim Repo](https://github.com/anthony-halim/nvim).
