@@ -116,7 +116,15 @@ eval "$(pyenv init -)"
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
-[[ ! -f ~/.alias ]] || source ~/.alias
+# Load seperated config files
+if [[ -d "$HOME/.config/zsh/config.d" ]]
+then 
+  for conf in "$HOME/.config/zsh/config.d/"*.zsh; do
+    source "${conf}"
+  done
+  unset conf
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# NOTE: We leave p10k config in default location to allow p10k to modify it normally
+[[ ! -f "$HOME/.p10k.zsh" ]] || source "$HOME/.p10k.zsh"
