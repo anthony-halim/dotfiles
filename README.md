@@ -30,6 +30,14 @@ ssh-keygen
 
 Whitelist the private key by adding the public key from SSH keys generated to your Git user.
 
+#### Install Rust (Optional)
+
+Install rust if you will be using it. Visit [Rust installation](https://www.rust-lang.org/tools/install). For most cases, it will be by executing the following command and following the interactive configuration.
+
+```shell
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
 #### Clone this repository to $HOME/repos/personal/
 
 For convention sake, all repositories will be stored under $HOME/repos.
@@ -49,7 +57,6 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 - Configure passwordless sudo for the user that is executing the script, can be disabled by supplying *--disable_pwless_sudo*.
 - Install dependencies.
 - Install Python, with pyenv and setup python version globally to *--python_version*. Defaults to 3.8.5.
-- Install Rust, with cargo.
 - Install NeoVim, with tags equal to *--neovim_tag*. Defaults to latest.
 - Install ZSH, with OMZ as package manager, as default terminal.
 - Configure ZSH configuration.

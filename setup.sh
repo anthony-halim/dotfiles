@@ -3,15 +3,24 @@
 set -Eeuo pipefail
 trap cleanup SIGINT SIGTERM ERR EXIT
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+USER_EXECUTOR=$(whoami)
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
-Setup dependencies and personal configurations.
+Usage: $(
+		basename "${BASH_SOURCE[0]}"
+	) [-h] [-v] [--disable_pwless_sudo] [--py_version python_semver] [--neovim_tag neovim_semver]
+
+Setup dependencies and setup local configuration.
 
 Available options:
 
--h, --help      Print this help and exit
+-h, --help                Print this help and exit
+-v, --verbose             Print script debug info
+--disable_pwless_sudo     [FLAG] Skip configuring current user to have passwordless sudo access.
+--py_version              [Optional] [semver, x.x.x] Indicate python version to be set globally. Defaults to 3.8.5.
+--neovim_tag              [Optional] [semver, x.x.x] Indicate NeoVim tag to be installed. Defaults to 0.9.1.
 EOF
 	exit
 }
@@ -42,12 +51,25 @@ die() {
 
 parse_params() {
 	# default values of variables set from params
-	flag=0
-	param=''
+	NEOVIM_TAG="0.9.1"
+	PY_GLOBAL_VER="3.8.5"
+	IS_SKIP_SUDO=0
 
 	while :; do
 		case "${1-}" in
 		-h | --help) usage ;;
+		-v | --verbose) set -x ;;
+		--no-color) NO_COLOR=1 ;;
+		--disable_pwless_sudo) IS_SKIP_SUDO=1 ;;
+		--py_version)
+			PY_GLOBAL_VER="${2-}"
+			shift
+			;;
+		--neovim_tag)
+			NEOVIM_TAG="${2-}"
+			shift
+			;;
+		-?*) die "Unknown option: $1" ;;
 		*) break ;;
 		esac
 		shift
@@ -55,42 +77,107 @@ parse_params() {
 
 	args=("$@")
 
-	# check required params and arguments
-	[[ -z "${param-}" ]] && die "Missing required parameter: param"
-	[[ ${#args[@]} -eq 0 ]] && die "Missing script arguments"
-
 	return 0
 }
 
 parse_params "$@"
 setup_colors
 
-YUM_CMD=$(which yum)
-APT_GET_CMD=$(which apt)
-BREW_CMD=$(which brew)
+msg "${RED}Read parameters:${NOFORMAT}"
+msg "- neovim_tag: ${NEOVIM_TAG}"
+msg "- py_global_ver: ${PY_GLOBAL_VER}"
+msg "- disable_pwless_sudo: ${IS_SKIP_SUDO}"
 
-pkg_manager=""
+# Check OS
+if [[ ! "${OSTYPE}" =~ ^linux ]] && [[ ! "${OSTYPE}" =~ ^darwin ]]; then
+  msg "${RED}Unsupported OS: ${OSTYPE}${NOFORMAT}"
+  die
+fi
 
-if [[ -z $(which yum) ]]; then
+# Passwordless sudo
+if [[ "${IS_SKIP_SUDO}" -ne 1 ]]; then
+	msg "Configuring passwordless sudo for user: ${USER_EXECUTOR}"
 
-# Install dependencies
-dependencies=( "fzf" "ripgrep" )
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		msg "${ORANGE}For MacOS, please use visudo to add to sudoers!${NOFORMAT}"
 
-for dependency in "${!dependencies[@]}"
-do  
-  if [[ ! -z $YUM_CMD ]]; then
-    yum Install "$dependency"
-  elif [[ ! -z $APT_GET_CMD ]]; then
-    apt install -y "$dependency"
-  elif [[ ! -z $BREW_CMD ]]; then
-    brew install "$dependency"
-  else
-    die "unable to find package manager"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		sudoers_file="/etc/sudoers.d/${USER_EXECUTOR}"
+		touch "${sudoers_file}"
+		echo "${USER_EXECUTOR} ALL=(ALL) NOPASSWD:ALL" >"${sudoers_file}"
+		chown root:root "$sudoers_file"
+		chmod 440 "$sudoers_file"
+
+		msg "Success: configured passwordless sudo!"
+	fi
+fi
+
+# Dependencies installation
+msg "Installing dependencies"
+dependencies=("lazygit" "fzf" "ripgrep" "fd")
+for dependency in "${!dependencies[@]}"; do
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		brew install "${dependency}"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		if [[ "${dependency}" == "fd" ]]; then dependency="fd-find"; fi
+		apt install -y "${dependency}"
+	fi
 done
 
-# Create softlinks
-[[ ! -f "${script_dir}/.p10k.zsh" ]] || ln -s "${script_dir}/.p10k.zsh" "${HOME}/.p10k.zsh"
-[[ ! -f "${script_dir}/.gitconfig" ]] || ln -s "${script_dir}/.gitconfig" "${HOME}/.gitconfig"
-[[ ! -f "${script_dir}/.alias" ]] || ln -s "${script_dir}/.alias" "${HOME}/.alias"
-[[ ! -f "${script_dir}/.zshrc" ]] || ln -s "${script_dir}/.zshrc" "${HOME}/.zshrc"
+# Pyenv installation
+if [[ ! $(command -v pyenv) ]]; then
+	msg "Installing pyenv"
+
+	if [[ -d "${HOME}"/.pyenv ]]; then rm -rf "${HOME}"/.pyenv; fi
+
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		brew install pyenv
+
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		source <(curl https://pyenv.run)
+	fi
+
+	msg "Success: Installed pyenv!"
+	msg "Setting up global python version: ${PY_GLOBAL_VER}"
+
+	eval "$(pyenv init --path)"
+	eval "$(pyenv init -)"
+
+	pyenv install "${PY_GLOBAL_VER}"
+	pyenv global "${PY_GLOBAL_VER}"
+
+	msg "Success: set up global python version: ${PY_GLOBAL_VER}"
+fi
+
+# NeoVim installation
+if [[ ! $(command -v nvim) ]]; then
+	msg "Installing NeoVim: ${NEOVIM_TAG}"
+
+  # Remove all existing configuration
+	if [[ -d "${HOME}"/.local/share/nvim ]]; then rm -rf "${HOME}"/.local/share/nvim; fi
+	if [[ -d "${HOME}"/.local/state/nvim ]]; then rm -rf "${HOME}"/.local/state/nvim; fi
+	if [[ -d "${HOME}"/.cache/nvim ]]; then rm -rf "${HOME}"/.cache/nvim; fi
+
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+    binary_release="nvim-macos"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+    binary_release="nvim-linux64"
+
+  wget "https://github.com/neovim/neovim/releases/download/v${NEOVIM_TAG}/${binary_release}.tar.gz"
+  
+  if [[ "${OSTYPE}" =~ ^darwin ]]; then
+    # Avoid unknown developer warning
+    xattr -c "./${binary_release}.tar.gz"
+  fi
+
+  tar xzvf "${binary_release}.tar.gz"
+  mv "${binary_release}" /usr/share
+  ln -sf "/usr/share/${binary_release}/bin/nvim" /usr/bin/nvim
+
+  msg "Success: installed NeoVim!"
+fi
+
+# ZSH and OMZ Installation
+
+# Link configuration
 
