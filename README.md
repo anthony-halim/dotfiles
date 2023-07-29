@@ -61,7 +61,6 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 - Install ZSH, with OMZ as package manager, as default terminal.
 - Configure ZSH configuration.
 - Configure Git configuration.
-- COnfigure NeoVim configuration.
 - Configure Wezterm configuration.
 
 > NOTE: For Windows, please create a symbolic link for **wezterm.lua** from the Wezterm installation directory to the Wezterm configuration.
@@ -73,4 +72,4 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 
 You may refer to *setup.sh -h* to see the full range of options.
 
-
+For NeoVim configuration setup, please setup separately as per directed in [Nvim Repo](https://github.com/anthony-halim/nvim).

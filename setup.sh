@@ -114,7 +114,7 @@ fi
 
 # Dependencies installation
 msg "Installing dependencies"
-dependencies=("lazygit" "fzf" "ripgrep" "fd")
+dependencies=("lazygit" "fzf" "ripgrep" "fd" "zsh")
 for dependency in "${!dependencies[@]}"; do
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install "${dependency}"
@@ -177,7 +177,26 @@ if [[ ! $(command -v nvim) ]]; then
   msg "Success: installed NeoVim!"
 fi
 
-# ZSH and OMZ Installation
+# OMZ and ZSH dependencies installation 
+if [[ ! $(command -v zsh) ]]; then
+  msg "Setting ZSH as default terminal"
+  chsh -s $(which zsh)
+  
+  msg "Installing OMZ"
+  source <(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)
+  omz update
 
-# Link configuration
+  msg "Installing p10k theme"
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+fi
+
+# Create symbolic link configuration
+# NOTE: The path is super dependent on the repository directory structure.
+ln -sf "${SCRIPT_DIR}/gitconfig/.gitconfig" "${HOME}/.gitconfig"
+ln -sf "${SCRIPT_DIR}/gitconfig/.gitconfig-personal" "${HOME}/.gitconfig-personal"
+ln -sf "${SCRIPT_DIR}/gitconfig/.gitconfig-work" "${HOME}/.gitconfig-work"
+ln -sf "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
+ln -sf "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
+ln -sf "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
+ln -sf "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
 
