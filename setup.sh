@@ -117,7 +117,7 @@ safe_symlink() {
 	local target=$2
 
 	if [[ -L "${target}" && $(readlink -n "${target}") == "${real_file}" ]]; then
-		msg_info "Symlink: ${real_file} -> ${target} already exist. Skipping..."
+		msg_info "Symlink: ${target} -> ${real_file} already exist. Skipping..."
 		return 0
 	fi
 
@@ -133,6 +133,7 @@ safe_symlink() {
 	fi
 
 	ln -s "${real_file}" "${target}"
+	msg_info "Success: symlink created, ${target} -> ${real_file}"
 }
 
 setup_pwless_sudo() {
