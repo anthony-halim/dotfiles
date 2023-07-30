@@ -116,7 +116,23 @@ safe_symlink() {
 	local real_file=$1
 	local target=$2
 
-	# Back up if its a directory or file
+	if [[ -L "${target}" && $(readlink -n "${target}") == "${real_file}" ]]; then
+		msg_info "Symlink: ${real_file} -> ${target} already exist. Skipping..."
+		return 0
+	fi
+
+	if [[ -L "${target}" ]]; then
+		# Create backup symlink
+		msg_warn "Symlink: ${target} is another symlink. We will create a symlink ${target}.bak to original target."
+		confirm && ln -s "${target}.bak" "$(readlink -n "${target}")" && rm "${target}"
+
+	elif [[ -f "${target}" || -d "${target}" ]]; then
+		# Back up if its a directory or file
+		msg_warn "Symlink target: ${target} exists. We will backup to ${target}.bak"
+		confirm && mv "${target}" "${target}.bak"
+	fi
+
+	ln -s "${real_file}" "${target}"
 }
 
 setup_pwless_sudo() {
@@ -167,8 +183,6 @@ setup_lazygit() {
 }
 
 setup_pyenv() {
-	[[ ! -d "${HOME}"/.pyenv ]] || rm -rf "${HOME}"/.pyenv
-
 	git clone https://github.com/pyenv/pyenv.git "${HOME}"/.pyenv
 	pyenv_bin="${HOME}/.pyenv/bin/pyenv"
 
