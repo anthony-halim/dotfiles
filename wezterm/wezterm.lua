@@ -33,6 +33,7 @@ config.window_padding = {
 	top = 0,
 	bottom = 0,
 }
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 
 -- Override keys
 config.keys = {
