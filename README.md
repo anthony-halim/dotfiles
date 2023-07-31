@@ -25,7 +25,7 @@ We need to allow SSH authentication in order to do git operations with Git repos
 
 ```shell
 # Generate fresh SSH keys
-ssh-keygen
+ssh-keygen -t rsa
 ```
 
 Whitelist the private key by adding the public key from SSH keys generated to your Git user.
