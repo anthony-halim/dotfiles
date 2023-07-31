@@ -48,13 +48,15 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 
 - Install dependencies.
 - Install pyenv as Python version manager.
-- Install NeoVim, with tags equal to *--neovim_tag*. Defaults to latest.
+- [TODO] Install rust
+- [TODO] Install go
+- Install NeoVim, with tags equal to *--neovim_tag*. Defaults to v0.9.1.
 - Install ZSH, with OMZ as package manager, as default terminal.
 - Configure ZSH configuration.
 - Configure Git configuration.
 - Configure Wezterm configuration.
 
-> NOTE: For Windows, please create a symbolic link for **wezterm.lua** from the Wezterm installation directory to the Wezterm configuration.
+> NOTE: For Windows, please create a symbolic link for **wezterm.lua** from the Wezterm installation directory to the Wezterm configuration. Below is sample command for Powershell.
 > ```Powershell
 > # Given installation dir: "C:\Program Files\Wezterm"
 > # Given local repository configuration: "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles"
