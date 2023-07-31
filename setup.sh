@@ -18,7 +18,7 @@ IMPORTANT: Not to be executed as sudo. These configurations are meant for user-l
 
 Available options:
 
--u, --user                [Optional] Execute and install under this user. Defaults to the script executor. 
+-u, --user                [Optional] Execute and install under this user. Defaults to the script executor.
                                      If script is executed under sudo, we will check $SUDO_USER.
 --neovim_tag              [Optional] [semver, x.x.x] Indicate NeoVim tag to be installed. Defaults to 0.9.1.
 -h, --help                Print this help and exit
