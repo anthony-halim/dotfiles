@@ -48,13 +48,21 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 
 - Install dependencies.
 - Install pyenv as Python version manager.
-- [TODO] Install rust
-- [TODO] Install go
+- Install rust
 - Install NeoVim, with tags equal to *--neovim_tag*. Defaults to v0.9.1.
 - Install ZSH, with OMZ as package manager, as default terminal.
 - Configure ZSH configuration.
 - Configure Git configuration.
 - Configure Wezterm configuration.
+
+> NOTE: Post pyenv installation, shell integration requires the following snippet in your shell profile:
+> ```shell
+> # For example, in .zshrc
+> export PYENV_ROOT="$HOME/.pyenv"
+> command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+> eval "$(pyenv init -)>"
+> ```
+> This snippet is already included if you proceed with the repository's ZSH installation and configuration. Please include it in your shell profile if you do not choose to do so!
 
 > NOTE: For Windows, please create a symbolic link for **wezterm.lua** from the Wezterm installation directory to the Wezterm configuration. Below is sample command for Powershell.
 > ```Powershell
