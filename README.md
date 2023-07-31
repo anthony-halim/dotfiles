@@ -13,11 +13,25 @@ wsl --install -d Ubuntu
 # For Ubuntu 20.04, do wsl --install -d Ubuntu-20.04
 ```
 
+Setup user.
+
+#### (Recommended) Swap Caps Lock and Esc Key 
+
+##### Windows
+
+For Windows, you can install [PowerToys], through the Keyboard Manager.
+
+```Powershell
+winget install Microsoft.PowerToys --source winget
+```
+
+Perform the swap between `Esc` and `Caps Lock`.
+
+Your hand will thank you!
+
 #### WezTerm
 
 Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) page to and follow the installation steps.
-
-Setup user.
 
 #### Git SSH Keys
 
