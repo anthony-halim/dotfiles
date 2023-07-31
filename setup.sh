@@ -4,6 +4,7 @@ set -Eeuo pipefail
 trap catch_err ERR
 trap cleanup SIGINT SIGTERM EXIT
 
+USER_EXECUTOR=$(whoami)
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 usage() {
@@ -18,7 +19,6 @@ IMPORTANT: Not to be executed as sudo. These configurations are meant for user-l
 
 Available options:
 
--u, --user                [Optional] Execute and install under this user. Defaults to the script executor.
 --neovim_tag              [Optional] [semver, x.x.x] Indicate NeoVim tag to be installed. Defaults to 0.9.1.
 -h, --help                Print this help and exit
 -v, --verbose             [FLAG] Print script debug info
@@ -84,17 +84,12 @@ confirm() {
 
 parse_params() {
 	# default values of variables set from params
-	USER_EXECUTOR=$(whoami)
 	NEOVIM_TAG="0.9.1"
 
 	while :; do
 		case "${1-}" in
 		-h | --help) usage ;;
 		-v | --verbose) set -x ;;
-		-u | --user)
-			USER_EXECUTOR="${2-}"
-			shift
-			;;
 		--no-color) NO_COLOR=1 ;;
 		--neovim_tag)
 			NEOVIM_TAG="${2-}"
