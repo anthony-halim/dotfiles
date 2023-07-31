@@ -11,9 +11,9 @@ usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--py_version python_semver] [--neovim_tag neovim_semver] -u username
+	) [-h] [-v] [--py_version python_semver] [--neovim_tag neovim_semver]
 
-Setup dependencies and setup local configuration.
+Setup dependencies and setup local configuration for the user.
 
 IMPORTANT: Not to be executed as sudo. These configurations are meant for user-level configuration.
 
