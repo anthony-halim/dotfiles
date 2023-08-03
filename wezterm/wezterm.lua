@@ -33,7 +33,7 @@ config.window_padding = {
 }
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.integrated_title_button_alignment = "Right"
-config.window_background_opacity = 0.5
+config.window_background_opacity = 0.7
 config.win32_system_backdrop = "Acrylic"
 config.macos_window_background_blur = 20
 
