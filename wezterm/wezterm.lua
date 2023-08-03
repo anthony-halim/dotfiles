@@ -22,9 +22,7 @@ config.exit_behavior = "Close"
 config.window_close_confirmation = "NeverPrompt"
 
 -- Editor
-config.hide_tab_bar_if_only_one_tab = true
-config.window_background_opacity = 0.8
-config.color_scheme = "Catppuccin Mocha"
+config.color_scheme = "nightfox"
 config.font = wezterm.font("JetBrains Mono")
 config.font_size = 10
 config.window_padding = {
@@ -34,6 +32,10 @@ config.window_padding = {
 	bottom = 0,
 }
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+config.integrated_title_button_alignment = "Right"
+config.window_background_opacity = 0.5
+config.win32_system_backdrop = "Acrylic"
+config.macos_window_background_blur = 20
 
 -- Override keys
 config.keys = {
