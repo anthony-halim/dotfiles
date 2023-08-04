@@ -1,2 +1,4 @@
 .idea
+gitconfig/.gitconfig
+gitconfig/.gitconfig-work
 zsh/config.d/*-work.zsh
