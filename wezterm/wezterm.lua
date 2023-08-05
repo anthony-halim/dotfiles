@@ -24,13 +24,14 @@ config.exit_behavior = "Close"
 config.window_close_confirmation = "NeverPrompt"
 
 -- Editor
-config.color_scheme = color_scheme_name
 config.font = wezterm.font("JetBrains Mono")
 config.font_size = 10
 
+-- Colors
+config.color_scheme = color_scheme_name
+
 -- Tab
 config.use_fancy_tab_bar = true
-config.tab_max_width = 35
 config.colors = {
 	tab_bar = color_scheme.tab_bar,
 }
@@ -39,7 +40,7 @@ config.colors = {
 config.window_padding = {
 	left = 0,
 	right = 0,
-	top = 0,
+	top = "0.3cell",
 	bottom = 0,
 }
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
