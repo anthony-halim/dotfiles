@@ -3,6 +3,8 @@ local wezterm = require("wezterm")
 
 -- This table will hold the configuration
 local config = {}
+local color_scheme_name = "nightfox"
+local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
 
 -- In newer version of wezterm, use the config_builder which will
 -- help provide clearer error message
@@ -22,9 +24,18 @@ config.exit_behavior = "Close"
 config.window_close_confirmation = "NeverPrompt"
 
 -- Editor
-config.color_scheme = "nightfox"
+config.color_scheme = color_scheme_name
 config.font = wezterm.font("JetBrains Mono")
 config.font_size = 10
+
+-- Tab
+config.use_fancy_tab_bar = true
+config.tab_max_width = 35
+config.colors = {
+	tab_bar = color_scheme.tab_bar,
+}
+
+-- Window
 config.window_padding = {
 	left = 0,
 	right = 0,
@@ -33,8 +44,7 @@ config.window_padding = {
 }
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.integrated_title_button_alignment = "Right"
-config.window_background_opacity = 0.7
-config.win32_system_backdrop = "Acrylic"
+config.window_background_opacity = 0.8
 config.macos_window_background_blur = 20
 
 -- Override keys
@@ -55,8 +65,18 @@ config.keys = {
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
+		key = "|",
+		mods = "CTRL|SHIFT|CMD",
+		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+	},
+	{
 		key = "_",
 		mods = "CTRL|SHIFT|ALT",
+		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "_",
+		mods = "CTRL|SHIFT|CMD",
 		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
 }
