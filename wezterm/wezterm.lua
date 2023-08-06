@@ -51,34 +51,50 @@ config.macos_window_background_blur = 20
 -- Override keys
 config.keys = {
 	{
-		key = "w",
-		mods = "CMD",
+		key = "W",
+		mods = "SUPER|SHIFT",
 		action = wezterm.action.CloseCurrentPane({ confirm = false }),
 	},
 	{
-		key = "w",
+		key = "W",
 		mods = "CTRL|SHIFT",
 		action = wezterm.action.CloseCurrentPane({ confirm = false }),
 	},
 	{
 		key = "|",
-		mods = "CTRL|SHIFT|ALT",
+		mods = "CTRL|SHIFT",
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		key = "|",
-		mods = "CTRL|SHIFT|CMD",
+		mods = "SUPER|SHIFT",
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		key = "_",
-		mods = "CTRL|SHIFT|ALT",
+		mods = "CTRL|SHIFT",
 		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		key = "_",
-		mods = "CTRL|SHIFT|CMD",
+		mods = "SUPER|SHIFT",
 		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = ">",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.SplitPane({
+			direction = "Down",
+			size = { Percent = 20 },
+		}),
+	},
+	{
+		key = ">",
+		mods = "SUPER|SHIFT",
+		action = wezterm.action.SplitPane({
+			direction = "Down",
+			size = { Percent = 20 },
+		}),
 	},
 }
 
