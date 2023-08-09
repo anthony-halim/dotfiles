@@ -1,3 +1,10 @@
+if command -v "batcat" &> /dev/null
+then
+    alias cat="batcat --paging=never $1"
+elif command -v "bat" &> /dev/null
+then
+    alias cat="bat --paging=never $1"
+fi
 
 if command -v "explorer.exe" &> /dev/null
 then
