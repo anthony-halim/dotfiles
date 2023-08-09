@@ -11,7 +11,7 @@ usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--py_version python_semver] [--neovim_tag neovim_semver]
+	) [-h] [-v] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -19,6 +19,10 @@ IMPORTANT: Not to be executed as sudo. These configurations are meant for user-l
 
 Available options:
 
+--golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to 1.21.0
+--golang_sys              [Optional] [string] Indicate system for Golang installation. 
+                                              For Linux based, this defaults to linux-amd64. 
+                                              For Darwin based, this defaults to darwin-amd64. 
 --neovim_tag              [Optional] [semver, x.x.x] Indicate NeoVim tag to be installed. Defaults to 0.9.1.
 -h, --help                Print this help and exit
 -v, --verbose             [FLAG] Print script debug info
@@ -85,12 +89,26 @@ confirm() {
 parse_params() {
 	# default values of variables set from params
 	NEOVIM_TAG="0.9.1"
+	GOLANG_TAG="1.21.0"
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		GOLANG_SYS="darwin-amd64"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		GOLANG_SYS="linux-amd64"
+	fi
 
 	while :; do
 		case "${1-}" in
 		-h | --help) usage ;;
 		-v | --verbose) set -x ;;
 		--no-color) NO_COLOR=1 ;;
+		--golang_tag)
+			GOLANG_TAG="${2-}"
+			shift
+			;;
+		--golang_sys)
+			GOLANG_SYS="${2-}"
+			shift
+			;;
 		--neovim_tag)
 			NEOVIM_TAG="${2-}"
 			shift
@@ -142,7 +160,7 @@ safe_symlink() {
 }
 
 setup_dependencies() {
-	dependencies=("fzf" "ripgrep" "fd")
+	dependencies=("wget" "fzf" "ripgrep" "fd" "bat")
 	for dependency in "${dependencies[@]}"; do
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			brew install "${dependency}"
@@ -237,6 +255,32 @@ setup_rust() {
 	msg_info "Success: rust installed"
 }
 
+setup_go() {
+	local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
+	wget "https://go.dev/dl/${golang_pkg}"
+
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		msg_info "  Golang: For Darwin based, please manually open the dowloaded package and follow the prompts: ${golang_pkg}"
+		return 0
+	fi
+
+	if [[ -d "/usr/local/go" ]]; then
+		msg_warn "Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
+		confirm || {
+			msg_warn "  Golang: removal of /usr/local/go aborted. Skipping installation..."
+			return 0
+		}
+		rm -rf /usr/local/go
+	fi
+
+	sudo tar -C /usr/local/ -xzf "${golang_pkg}"
+
+	# Clean up
+	[[ ! -e "${golang_pkg}" ]] || rm -rf "${golang_pkg}"
+
+	msg_info "Success: go installed"
+}
+
 parse_params "$@"
 setup_colors
 
@@ -280,6 +324,15 @@ if [[ ! $(command -v pyenv) ]]; then
 	confirm && setup_pyenv
 else
 	msg_info "pyenv: installed, skipping..."
+fi
+
+# Golang installation
+separator
+if [[ ! $(command -v go) ]]; then
+	msg_info "Installing Golang"
+	confirm && setup_go
+else
+	msg_info "Golang: installed, skipping..."
 fi
 
 # Rust installation

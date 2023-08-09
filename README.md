@@ -61,9 +61,10 @@ mkdir -p $HOME/repos/work
 The remaining configuration will be automatically setup by *setup.sh*. It will perform the following:
 
 - Install dependencies.
-- Install pyenv as Python version manager.
-- Install rust
-- Install NeoVim, with tags equal to *--neovim_tag*. Defaults to v0.9.1.
+- Install Pyenv as Python version manager.
+- Install Golang, with version equal to *--golang_tag*, defaults to 1.21.0.
+- Install Rust 
+- Install NeoVim, with tags equal to *--neovim_tag*. Defaults to 0.9.1.
 - Install ZSH, with OMZ as package manager, as default terminal.
 - Configure ZSH configuration.
 - Configure Git configuration.
@@ -75,6 +76,13 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 > export PYENV_ROOT="$HOME/.pyenv"
 > command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 > eval "$(pyenv init -)>"
+> ```
+> This snippet is already included if you proceed with the repository's ZSH installation and configuration. Please include it in your shell profile if you do not choose to do so!
+
+> NOTE: For Linux, post Golang installation, shell integration requires the following snippet in your shell profile:
+> ```shell
+> # For example, in .zshrc
+> export PATH=$PATH:/usr/local/go/bin
 > ```
 > This snippet is already included if you proceed with the repository's ZSH installation and configuration. Please include it in your shell profile if you do not choose to do so!
 
