@@ -107,19 +107,19 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export PATH="$HOME/.local/bin:$PATH"
-
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-
-# Load seperated config files
+# Load config files
 if [[ -d "$HOME/.config/zsh/config.d" ]]
 then 
   for conf in "$HOME/.config/zsh/config.d/"*.zsh; do
+    source "${conf}"
+  done
+  unset conf
+fi
+
+# Load local config files
+if [[ -d "$HOME/.local_configs" ]]
+then 
+  for conf in "$HOME/.local_configs/"*.zsh; do
     source "${conf}"
   done
   unset conf
