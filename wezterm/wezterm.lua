@@ -52,12 +52,12 @@ config.macos_window_background_blur = 20
 config.keys = {
 	{
 		key = "W",
-		mods = "SUPER|SHIFT",
+		mods = "CTRL|SHIFT",
 		action = wezterm.action.CloseCurrentPane({ confirm = false }),
 	},
 	{
 		key = "W",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = wezterm.action.CloseCurrentPane({ confirm = false }),
 	},
 	{
@@ -95,6 +95,18 @@ config.keys = {
 			direction = "Down",
 			size = { Percent = 20 },
 		}),
+	},
+	-- MacOS: Make Option-Left equivalent to Alt-b; backward-word
+	{
+		key = "LeftArrow",
+		mods = "OPT",
+		action = wezterm.action({ SendString = "\x1bb" }),
+	},
+	-- MacOS: Make Option-Right equivalent to Alt-f; forward-word
+	{
+		key = "RightArrow",
+		mods = "OPT",
+		action = wezterm.action({ SendString = "\x1bf" }),
 	},
 }
 
