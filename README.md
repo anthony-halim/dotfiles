@@ -17,6 +17,8 @@ Setup user.
 
 #### (Recommended) Swap Caps Lock and Esc Key 
 
+Your hand will thank you!
+
 ##### Windows
 
 For Windows, you can install PowerToys, through the Keyboard Manager.
@@ -27,7 +29,11 @@ winget install Microsoft.PowerToys --source winget
 
 Perform the swap between `Esc` and `Caps Lock`.
 
-Your hand will thank you!
+##### MacOS
+
+Newer MacOS has native support for mapping `Caps Lock` to `Esc` (note that `Esc` is not mapped to `Caps Lock`). 
+
+Go to *System Preferences* &rarr; *Keyboard* &rarr; *Modifier Keys* &rarr; map `Caps Lock` to `Esc`.
 
 #### WezTerm
 
