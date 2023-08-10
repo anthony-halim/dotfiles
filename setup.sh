@@ -380,6 +380,11 @@ else
 	msg_info "p10k theme for ZSH: installed, skipping..."
 fi
 
+# Create directory to hold local configs
+separator
+mkdir -p "${HOME}/.local_configs"
+msg_info "Created directory for local configs at ${HOME}/.local_configs. You can use it to place uncommited configurations."
+
 # Create symbolic link configuration
 separator
 msg_info "Setting up soft links to repository configuration"

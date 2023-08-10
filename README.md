@@ -19,7 +19,7 @@ Setup user.
 
 ##### Windows
 
-For Windows, you can install [PowerToys], through the Keyboard Manager.
+For Windows, you can install PowerToys, through the Keyboard Manager.
 
 ```Powershell
 winget install Microsoft.PowerToys --source winget
