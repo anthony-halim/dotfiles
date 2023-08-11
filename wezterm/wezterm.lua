@@ -88,6 +88,11 @@ config.keys = {
 		mods = "SUPER",
 		action = act.CloseCurrentTab({ confirm = false }),
 	},
+	{
+		key = "W",
+		mods = "SUPER|SHIFT",
+		action = act.CloseCurrentPane({ confirm = false }),
+	},
 	{ key = "1", mods = "SUPER", action = act({ ActivateTab = 0 }) },
 	{ key = "2", mods = "SUPER", action = act({ ActivateTab = 1 }) },
 	{ key = "3", mods = "SUPER", action = act({ ActivateTab = 2 }) },
@@ -196,6 +201,11 @@ config.keys = {
 		key = "w",
 		mods = "CTRL",
 		action = act.CloseCurrentTab({ confirm = false }),
+	},
+	{
+		key = "W",
+		mods = "CTRL|SHIFT",
+		action = act.CloseCurrentPane({ confirm = false }),
 	},
 	{ key = "1", mods = "CTRL", action = act({ ActivateTab = 0 }) },
 	{ key = "2", mods = "CTRL", action = act({ ActivateTab = 1 }) },
