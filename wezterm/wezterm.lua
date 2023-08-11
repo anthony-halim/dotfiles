@@ -178,10 +178,18 @@ config.keys = {
 	},
 	-- Windows binding
 	{
-		-- NOTE: Ctrl-C is reserved for cancelling commands
-		key = "C",
-		mods = "CTRL|SHIFT",
-		action = act({ CopyTo = "Clipboard" }),
+		-- NOTE: Ctrl-C is also shared to cancel commands
+		key = "c",
+		mods = "CTRL",
+		action = wezterm.action_callback(function(window, pane)
+			local selection_text = window:get_selection_text_for_pane(pane)
+			local is_selection_active = string.len(selection_text) ~= 0
+			if is_selection_active then
+				window:perform_action(act.CopyTo("Clipboard"), pane)
+			else
+				window:perform_action(act.SendKey({ key = "c", mods = "CTRL" }), pane)
+			end
+		end),
 	},
 	{
 		key = "v",
