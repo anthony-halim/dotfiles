@@ -17,3 +17,9 @@ fi
 if [[ -e "${HOME}/.cargo/env" ]]; then
     source "${HOME}/.cargo/env" 
 fi
+
+# Fzf
+if [[ -f "${HOME}/.fzf.zsh" ]]; then
+    source "${HOME}/.fzf.zsh"
+fi 
+
