@@ -160,7 +160,7 @@ safe_symlink() {
 }
 
 setup_dependencies() {
-	dependencies=("wget" "fzf" "ripgrep" "fd" "bat" "exa")
+	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat")
 	for dependency in "${dependencies[@]}"; do
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			brew install "${dependency}"
@@ -171,6 +171,21 @@ setup_dependencies() {
 	done
 
 	msg_info "Success: dependencies installed!"
+}
+
+setup_exa() {
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		brew install exa
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		EXA_VERSION=$(curl -s "https://api.github.com/repos/ogham/exa/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
+		curl -Lo exa.zip "https://github.com/ogham/exa/releases/latest/download/exa-linux-x86_64-v${EXA_VERSION}.zip"
+		sudo unzip -q exa.zip bin/exa -d /usr/local
+
+		# Clean up
+		[[ ! -e "exa.zip" ]] || rm exa.zip
+	fi
+
+	msg_info "Success: exa installed!"
 }
 
 setup_lazygit() {
@@ -307,6 +322,15 @@ fi
 separator
 msg_info "Installing dependencies"
 confirm && setup_dependencies
+
+# Exa installation
+separator
+if [[ ! $(command -v exa) ]]; then
+	msg_info "Installing exa"
+	confirm && setup_exa
+else
+	msg_info "exa: installed, skipping..."
+fi
 
 # Lazygit installation
 separator

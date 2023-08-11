@@ -110,7 +110,7 @@ source $ZSH/oh-my-zsh.sh
 # Load config files
 if [[ -d "${HOME}/.config/zsh/config.d" ]]
 then 
-  for conf in "${HOME}/.config/zsh/config.d/"*.zsh; do
+  for conf in "${HOME}/.config/zsh/config.d/"*.zsh(.N); do
     source "${conf}"
   done
   unset conf
@@ -119,7 +119,7 @@ fi
 # Load local config files
 if [[ -d "${HOME}/.local_configs" ]]
 then 
-  for conf in "${HOME}/.local_configs/"*.zsh; do
+  for conf in "${HOME}/.local_configs/"*.zsh(.N); do
     source "${conf}"
   done
   unset conf
