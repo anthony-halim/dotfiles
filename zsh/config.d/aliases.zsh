@@ -14,7 +14,7 @@ fi
 if command -v "exa" &> /dev/null
 then
     alias ls="exa"
-    alias lsd="exa -alrg"
+    alias lsd="exa -alrg --icons"
 else
     alias lsd="ls -alrt"
 fi
