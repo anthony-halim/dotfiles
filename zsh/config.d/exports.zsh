@@ -1,9 +1,19 @@
-# Include golang path
-export PATH="/usr/local/go/bin:$HOME/.local/bin:$PATH"
+export PATH="${HOME}/.local/bin:$PATH"
 export EDITOR="vim"
 
 # Pyenv 
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval  "$(pyenv init -)"
+if [[ -d "${HOME}/.pyenv" ]]; then
+    export PYENV_ROOT="${HOME}/.pyenv"
+    command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+    eval  "$(pyenv init -)"
+fi
 
+# Golang 
+if [[ -x "/usr/local/go/bin/go" ]]; then
+    command -v go >/dev/null || export PATH="/usr/local/go/bin:$PATH"
+fi
+
+# Rust
+if [[ -e "${HOME}/.cargo/env" ]]; then
+    source "${HOME}/.cargo/env" 
+fi

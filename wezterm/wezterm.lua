@@ -173,8 +173,9 @@ config.keys = {
 	},
 	-- Windows binding
 	{
-		key = "c",
-		mods = "CTRL",
+		-- NOTE: Ctrl-C is reserved for cancelling commands
+		key = "C",
+		mods = "CTRL|SHIFT",
 		action = act({ CopyTo = "Clipboard" }),
 	},
 	{

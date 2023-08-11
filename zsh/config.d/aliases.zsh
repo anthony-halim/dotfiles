@@ -11,6 +11,14 @@ then
     alias open="explorer.exe $1"
 fi
 
+if command -v "exa" &> /dev/null
+then
+    alias ls="exa"
+    alias lsd="exa -alrg"
+else
+    alias lsd="ls -alrt"
+fi
+
 alias sush="sudo su -"
 
 alias src="source $HOME/.zshrc"
@@ -21,9 +29,7 @@ alias vim="nvim"
 
 alias vi="nvim"
 
-alias lsd="ls -alrt"
-
-alias repodir="cd $HOME/repos"
+alias rp="cd $HOME/repos"
 
 alias lg="lazygit"
 

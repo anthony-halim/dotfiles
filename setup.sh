@@ -160,7 +160,7 @@ safe_symlink() {
 }
 
 setup_dependencies() {
-	dependencies=("wget" "fzf" "ripgrep" "fd" "bat")
+	dependencies=("wget" "fzf" "ripgrep" "fd" "bat" "exa")
 	for dependency in "${dependencies[@]}"; do
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			brew install "${dependency}"
