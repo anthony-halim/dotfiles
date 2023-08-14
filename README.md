@@ -1,6 +1,6 @@
 # Dotfiles
 
-This repository holds my local configurations.
+This repository holds my local configurations. Currently supports *WSL2 - Ubuntu-20.04, on Windows 11* and *MacOS Big Sur*.
 
 ## Prerequisites
 
@@ -15,11 +15,19 @@ wsl --install -d Ubuntu
 
 Setup user.
 
-#### (Recommended) Swap Caps Lock and Esc Key 
+#### (Recommended) Swap Keys 
 
-Your hand will thank you!
+The default key bindings are not the most ergonomic for programmers, and we can perform some key swappings to help make it better.
 
-##### Windows
+Your hand will thank you! 
+
+> NOTE: There are lots of third party software that aids key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or allowed) to install third party software that customise close to the firmware level. 
+> Due to this, we opt to use built-in or officially supported by the OS itself, albeit it support less extensive customisation.
+>
+> If you are using this, an idea for customisation is:
+> - On `Caps Lock` tap, map it as `Esc`. On `Caps Lock` hold, map it as `Ctrl`.
+
+##### Windows: Swap `Esc` and `Caps Lock` 
 
 For Windows, you can install PowerToys, through the Keyboard Manager.
 
@@ -27,13 +35,19 @@ For Windows, you can install PowerToys, through the Keyboard Manager.
 winget install Microsoft.PowerToys --source winget
 ```
 
-Perform the swap between `Esc` and `Caps Lock`.
+Perform the swap between `Esc` and `Caps Lock` by adding two entries:
+- `Esc` to `Caps Lock`
+- `Caps Lock` to `Esc`  
 
-##### MacOS
+##### MacOS: Map `Caps Lock` to `Esc` and `fn` to `Ctrl`    
 
-Newer MacOS has native support for mapping `Caps Lock` to `Esc` (note that `Esc` is not mapped to `Caps Lock`). 
+Newer MacOS has native support for mapping keyboard modifier keys.
 
-Go to *System Preferences* &rarr; *Keyboard* &rarr; *Modifier Keys* &rarr; map `Caps Lock` to `Esc`.
+Go to *System Preferences* &rarr; *Keyboard* &rarr; *Modifier Keys*:
+- `Caps Lock` to `Esc`
+- `fn` to `Control`
+
+> NOTE: Yes, we are losing `Caps Lock` and `fn` buttons with this mapping. If you find yourself using these keys often, this is not for you. 
 
 #### WezTerm
 
