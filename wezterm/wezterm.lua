@@ -189,8 +189,20 @@ config.keys = {
 		action = act.SplitPane({ direction = "Down", size = { Percent = 20 } }),
 	},
 	-- Windows binding
+	-- Make Alt-Left equivalent to backward-line
 	{
-		-- NOTE: Ctrl-C is also shared to cancel commands
+		key = "LeftArrow",
+		mods = "ALT",
+		action = act({ SendString = "\x01" }),
+	},
+	-- Make Alt-Right equivalent to forward-line
+	{
+		key = "RightArrow",
+		mods = "ALT",
+		action = act({ SendString = "\x05" }),
+	},
+	-- NOTE: Ctrl-C is also shared to cancel commands
+	{
 		key = "c",
 		mods = "CTRL",
 		action = wezterm.action_callback(function(window, pane)
