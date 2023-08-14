@@ -23,3 +23,7 @@ if [[ -f "${HOME}/.fzf.zsh" ]]; then
     source "${HOME}/.fzf.zsh"
 fi 
 
+# Sword
+if [[ -d "${HOME}/.sword" ]]; then
+    export SWORD_PATH="${HOME}/.sword"
+fi
