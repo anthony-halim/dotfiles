@@ -52,17 +52,29 @@ config.macos_window_background_blur = 20
 config.disable_default_key_bindings = true
 config.keys = {
 	-- MacOS binding
-	-- Make Cmd-Left equivalent to Alt-b; backward-word
+	-- Make Opt-Left equivalent to Alt-b; backward-word
+	{
+		key = "LeftArrow",
+		mods = "OPT",
+		action = act({ SendString = "\x1bb" }),
+	},
+	-- Make Opt-Right equivalent to Alt-f; forward-word
+	{
+		key = "RightArrow",
+		mods = "OPT",
+		action = act({ SendString = "\x1bf" }),
+	},
+	-- Make Cmd-Left equivalent to backward-line
 	{
 		key = "LeftArrow",
 		mods = "SUPER",
-		action = act({ SendString = "\x1bb" }),
+		action = act({ SendString = "\x01" }),
 	},
-	-- Make Cmd-Right equivalent to Alt-f; forward-word
+	-- Make Cmd-Right equivalent to forward-line
 	{
 		key = "RightArrow",
 		mods = "SUPER",
-		action = act({ SendString = "\x1bf" }),
+		action = act({ SendString = "\x05" }),
 	},
 	{
 		key = "c",
