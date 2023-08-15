@@ -6,6 +6,3 @@
 [pull]
 	rebase = true
 
-[includeIf "gitdir:~/repos/personal/"]
-    path = ~/.gitconfig-personal
-

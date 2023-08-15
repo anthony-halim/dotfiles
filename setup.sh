@@ -415,7 +415,6 @@ msg_info "Setting up soft links to repository configuration"
 
 # NOTE: The path is super dependent on the repository directory structure.
 safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig" "${HOME}/.gitconfig"
-safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig-personal" "${HOME}/.gitconfig-personal"
 safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
