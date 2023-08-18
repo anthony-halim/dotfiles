@@ -11,7 +11,7 @@ usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
+	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -19,13 +19,21 @@ IMPORTANT: Not to be executed as sudo. These configurations are meant for user-l
 
 Available options:
 
---golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to 1.21.0
---golang_sys              [Optional] [string] Indicate system for Golang installation. 
-                                              For Linux based, this defaults to linux-amd64. 
-                                              For Darwin based, this defaults to darwin-amd64. 
---neovim_tag              [Optional] [semver, x.x.x] Indicate NeoVim tag to be installed. Defaults to 0.9.1.
--h, --help                Print this help and exit
--v, --verbose             [FLAG] Print script debug info
+--git_user                [Optional] [string]        Indicate git user. If empty, will be prompted later.
+--git_user_email          [Optional] [string]        Indicate git user email. If empty, will be prompted later.
+--git_user_local_file     [Optional] [string]        Configure git user and git email to a local file instead of the user's global .gitconfig. 
+                                                     If empty, will default to global .gitconfig. 
+                                                     Suitable for users who uses multiple gitconfigs.
+
+--golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to 1.21.0.
+--golang_sys              [Optional] [string]        Indicate system for Golang installation. 
+                                                     For Linux based, this defaults to linux-amd64. 
+                                                     For Darwin based, this defaults to darwin-amd64. 
+
+--neovim_tag              [Optional] [semver, x.x.x] Indicate Neovim tag to be installed. Defaults to 0.9.1.
+
+-h, --help                                           Print this help and exit
+-v, --verbose             [FLAG]                     Print script debug info
 EOF
 	exit
 }
@@ -49,7 +57,7 @@ setup_colors() {
 }
 
 separator() {
-	msg "${CYAN}-------------------------------------${NOFORMAT}"
+	printf %"$(tput cols)"s | tr " " "─"
 }
 
 msg() {
@@ -88,6 +96,9 @@ confirm() {
 
 parse_params() {
 	# default values of variables set from params
+	GIT_USER=""
+	GIT_USER_EMAIL=""
+	GIT_USER_LOCAL_FILE=""
 	NEOVIM_TAG="0.9.1"
 	GOLANG_TAG="1.21.0"
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -101,6 +112,18 @@ parse_params() {
 		-h | --help) usage ;;
 		-v | --verbose) set -x ;;
 		--no-color) NO_COLOR=1 ;;
+		--git_user)
+			GIT_USER="${2-}"
+			shift
+			;;
+		--git_user_email)
+			GIT_USER_EMAIL="${2-}"
+			shift
+			;;
+		--git_user_local_file)
+			GIT_USER_LOCAL_FILE="${2-}"
+			shift
+			;;
 		--golang_tag)
 			GOLANG_TAG="${2-}"
 			shift
@@ -160,8 +183,9 @@ safe_symlink() {
 }
 
 setup_dependencies() {
-	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat")
+	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
 	for dependency in "${dependencies[@]}"; do
+		msg_info "  deps: installing '$dependency'"
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			brew install "${dependency}"
 		elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -296,12 +320,72 @@ setup_go() {
 	msg_info "Success: go installed"
 }
 
+setup_git() {
+	# Global configs
+	declare -A git_global_configs
+
+	git_global_configs["alias.lg"]="log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+	git_global_configs["core.editor"]="vim"
+	git_global_configs["pull.rebase"]="true"
+	git_global_configs["url.\"ssh://git@github.com/\".insteadOf"]="https//github.com/"
+
+	for git_conf in "${!git_global_configs[@]}"; do
+		local git_conf_cmd="${git_global_configs[$git_conf]}"
+
+		msg_info "  git_conf: Setting global conf $git_conf = $git_conf_cmd"
+		local git_conf_cmd_exist=$(git config --get "$git_conf") || 0
+
+		if [[ -n "$git_conf_cmd_exist" ]]; then
+			if [[ "$git_conf_cmd_exist" == "$git_conf_cmd" ]]; then
+				msg_info "    -> config already exist"
+			else
+				msg_warn "    -> config is already used. To overwrite it, you can execute:"
+				msg_warn "    -> git config --global $git_conf $git_conf_cmd"
+			fi
+		else
+			confirm || {
+				msg_warn "    -> Skipping..."
+				continue
+			}
+			git config --global "$git_conf" "$git_conf_cmd"
+		fi
+	done
+
+	# User identity
+
+	local git_location_flag="--global"
+	if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
+		git_location_flag="--file $GIT_USER_LOCAL_FILE"
+		touch "$GIT_USER_LOCAL_FILE"
+	fi
+	msg_info "  git_conf: git location flag is set to '$git_location_flag'"
+
+	if [[ -z "$GIT_USER" ]]; then
+		read -r -p "    ? input git user.name: " git_username_input
+		GIT_USER="$git_username_input"
+	fi
+	if [[ -z "$GIT_USER_EMAIL" ]]; then
+		read -r -p "    ? input git user.email: " git_user_email_input
+		GIT_USER_EMAIL="$git_user_email_input"
+	fi
+
+	msg_warn "    -> git user.name will be set to '$GIT_USER'"
+	confirm && git config "$git_location_flag user.name $GIT_USER" && msg_info "    -> user.name is set!"
+	msg_warn "    -> git user.email will be set to '$GIT_USER_EMAIL'"
+	confirm && git config "$git_location_flag user.email $GIT_USER_EMAIL" && msg_info "    -> user.email is set!"
+}
+
 parse_params "$@"
 setup_colors
 
-msg_info "Parameters:"
-msg_info "- user: ${USER_EXECUTOR}"
-msg_info "- neovim_tag: ${NEOVIM_TAG}"
+msg_info "Script Parameters:"
+msg_info "-> user: ${USER_EXECUTOR}"
+[[ -n "$GIT_USER" ]] && msg_info "-> git_user: ${GIT_USER}"
+[[ -n "$GIT_USER_EMAIL" ]] && msg_info "-> git_user_email: ${GIT_USER_EMAIL}"
+[[ -n "$GIT_USER_LOCAL_FILE" ]] && msg_info "-> git_user_local_file: ${GIT_USER_LOCAL_FILE}"
+msg_info "-> golang_tag: ${GOLANG_TAG}"
+msg_info "-> golang_sys: ${GOLANG_SYS}"
+msg_info "-> neovim_tag: ${NEOVIM_TAG}"
 
 # Check OS
 if [[ ! "${OSTYPE}" =~ ^linux ]] && [[ ! "${OSTYPE}" =~ ^darwin ]]; then
@@ -322,6 +406,11 @@ fi
 separator
 msg_info "Installing dependencies"
 confirm && setup_dependencies
+
+# Git setup
+separator
+msg_info "Setting up git configs"
+confirm && setup_git
 
 # Exa installation
 separator
@@ -414,7 +503,6 @@ separator
 msg_info "Setting up soft links to repository configuration"
 
 # NOTE: The path is super dependent on the repository directory structure.
-safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig" "${HOME}/.gitconfig"
 safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
