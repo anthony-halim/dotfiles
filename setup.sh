@@ -144,6 +144,9 @@ parse_params() {
 
 	args=("$@")
 
+	# Expand path
+	GIT_USER_LOCAL_FILE="${GIT_USER_LOCAL_FILE/#\~/$HOME}"
+
 	return 0
 }
 
@@ -184,7 +187,7 @@ safe_symlink() {
 setup_dependencies() {
 	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
 	for dependency in "${dependencies[@]}"; do
-		msg_info "  -> Installing '$dependency'"
+		msg_info "  Installing '$dependency'"
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			brew install "${dependency}"
 		elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -261,7 +264,7 @@ setup_zsh() {
 		sudo apt install -y zsh
 	fi
 
-	msg_info "  -> Setting zsh as default terminal"
+	msg_info "  Setting zsh as default terminal"
 	sudo chsh --shell "$(which zsh)" "${USER_EXECUTOR}"
 }
 
@@ -309,24 +312,26 @@ setup_git() {
 	git_global_configs["alias.lg"]="log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
 	git_global_configs["core.editor"]="vim"
 	git_global_configs["pull.rebase"]="true"
-	git_global_configs["url.\"ssh://git@github.com/\".insteadOf"]="https//github.com/"
+	git_global_configs['url."ssh://git@github.com/".insteadOf']="https//github.com/"
+
+	msg_info "  Setting global configuration"
 
 	for git_conf in "${!git_global_configs[@]}"; do
 		local git_conf_cmd="${git_global_configs[$git_conf]}"
 
-		msg_info "  -> Setting global conf $git_conf = $git_conf_cmd"
+		msg_info "    -> Setting $git_conf = $git_conf_cmd"
 		local git_conf_cmd_exist=$(git config --get "$git_conf") || 0
 
 		if [[ -n "$git_conf_cmd_exist" ]]; then
 			if [[ "$git_conf_cmd_exist" == "$git_conf_cmd" ]]; then
-				msg_info "    -> Config already exist"
+				msg_info "      -> Config already exist"
 			else
-				msg_warn "    ! Config is already used. To overwrite it, you can execute:"
-				msg_warn "    ! git config --global $git_conf $git_conf_cmd"
+				msg_warn "      ! Config is already used. To overwrite it, you can execute:"
+				msg_warn "      ! git config --global $git_conf $git_conf_cmd"
 			fi
 		else
 			confirm || {
-				msg_warn "    ! Skipping..."
+				msg_warn "      ! Skipping..."
 				continue
 			}
 			git config --global "$git_conf" "$git_conf_cmd"
@@ -335,12 +340,13 @@ setup_git() {
 
 	# User identity
 
+	msg_info "  Setting user configuration"
 	local git_location_flag="--global"
 	if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
 		git_location_flag="--file $GIT_USER_LOCAL_FILE"
-		touch "$GIT_USER_LOCAL_FILE"
+		[[ ! -e "$GIT_USER_LOCAL_FILE" ]] && touch "$GIT_USER_LOCAL_FILE" && msg_info "  Created local file at $GIT_USER_LOCAL_FILE"
 	fi
-	msg_info "  Git user.name and user.email location flag is set to '$git_location_flag'"
+	msg_info "  Git user configuration location flag is set to '$git_location_flag'"
 
 	if [[ -z "$GIT_USER" ]]; then
 		read -r -p "    ? Please input your git user.name: " git_username_input
@@ -351,10 +357,19 @@ setup_git() {
 		GIT_USER_EMAIL="$git_user_email_input"
 	fi
 
+	# TODO: Check if already set
 	msg_warn "    -> git user.name will be set to '$GIT_USER'"
-	confirm && git config "$git_location_flag user.name $GIT_USER" && msg_info "    -> user.name is set!"
+	confirm && {
+		bash -c "git config $git_location_flag user.name $GIT_USER"
+		msg_info "      -> user.name is set!"
+	}
+
+	# TODO: Check if already set
 	msg_warn "    -> git user.email will be set to '$GIT_USER_EMAIL'"
-	confirm && git config "$git_location_flag user.email $GIT_USER_EMAIL" && msg_info "    -> user.email is set!"
+	confirm && {
+		bash -c "git config $git_location_flag user.email $GIT_USER_EMAIL"
+		msg_info "      -> user.email is set!"
+	}
 }
 
 parse_params "$@"
@@ -489,3 +504,22 @@ safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
 msg_info "symlink: success!"
+
+if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
+	separator
+	msg_info "You have set local user configuration file. To include local file, you can add the following to your global .gitconfig:"
+
+	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
+# For global include 
+[include]
+    path = $GIT_USER_LOCAL_FILE
+
+# Or, for conditional include"
+[includeIf "gitdir:/path/to/dir/"] # Change this!
+    path = $GIT_USER_LOCAL_FILE
+EOF
+	# remove the space between << and EOF, this is due to web plugin issue
+	# remove the space between << and EOF, this is due to web plugin issue
+	# remove the space between << and EOF, this is due to web plugin issue
+	# remove the space between << and EOF, this is due to web plugin issue
+fi
