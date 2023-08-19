@@ -65,7 +65,7 @@ msg() {
 }
 
 msg_info() {
-	msg "${GREEN}$1${NOFORMAT}"
+	msg "${YELLOW}$1${NOFORMAT}"
 }
 
 msg_warn() {
@@ -74,6 +74,10 @@ msg_warn() {
 
 msg_err() {
 	msg "${RED}$1${NOFORMAT}"
+}
+
+msg_success() {
+	msg "${GREEN}$1${NOFORMAT}"
 }
 
 die() {
@@ -181,7 +185,7 @@ safe_symlink() {
 	fi
 
 	ln -s "${real_file}" "${target}"
-	msg_info "    -> Symlink created!"
+	msg_success "    -> Symlink created!"
 }
 
 setup_dependencies() {
@@ -313,7 +317,7 @@ setup_git() {
 
 		msg "  Setting $git_location: $git_conf_name = $git_conf_cmd"
 
-		local git_conf_existing_cmd=$(git config "$git_location" --get "$git_conf_name") || 0
+		local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
 		if [[ -n "$git_conf_existing_cmd" ]]; then
 			if [[ "$git_conf_existing_cmd" == "$git_conf_cmd" ]]; then
 				msg_info "    -> Config already exist"
@@ -323,7 +327,7 @@ setup_git() {
 			fi
 		else
 			bash -c "git config $git_location $git_conf_name '$git_conf_cmd'"
-			msg_info "    -> Config set!"
+			msg_success "    -> Config set!"
 		fi
 	}
 
@@ -390,18 +394,18 @@ fi
 # Dependencies installation
 separator
 msg_info "deps: installing dependencies"
-confirm && setup_dependencies && msg_info "deps: success!"
+confirm && setup_dependencies && msg_success "deps: success!"
 
 # Git setup
 separator
 msg_info "git_conf: setting up Git configurations"
-confirm && setup_git && msg_info "git_conf: success!"
+confirm && setup_git && msg_success "git_conf: success!"
 
 # Exa installation
 separator
 if [[ ! $(command -v exa) ]]; then
 	msg_info "exa: installing exa (better ls)"
-	confirm && setup_exa && msg_info "exa: success!"
+	confirm && setup_exa && msg_success "exa: success!"
 else
 	msg_info "exa: installed, skipping..."
 fi
@@ -410,7 +414,7 @@ fi
 separator
 if [[ ! $(command -v lazygit) ]]; then
 	msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
-	confirm && setup_lazygit && msg_info "lazygit: success!"
+	confirm && setup_lazygit && msg_success "lazygit: success!"
 else
 	msg_info "lazygit: installed, skipping..."
 fi
@@ -419,7 +423,7 @@ fi
 separator
 if [[ ! $(command -v pyenv) ]]; then
 	msg_info "pyenv: installing pyenv (Python version manager)"
-	confirm && setup_pyenv && msg_info "pyenv: success!"
+	confirm && setup_pyenv && msg_success "pyenv: success!"
 else
 	msg_info "pyenv: installed, skipping..."
 fi
@@ -428,7 +432,7 @@ fi
 separator
 if [[ ! $(command -v go) ]]; then
 	msg_info "Golang: installing Golang (programming language)"
-	confirm && setup_go && msg_info "Golang: success!"
+	confirm && setup_go && msg_success "Golang: success!"
 else
 	msg_info "Golang: installed, skipping..."
 fi
@@ -437,7 +441,7 @@ fi
 separator
 if [[ ! $(command -v rustup) ]]; then
 	msg_info "Rust: installing Rust (programming language) with rustup"
-	confirm && setup_rust && msg_info "Ruat: success!"
+	confirm && setup_rust && msg_success "Rust: success!"
 else
 	msg_info "Rust: installed, skipping..."
 fi
@@ -446,7 +450,7 @@ fi
 separator
 if [[ ! $(command -v nvim) ]]; then
 	msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
-	confirm && setup_neovim && msg_info "Neovim: success!"
+	confirm && setup_neovim && msg_success "Neovim: success!"
 else
 	msg_info "Neovim: installed, skipping..."
 fi
@@ -455,7 +459,7 @@ fi
 separator
 if [[ ! $(command -v zsh) ]]; then
 	msg_info "zsh: installing Z shell and setting it as default terminal"
-	confirm && setup_zsh && msg_info "zsh: success!"
+	confirm && setup_zsh && msg_success "zsh: success!"
 else
 	msg_info "zsh: installed, skipping..."
 fi
@@ -464,7 +468,7 @@ fi
 separator
 if [[ $(command -v zsh) ]] && [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
 	msg_info "omz: installing omz (Oh My Zsh, zsh package manager)"
-	confirm && setup_omz && msg_info "omz: success!"
+	confirm && setup_omz && msg_success "omz: success!"
 else
 	msg_info "omz: installed, skipping..."
 fi
@@ -473,7 +477,7 @@ fi
 separator
 if [[ $(command -v zsh) ]] && [[ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]]; then
 	msg "p10k: installing p10k (theme for zsh)"
-	confirm && setup_omz_p10k && msg_info "p10k: success!"
+	confirm && setup_omz_p10k && msg_success "p10k: success!"
 else
 	msg_info "p10k: installed, skipping..."
 fi
@@ -492,7 +496,7 @@ safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
-msg_info "symlink: success!"
+msg_success "symlink: success!"
 
 # Report git information at the very end to make it clear to user
 if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then

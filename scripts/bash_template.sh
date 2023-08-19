@@ -43,7 +43,7 @@ setup_colors() {
 }
 
 separator() {
-	printf %"$(tput cols)"s | tr " " "─"
+	msg "─────────────────────────────────────────────────────────────────"
 }
 
 msg() {
@@ -51,7 +51,7 @@ msg() {
 }
 
 msg_info() {
-	msg "${GREEN}$1${NOFORMAT}"
+	msg "${YELLOW}$1${NOFORMAT}"
 }
 
 msg_warn() {
@@ -60,6 +60,10 @@ msg_warn() {
 
 msg_err() {
 	msg "${RED}$1${NOFORMAT}"
+}
+
+msg_success() {
+	msg "${GREEN}$1${NOFORMAT}"
 }
 
 die() {
