@@ -31,11 +31,11 @@ alias vi="nvim"
 
 alias rp="cd $HOME/repos"
 
-alias lg="lazygit"
+alias gg="lazygit"
 
-alias sshconfig="cat $HOME/.ssh/config"
+alias sshconf="cat $HOME/.ssh/config"
 
-alias gitconfig="git config --list --show-origin"
+alias gitconf="git config --list --show-origin"
 
 alias dateunixnow="date '+%s'"
 
