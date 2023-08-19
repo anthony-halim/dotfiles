@@ -11,7 +11,7 @@ usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
+	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -19,13 +19,21 @@ IMPORTANT: Not to be executed as sudo. These configurations are meant for user-l
 
 Available options:
 
---golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to 1.21.0
---golang_sys              [Optional] [string] Indicate system for Golang installation. 
-                                              For Linux based, this defaults to linux-amd64. 
-                                              For Darwin based, this defaults to darwin-amd64. 
---neovim_tag              [Optional] [semver, x.x.x] Indicate NeoVim tag to be installed. Defaults to 0.9.1.
--h, --help                Print this help and exit
--v, --verbose             [FLAG] Print script debug info
+--git_user                [Optional] [string]        Indicate git user. If empty, will be prompted later.
+--git_user_email          [Optional] [string]        Indicate git user email. If empty, will be prompted later.
+--git_user_local_file     [Optional] [string]        Configure git user and git email to a local file instead of the user's global .gitconfig. 
+                                                     If empty, will default to global .gitconfig. 
+                                                     Suitable for users who uses multiple gitconfigs.
+
+--golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to 1.21.0.
+--golang_sys              [Optional] [string]        Indicate system for Golang installation. 
+                                                     For Linux based, this defaults to linux-amd64. 
+                                                     For Darwin based, this defaults to darwin-amd64. 
+
+--neovim_tag              [Optional] [semver, x.x.x] Indicate Neovim tag to be installed. Defaults to 0.9.1.
+
+-h, --help                                           Print this help and exit
+-v, --verbose             [FLAG]                     Print script debug info
 EOF
 	exit
 }
@@ -49,7 +57,7 @@ setup_colors() {
 }
 
 separator() {
-	msg "${CYAN}-------------------------------------${NOFORMAT}"
+	msg "─────────────────────────────────────────────────────────────────"
 }
 
 msg() {
@@ -57,7 +65,7 @@ msg() {
 }
 
 msg_info() {
-	msg "${GREEN}$1${NOFORMAT}"
+	msg "${YELLOW}$1${NOFORMAT}"
 }
 
 msg_warn() {
@@ -66,6 +74,10 @@ msg_warn() {
 
 msg_err() {
 	msg "${RED}$1${NOFORMAT}"
+}
+
+msg_success() {
+	msg "${GREEN}$1${NOFORMAT}"
 }
 
 die() {
@@ -77,17 +89,20 @@ die() {
 
 confirm() {
 	while true; do
-		read -r -p "  Do you want to proceed? [Y]es/[N]o) " yn
+		read -r -p "    Do you want to proceed? [Y]es/[N]o) " yn
 		case $yn in
 		[Yy]*) return 0 ;;
 		[Nn]*) return 1 ;;
-		*) msg "  Please answer [Y]es or [N]o." ;;
+		*) msg "    Please answer [Y]es or [N]o." ;;
 		esac
 	done
 }
 
 parse_params() {
 	# default values of variables set from params
+	GIT_USER=""
+	GIT_USER_EMAIL=""
+	GIT_USER_LOCAL_FILE=""
 	NEOVIM_TAG="0.9.1"
 	GOLANG_TAG="1.21.0"
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -101,6 +116,18 @@ parse_params() {
 		-h | --help) usage ;;
 		-v | --verbose) set -x ;;
 		--no-color) NO_COLOR=1 ;;
+		--git_user)
+			GIT_USER="${2-}"
+			shift
+			;;
+		--git_user_email)
+			GIT_USER_EMAIL="${2-}"
+			shift
+			;;
+		--git_user_local_file)
+			GIT_USER_LOCAL_FILE="${2-}"
+			shift
+			;;
 		--golang_tag)
 			GOLANG_TAG="${2-}"
 			shift
@@ -121,6 +148,9 @@ parse_params() {
 
 	args=("$@")
 
+	# Expand path
+	GIT_USER_LOCAL_FILE="${GIT_USER_LOCAL_FILE/#\~/$HOME}"
+
 	return 0
 }
 
@@ -128,40 +158,40 @@ safe_symlink() {
 	local real_file=$1
 	local target=$2
 
-	msg_info "Symlink: creating ${target} -> ${real_file}"
+	msg "  Creating ${target} -> ${real_file}"
 
 	if [[ -L "${target}" && $(readlink -n "${target}") == "${real_file}" ]]; then
-		msg_warn "  Symlink: already exist. Skipping creation..."
+		msg_info "    -> Symlink already exist."
 		return 0
 	fi
 
 	if [[ -L "${target}" ]]; then
 		# Create backup symlink
-		msg_warn "  Symlink: ${target} is another symlink. We will create a symlink ${target}.bak to original target."
+		msg_warn "    ! ${target} is another symlink. We will create a symlink ${target}.bak to original target."
 		confirm || {
-			msg_warn "  Symlink: backup aborted. Skipping creation..."
+			msg_warn "    ! Skipping..."
 			return 0
 		}
 		ln -s "${target}.bak" "$(readlink -n "${target}")" && rm "${target}"
 
 	elif [[ -f "${target}" || -d "${target}" ]]; then
 		# Back up if its a directory or file
-		msg_warn "  Symlink: ${target} exists. We will backup to ${target}.bak"
-		# If user does not want to backup, skip
+		msg_warn "  ! ${target} exists. We will first backup to ${target}.bak"
 		confirm || {
-			msg_warn "  Symlink: backup aborted. Skipping creation..."
+			msg_warn "    ! Skipping..."
 			return 0
 		}
 		mv "${target}" "${target}.bak"
 	fi
 
 	ln -s "${real_file}" "${target}"
-	msg_info "  Symlink: created!"
+	msg_success "    -> Symlink created!"
 }
 
 setup_dependencies() {
-	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat")
+	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
 	for dependency in "${dependencies[@]}"; do
+		msg_info "  Installing '$dependency'"
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			brew install "${dependency}"
 		elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -169,8 +199,6 @@ setup_dependencies() {
 			sudo apt install -y "${dependency}"
 		fi
 	done
-
-	msg_info "Success: dependencies installed!"
 }
 
 setup_exa() {
@@ -184,8 +212,6 @@ setup_exa() {
 		# Clean up
 		[[ ! -e "exa.zip" ]] || rm exa.zip
 	fi
-
-	msg_info "Success: exa installed!"
 }
 
 setup_lazygit() {
@@ -200,8 +226,6 @@ setup_lazygit() {
 
 	# Clean up
 	[[ ! -e "lazygit.tar.gz" ]] || rm lazygit.tar.gz
-
-	msg_info "Success: lazygit installed!"
 }
 
 setup_pyenv() {
@@ -210,8 +234,6 @@ setup_pyenv() {
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
 		git clone https://github.com/pyenv/pyenv.git "${HOME}"/.pyenv
 	fi
-
-	msg_info "Success: installed pyenv!"
 }
 
 setup_neovim() {
@@ -237,8 +259,6 @@ setup_neovim() {
 
 	# Clean up
 	[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
-
-	msg_info "Success: installed NeoVim!"
 }
 
 setup_zsh() {
@@ -248,26 +268,21 @@ setup_zsh() {
 		sudo apt install -y zsh
 	fi
 
-	msg_info "Setting ZSH as default terminal"
+	msg "  Setting zsh as default terminal"
 	sudo chsh --shell "$(which zsh)" "${USER_EXECUTOR}"
-
-	msg_info "Success: ZSH installed!"
 }
 
 setup_omz() {
 	git clone https://github.com/ohmyzsh/ohmyzsh.git "${HOME}"/.oh-my-zsh
-	msg_info "Success: OMZ installed"
 }
 
 setup_omz_p10k() {
 	msg "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
 	git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-	msg_info "Success: p10k installed"
 }
 
 setup_rust() {
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	msg_info "Success: rust installed"
 }
 
 setup_go() {
@@ -275,14 +290,14 @@ setup_go() {
 	wget "https://go.dev/dl/${golang_pkg}"
 
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		msg_info "  Golang: For Darwin based, please manually open the dowloaded package and follow the prompts: ${golang_pkg}"
+		msg_warn "  ! For Darwin based, please manually open the dowloaded package and follow the prompts: ${golang_pkg}"
 		return 0
 	fi
 
 	if [[ -d "/usr/local/go" ]]; then
-		msg_warn "Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
+		msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
 		confirm || {
-			msg_warn "  Golang: removal of /usr/local/go aborted. Skipping installation..."
+			msg_warn "  ! Skipping..."
 			return 0
 		}
 		rm -rf /usr/local/go
@@ -292,16 +307,74 @@ setup_go() {
 
 	# Clean up
 	[[ ! -e "${golang_pkg}" ]] || rm -rf "${golang_pkg}"
+}
 
-	msg_info "Success: go installed"
+setup_git() {
+	set_git_conf() {
+		local git_location=$1
+		local git_conf_name=$2
+		local git_conf_cmd=$3
+
+		msg "  Setting $git_location: $git_conf_name = $git_conf_cmd"
+
+		local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
+		if [[ -n "$git_conf_existing_cmd" ]]; then
+			if [[ "$git_conf_existing_cmd" == "$git_conf_cmd" ]]; then
+				msg_info "    -> Config already exist"
+			else
+				msg_warn "    ! Config is already used. To overwrite it, you can execute:"
+				msg_warn "    ! git config $git_location $git_conf_name $git_conf_cmd"
+			fi
+		else
+			bash -c "git config $git_location $git_conf_name '$git_conf_cmd'"
+			msg_success "    -> Config set!"
+		fi
+	}
+
+	local git_location_flag="--global"
+
+	# Global config
+
+	set_git_conf "$git_location_flag" "include.path" "${HOME}/.gitconfig-base"
+
+	# User identity
+
+	if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
+		msg "  Local user configuration to be set at ${GIT_USER_LOCAL_FILE}"
+		git_location_flag="-f '$GIT_USER_LOCAL_FILE'"
+
+		if [[ ! -e "$GIT_USER_LOCAL_FILE" ]]; then
+			touch "$GIT_USER_LOCAL_FILE"
+			msg_info "    -> Created local file at $GIT_USER_LOCAL_FILE"
+		fi
+	fi
+
+	if [[ -z "$GIT_USER" ]]; then
+		msg_warn "    ! git user.name is not supplied."
+		read -r -p "    ? Please input your git user.name: " git_username_input
+		GIT_USER="$git_username_input"
+	fi
+	if [[ -z "$GIT_USER_EMAIL" ]]; then
+		msg_warn "    ! git user.email is not supplied."
+		read -r -p "    ? Please input your git user.email: " git_user_email_input
+		GIT_USER_EMAIL="$git_user_email_input"
+	fi
+
+	set_git_conf "$git_location_flag" "user.name" "$GIT_USER"
+	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL"
 }
 
 parse_params "$@"
 setup_colors
 
-msg_info "Parameters:"
-msg_info "- user: ${USER_EXECUTOR}"
-msg_info "- neovim_tag: ${NEOVIM_TAG}"
+msg_info "Script Parameters:"
+msg "  -> user: ${USER_EXECUTOR}"
+[[ -n "$GIT_USER" ]] && msg "  -> git_user: ${GIT_USER}"
+[[ -n "$GIT_USER_EMAIL" ]] && msg "  -> git_user_email: ${GIT_USER_EMAIL}"
+[[ -n "$GIT_USER_LOCAL_FILE" ]] && msg "  -> git_user_local_file: ${GIT_USER_LOCAL_FILE}"
+msg "  -> golang_tag: ${GOLANG_TAG}"
+msg "  -> golang_sys: ${GOLANG_SYS}"
+msg "  -> neovim_tag: ${NEOVIM_TAG}"
 
 # Check OS
 if [[ ! "${OSTYPE}" =~ ^linux ]] && [[ ! "${OSTYPE}" =~ ^darwin ]]; then
@@ -320,14 +393,19 @@ fi
 
 # Dependencies installation
 separator
-msg_info "Installing dependencies"
-confirm && setup_dependencies
+msg_info "deps: installing dependencies"
+confirm && setup_dependencies && msg_success "deps: success!"
+
+# Git setup
+separator
+msg_info "git_conf: setting up Git configurations"
+confirm && setup_git && msg_success "git_conf: success!"
 
 # Exa installation
 separator
 if [[ ! $(command -v exa) ]]; then
-	msg_info "Installing exa"
-	confirm && setup_exa
+	msg_info "exa: installing exa (better ls)"
+	confirm && setup_exa && msg_success "exa: success!"
 else
 	msg_info "exa: installed, skipping..."
 fi
@@ -335,8 +413,8 @@ fi
 # Lazygit installation
 separator
 if [[ ! $(command -v lazygit) ]]; then
-	msg_info "Installing lazygit"
-	confirm && setup_lazygit
+	msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
+	confirm && setup_lazygit && msg_success "lazygit: success!"
 else
 	msg_info "lazygit: installed, skipping..."
 fi
@@ -344,8 +422,8 @@ fi
 # Pyenv installation
 separator
 if [[ ! $(command -v pyenv) ]]; then
-	msg_info "Installing pyenv"
-	confirm && setup_pyenv
+	msg_info "pyenv: installing pyenv (Python version manager)"
+	confirm && setup_pyenv && msg_success "pyenv: success!"
 else
 	msg_info "pyenv: installed, skipping..."
 fi
@@ -353,8 +431,8 @@ fi
 # Golang installation
 separator
 if [[ ! $(command -v go) ]]; then
-	msg_info "Installing Golang"
-	confirm && setup_go
+	msg_info "Golang: installing Golang (programming language)"
+	confirm && setup_go && msg_success "Golang: success!"
 else
 	msg_info "Golang: installed, skipping..."
 fi
@@ -362,60 +440,76 @@ fi
 # Rust installation
 separator
 if [[ ! $(command -v rustup) ]]; then
-	msg_info "Installing rust (using rustup)"
-	confirm && setup_rust
+	msg_info "Rust: installing Rust (programming language) with rustup"
+	confirm && setup_rust && msg_success "Rust: success!"
 else
-	msg_info "rust: installed, skipping..."
+	msg_info "Rust: installed, skipping..."
 fi
 
 # NeoVim installation
 separator
 if [[ ! $(command -v nvim) ]]; then
-	msg_info "Installing NeoVim: ${NEOVIM_TAG}"
-	confirm && setup_neovim
+	msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
+	confirm && setup_neovim && msg_success "Neovim: success!"
 else
-	msg_info "NeoVim: installed, skipping..."
+	msg_info "Neovim: installed, skipping..."
 fi
 
 # ZSH installation and setup
 separator
 if [[ ! $(command -v zsh) ]]; then
-	msg_info "Installing ZSH and setting it as default terminal"
-	confirm && setup_zsh
+	msg_info "zsh: installing Z shell and setting it as default terminal"
+	confirm && setup_zsh && msg_success "zsh: success!"
 else
-	msg_info "ZSH: installed, skipping..."
+	msg_info "zsh: installed, skipping..."
 fi
 
 # OMZ installation
 separator
 if [[ $(command -v zsh) ]] && [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
-	msg_info "Installing OMZ for ZSH"
-	confirm && setup_omz
+	msg_info "omz: installing omz (Oh My Zsh, zsh package manager)"
+	confirm && setup_omz && msg_success "omz: success!"
 else
-	msg_info "OMZ: installed, skipping..."
+	msg_info "omz: installed, skipping..."
 fi
 
 # p10k installation
 separator
 if [[ $(command -v zsh) ]] && [[ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]]; then
-	msg "Installing p10k theme for ZSH"
-	confirm && setup_omz_p10k
+	msg "p10k: installing p10k (theme for zsh)"
+	confirm && setup_omz_p10k && msg_success "p10k: success!"
 else
-	msg_info "p10k theme for ZSH: installed, skipping..."
+	msg_info "p10k: installed, skipping..."
 fi
 
 # Create directory to hold local configs
 separator
 mkdir -p "${HOME}/.local_configs"
-msg_info "Created directory for local configs at ${HOME}/.local_configs. You can use it to place uncommited configurations."
+msg_info "local_configs: created directory for local configs at ${HOME}/.local_configs. You can use it to place uncommited configurations."
 
 # Create symbolic link configuration
-separator
-msg_info "Setting up soft links to repository configuration"
-
 # NOTE: The path is super dependent on the repository directory structure.
-safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig" "${HOME}/.gitconfig"
+separator
+msg_info "symlink: setting up soft links to repository configuration"
+safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig-base" "${HOME}/.gitconfig-base"
 safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
+msg_success "symlink: success!"
+
+# Report git information at the very end to make it clear to user
+if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
+	separator
+	msg_info "You have set local git user configuration file. To include local git file, you can add the following to your global .gitconfig:"
+
+	msg " "
+	msg "# For global include"
+	msg "[include]"
+	msg "    path = $GIT_USER_LOCAL_FILE"
+	msg " "
+	msg "# Or, for conditional include"
+	msg "[includeIf \"gitdir:/path/to/dir/\"] # Change this!"
+	msg "    path = $GIT_USER_LOCAL_FILE"
+	msg " "
+fi
