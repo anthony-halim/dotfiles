@@ -3,7 +3,7 @@
 This repository holds my local configurations. Currently supports *WSL2 - Ubuntu-20.04, on Windows 11* and *MacOS Big Sur*.
 
 > ❗If you want to use this repository, I recommend forking this repository before usage.
-> I do unannounced, breaking changes, regulary.
+> I do unannounced, breaking changes, regularly.
 
 ## ⚡ Prerequisites
 
