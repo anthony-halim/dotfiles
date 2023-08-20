@@ -8,7 +8,7 @@ This repository holds my local configurations. Currently supports *WSL2 - Ubuntu
 
 Run Powershell as administrator & install Ubuntu distribution.
 
-```shell
+```sh
 wsl --install -d Ubuntu
 # For Ubuntu 20.04, do wsl --install -d Ubuntu-20.04
 ```
@@ -57,7 +57,7 @@ Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) pag
 
 We need to allow SSH authentication in order to do git operations with Git repositories.
 
-```shell
+```sh
 # Generate fresh SSH keys
 ssh-keygen -t rsa
 ```
@@ -71,7 +71,7 @@ For convention sake, all repositories will be stored under $HOME/repos.
 - $HOME/repos/personal to hold personal repositories.
 - $HOME/repos/work to hold work related repositories.
 
-```shell
+```sh
 mkdir -p $HOME/repos/personal 
 mkdir -p $HOME/repos/work 
 ```
@@ -91,7 +91,7 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 - Configure Wezterm configuration.
 
 > NOTE: Post pyenv installation, shell integration requires the following snippet in your shell profile:
-> ```shell
+> ```sh
 > # For example, in .zshrc
 > export PYENV_ROOT="$HOME/.pyenv"
 > command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
@@ -100,7 +100,7 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 > This snippet is already included if you proceed with the repository's ZSH installation and configuration. Please include it in your shell profile if you do not choose to do so!
 
 > NOTE: For Linux, post Golang installation, shell integration requires the following snippet in your shell profile:
-> ```shell
+> ```sh
 > # For example, in .zshrc
 > export PATH=$PATH:/usr/local/go/bin
 > ```
