@@ -2,7 +2,12 @@
 
 This repository holds my local configurations. Currently supports *WSL2 - Ubuntu-20.04, on Windows 11* and *MacOS Big Sur*.
 
-## Prerequisites
+> ❗If you want to use this repository, I recommend forking this repository before usage.
+> I do unannounced, breaking changes, regulary.
+
+## ⚡ Prerequisites
+
+The following prerequisites are not setup automatically and needs to be done manually.
 
 #### Windows: WSL Setup 
 
@@ -22,10 +27,11 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 Your hand will thank you! 
 
 > NOTE: There are lots of third party software that aids key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or allowed) to install third party software that customise close to the firmware level. 
-> Due to this, we opt to use built-in or officially supported by the OS itself, albeit it support less extensive customisation.
+> Due to this, we opt to use built-in or officially supported by the OS itself, albeit it supports less extensive customisation.
 >
-> If you are using this, an idea for customisation is:
-> - On `Caps Lock` tap, map it as `Esc`. On `Caps Lock` hold, map it as `Ctrl`.
+> If you are using third party software, an idea for customisation is:
+> - On `Caps Lock` tap, map it as `Esc`. 
+> - On `Caps Lock` hold, map it as `Ctrl`.
 
 ##### Windows: Swap `Esc` and `Caps Lock` 
 
@@ -76,7 +82,7 @@ mkdir -p $HOME/repos/personal
 mkdir -p $HOME/repos/work 
 ```
 
-## Usage
+## ⚙️  Usage
 
 The remaining configuration will be automatically setup by *setup.sh*. It will perform the following:
 
