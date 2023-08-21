@@ -20,5 +20,5 @@
 [pull]
     rebase = true
 
-[url "ssh://git@github.com/"]
-    insteadOf = https://github.com/
+[url "ssh://git@github.com/anthony-halim"]
+    insteadOf = https://github.com/anthony-halim
