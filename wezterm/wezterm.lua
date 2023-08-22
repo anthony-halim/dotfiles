@@ -84,6 +84,26 @@ local macos_keybindings = {
 	{ key = "DownArrow", mods = "SUPER|SHIFT", action = act({ ActivatePaneDirection = "Down" }) },
 	{ key = "Z", mods = "SUPER|SHIFT", action = act.TogglePaneZoomState },
 	{ key = ">", mods = "SUPER|SHIFT", action = act.SplitPane({ direction = "Down", size = { Percent = 20 } }) },
+	-- Some options are doubled from windows
+	-- Ctrl-C is to copy on text highlight, else do terminate action
+	{
+		key = "c",
+		mods = "CTRL",
+		action = wezterm.action_callback(function(window, pane)
+			local selection_text = window:get_selection_text_for_pane(pane)
+			local is_selection_active = string.len(selection_text) ~= 0
+			if is_selection_active then
+				window:perform_action(act.CopyTo("Clipboard"), pane)
+			else
+				window:perform_action(act.SendKey({ key = "c", mods = "CTRL" }), pane)
+			end
+		end),
+	},
+	{ key = "v", mods = "CTRL", action = act({ PasteFrom = "Clipboard" }) },
+	{ key = "LeftArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Left" }) },
+	{ key = "RightArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Right" }) },
+	{ key = "UpArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Up" }) },
+	{ key = "DownArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Down" }) },
 }
 
 local windows_keybinding = {
