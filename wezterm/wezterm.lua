@@ -2,35 +2,11 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
--- Helper funcs
-
----@type fun(): string
-local function getOS()
-	local raw_os_name = ""
-
-	-- is popen supported?
-	local popen_status, popen_result = pcall(io.popen, "")
-	if popen_status and popen_result then
-		popen_result:close()
-		-- Unix-based OS
-		raw_os_name = io.popen("uname -s", "r"):read("*l")
-	else
-		-- Windows
-		local env_OS = os.getenv("OS")
-		if env_OS then
-			raw_os_name = env_OS
-		end
-	end
-
-	return (raw_os_name):lower()
-end
-
-local os_name = getOS()
-local is_macos = string.find(os_name, "darwin") or string.find(os_name, "mac")
+local is_windows = package.config:sub(1, 1) == "\\"
 
 -- Refactor frequently changed configurations
 local windows_window_background_opacity = 0.8
-local windows_win32_system_backdrop = "Acrylic"
+local windows_win32_system_backdrop = "Disable"
 local macos_window_background_opacity = 0.6
 local macos_window_background_blur = 20
 local font_with_fallback = wezterm.font_with_fallback({
@@ -213,14 +189,14 @@ config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.disable_default_key_bindings = true
 
 -- OS specific settings
-if is_macos then
-	config.keys = macos_keybindings
-	config.window_background_opacity = macos_window_background_opacity
-	config.macos_window_background_blur = macos_window_background_blur
-else
+if is_windows then
 	config.keys = windows_keybinding
 	config.window_background_opacity = windows_window_background_opacity
 	config.win32_system_backdrop = windows_win32_system_backdrop
+else
+	config.keys = macos_keybindings
+	config.window_background_opacity = macos_window_background_opacity
+	config.macos_window_background_blur = macos_window_background_blur
 end
 
 -- Finally, return the configuration to wezterm
