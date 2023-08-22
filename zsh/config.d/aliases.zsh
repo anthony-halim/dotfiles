@@ -25,9 +25,9 @@ alias src="source $HOME/.zshrc"
 
 alias syncclock="sudo hwclock -s"
 
-alias vim="nvim"
+alias nv="nvim"
 
-alias vi="nvim"
+alias vim="nvim"
 
 alias rp="cd $HOME/repos"
 
