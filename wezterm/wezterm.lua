@@ -25,10 +25,14 @@ local function getOS()
 	return (raw_os_name):lower()
 end
 
-local is_macos = string.find(getOS(), "darwin")
+local os_name = getOS()
+local is_macos = string.find(os_name, "darwin") or string.find(os_name, "mac")
 
 -- Refactor frequently changed configurations
-local window_background_opacity = 0.8
+local windows_window_background_opacity = 0.8
+local windows_win32_system_backdrop = "Acrylic"
+local macos_window_background_opacity = 0.6
+local macos_window_background_blur = 20
 local font_with_fallback = wezterm.font_with_fallback({
 	"JetBrains Mono",
 	"Symbols Nerd Font Mono",
@@ -204,7 +208,6 @@ config.window_padding = {
 	bottom = 0,
 }
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
-config.window_background_opacity = window_background_opacity
 
 -- Override keys
 config.disable_default_key_bindings = true
@@ -212,9 +215,12 @@ config.disable_default_key_bindings = true
 -- OS specific settings
 if is_macos then
 	config.keys = macos_keybindings
-	config.macos_window_background_blur = 20
+	config.window_background_opacity = macos_window_background_opacity
+	config.macos_window_background_blur = macos_window_background_blur
 else
 	config.keys = windows_keybinding
+	config.window_background_opacity = windows_window_background_opacity
+	config.win32_system_backdrop = windows_win32_system_backdrop
 end
 
 -- Finally, return the configuration to wezterm
