@@ -2,7 +2,7 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
-local is_windows = package.config:sub(1, 1) == "\\"
+local is_macos = string.find(wezterm.target_triple, "darwin")
 
 -- Refactor frequently changed configurations
 local windows_window_background_opacity = 0.8
@@ -189,14 +189,14 @@ config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.disable_default_key_bindings = true
 
 -- OS specific settings
-if is_windows then
-	config.keys = windows_keybinding
-	config.window_background_opacity = windows_window_background_opacity
-	config.win32_system_backdrop = windows_win32_system_backdrop
-else
+if is_macos then
 	config.keys = macos_keybindings
 	config.window_background_opacity = macos_window_background_opacity
 	config.macos_window_background_blur = macos_window_background_blur
+else
+	config.keys = windows_keybinding
+	config.window_background_opacity = windows_window_background_opacity
+	config.win32_system_backdrop = windows_win32_system_backdrop
 end
 
 -- Finally, return the configuration to wezterm
