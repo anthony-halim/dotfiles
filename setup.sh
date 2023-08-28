@@ -261,24 +261,46 @@ setup_neovim() {
 	[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
 }
 
-setup_zsh() {
+install_zsh() {
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		sudo brew install zsh
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
 		sudo apt install -y zsh
 	fi
+}
 
+configure_zsh() {
 	msg "  Setting zsh as default terminal"
 	sudo chsh --shell "$(which zsh)" "${USER_EXECUTOR}"
-}
 
-setup_omz() {
-	git clone https://github.com/ohmyzsh/ohmyzsh.git "${HOME}"/.oh-my-zsh
-}
+	msg "  Creating required directories for zsh"
+	mkdir -p "${HOME}/.zsh"
+	mkdir -p "${HOME}/.zsh/core"
+	mkdir -p "${HOME}/.zsh/custom"
+	mkdir -p "${HOME}/.zsh/custom/themes"
 
-setup_omz_p10k() {
-	msg "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-	git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+	# Setup core functionalities
+	if [[ ! -d "${HOME}/.zsh/core/zsh-autosuggestions" ]]; then
+		msg "  Installing zsh core functionality: zsh-autosuggestions"
+		git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "${HOME}/.zsh/core/zsh-autosuggestions"
+		msg_success "    -> Success!"
+	fi
+	if [[ ! -d "${HOME}/.zsh/core/zsh-syntax-highlighting" ]]; then
+		msg "  Installing zsh core functionality: zsh-syntax-highlighting"
+		git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${HOME}/.zsh/core/zsh-syntax-highlighting"
+		msg_success "    -> Success!"
+	fi
+	if [[ ! -d "${HOME}/.zsh/core/zsh-history-substring-search" ]]; then
+		msg "  Installing zsh core functionality: zsh-history-substring-search"
+		git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search.git "${HOME}/.zsh/core/zsh-history-substring-search"
+		msg_success "    -> Success!"
+	fi
+
+	# p10k theme installation
+	if [[ ! -d "$HOME/.zsh/custom/themes/powerlevel10k" ]]; then
+		git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/.zsh/custom/themes/powerlevel10k"
+		msg_success "    -> Success!"
+	fi
 }
 
 setup_rust() {
@@ -455,44 +477,32 @@ else
 	msg_info "Neovim: installed, skipping..."
 fi
 
-# ZSH installation and setup
+# ZSH installation
 separator
 if [[ ! $(command -v zsh) ]]; then
-	msg_info "zsh: installing Z shell and setting it as default terminal"
-	confirm && setup_zsh && msg_success "zsh: success!"
+	msg_info "zsh: installing Z-Shell"
+	confirm && install_zsh && msg_success "zsh: success!"
 else
 	msg_info "zsh: installed, skipping..."
 fi
 
-# OMZ installation
+# ZSH setup
 separator
-if [[ $(command -v zsh) ]] && [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
-	msg_info "omz: installing omz (Oh My Zsh, zsh package manager)"
-	confirm && setup_omz && msg_success "omz: success!"
-else
-	msg_info "omz: installed, skipping..."
-fi
-
-# p10k installation
-separator
-if [[ $(command -v zsh) ]] && [[ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]]; then
-	msg "p10k: installing p10k (theme for zsh)"
-	confirm && setup_omz_p10k && msg_success "p10k: success!"
-else
-	msg_info "p10k: installed, skipping..."
-fi
+msg_info "zsh: configuring..."
+confirm && configure_zsh && msg_success "zsh: configured!"
 
 # Create directory to hold local configs
 separator
-mkdir -p "${HOME}/.local_configs"
-msg_info "local_configs: created directory for local configs at ${HOME}/.local_configs. You can use it to place uncommited configurations."
+mkdir -p "${HOME}/.local_config.d"
+msg_info "local_configs: created directory for local configs at ${HOME}/.local_config.d. You can use it to place uncommited configurations."
 
 # Create symbolic link configuration
 # NOTE: The path is super dependent on the repository directory structure.
 separator
 msg_info "symlink: setting up soft links to repository configuration"
 safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig-base" "${HOME}/.gitconfig-base"
-safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
+safe_symlink "${SCRIPT_DIR}/zsh/config.d" "${HOME}/.zsh/config.d"
+safe_symlink "${SCRIPT_DIR}/zsh/plugins" "${HOME}/.zsh/plugins"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
