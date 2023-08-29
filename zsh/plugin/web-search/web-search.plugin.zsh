@@ -1,7 +1,6 @@
 # Taken from: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/web-search
 # Credit to the original authors.
 # ------------------------------------------------------------------------------
-# Description
 # -----------
 #
 # web_search from terminal.

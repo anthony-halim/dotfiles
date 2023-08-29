@@ -5,42 +5,30 @@ if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" 
   source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-safe_source() {
-  [[ ! -e "$1" ]] || source "$1"
-}
+export ZSH="${HOME}/.config/zsh"
+ZSH_CUSTOM="${ZSH}/custom"
+ZSH_PLUGIN="${ZSH}/plugin"
+ZSH_CONFIG="${ZSH}/config"
+ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 
-export ZSH="${HOME}/.zsh"
-export ZSH_CORE="${ZSH}/core"
-export ZSH_CUSTOM="${ZSH}/custom"
-export ZSH_PLUGIN="${ZSH}/plugins"
-export ZSH_CONFIG="${ZSH}/config.d"
-export ZSH_LOCAL_CONFIG="${ZSH}/.local_config.d"
+# Load functions
+[[ ! -e "${ZSH_CONFIG}/functions.zsh" ]] || source "${ZSH_CONFIG}/functions.zsh"
 
-# Load core functionalities
-safe_source "${ZSH_CORE}/zsh-autosuggestions/zsh-autosuggestions.zsh" 
-safe_source "${ZSH_CORE}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-safe_source "${ZSH_CORE}/zsh-history-substring-search/zsh-history-substring-search.zsh"
+safe_source "${ZSH_CONFIG}/aliases.zsh"
+safe_source "${ZSH_CONFIG}/exports.zsh"
 
 # Source theme 
 safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
 
 # Load plugins
-if [[ -d "${ZSH_PLUGIN}" ]]
-then 
-  for conf in "${ZSH_PLUGIN}/"*.zsh(.N); do
-    source "${conf}"
-  done
-  unset conf
-fi
+zsh_load_local_plugin "zsh-autosuggestions" "zsh-autosuggestions.zsh"
+zsh_load_local_plugin "zsh-syntax-highlighting" "zsh-syntax-highlighting.zsh"
+zsh_load_local_plugin "zsh-history-substring-search" "zsh-history-substring-search.zsh"
+zsh_load_local_plugin "sudo" "sudo.plugin.zsh"
+zsh_load_local_plugin "web-search" "web-search.plugin.zsh"
 
-# Load config files
-if [[ -d "${ZSH_CONFIG}" ]]
-then 
-  for conf in "${ZSH_CONFIG}/"*.zsh(.N); do
-    source "${conf}"
-  done
-  unset conf
-fi
+# Bindkeys includes plugin keymaps, so must be done after plugin load
+safe_source "${ZSH_CONFIG}/bindkeys.zsh"
 
 # Load local config files
 if [[ -d "${ZSH_LOCAL_CONFIG}" ]]

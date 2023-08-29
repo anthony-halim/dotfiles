@@ -261,46 +261,15 @@ setup_neovim() {
 	[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
 }
 
-install_zsh() {
+setup_zsh() {
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		sudo brew install zsh
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
 		sudo apt install -y zsh
 	fi
-}
 
-configure_zsh() {
 	msg "  Setting zsh as default terminal"
 	sudo chsh --shell "$(which zsh)" "${USER_EXECUTOR}"
-
-	msg "  Creating required directories for zsh"
-	mkdir -p "${HOME}/.zsh"
-	mkdir -p "${HOME}/.zsh/core"
-	mkdir -p "${HOME}/.zsh/custom"
-	mkdir -p "${HOME}/.zsh/custom/themes"
-
-	# Setup core functionalities
-	if [[ ! -d "${HOME}/.zsh/core/zsh-autosuggestions" ]]; then
-		msg "  Installing zsh core functionality: zsh-autosuggestions"
-		git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "${HOME}/.zsh/core/zsh-autosuggestions"
-		msg_success "    -> Success!"
-	fi
-	if [[ ! -d "${HOME}/.zsh/core/zsh-syntax-highlighting" ]]; then
-		msg "  Installing zsh core functionality: zsh-syntax-highlighting"
-		git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${HOME}/.zsh/core/zsh-syntax-highlighting"
-		msg_success "    -> Success!"
-	fi
-	if [[ ! -d "${HOME}/.zsh/core/zsh-history-substring-search" ]]; then
-		msg "  Installing zsh core functionality: zsh-history-substring-search"
-		git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search.git "${HOME}/.zsh/core/zsh-history-substring-search"
-		msg_success "    -> Success!"
-	fi
-
-	# p10k theme installation
-	if [[ ! -d "$HOME/.zsh/custom/themes/powerlevel10k" ]]; then
-		git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/.zsh/custom/themes/powerlevel10k"
-		msg_success "    -> Success!"
-	fi
 }
 
 setup_rust() {
@@ -481,28 +450,21 @@ fi
 separator
 if [[ ! $(command -v zsh) ]]; then
 	msg_info "zsh: installing Z-Shell"
-	confirm && install_zsh && msg_success "zsh: success!"
+	confirm && setup_zsh && msg_success "zsh: success!"
 else
 	msg_info "zsh: installed, skipping..."
 fi
 
-# ZSH setup
-separator
-msg_info "zsh: configuring..."
-confirm && configure_zsh && msg_success "zsh: configured!"
-
 # Create directory to hold local configs
 separator
-mkdir -p "${HOME}/.local_config.d"
-msg_info "local_configs: created directory for local configs at ${HOME}/.local_config.d. You can use it to place uncommited configurations."
+mkdir -p "${HOME}/.config/zsh/local_config"
+msg_info "local_configs: created directory for local configs at ${HOME}/.config/zsh/local_config. You can use it to place uncommited configurations."
 
 # Create symbolic link configuration
-# NOTE: The path is super dependent on the repository directory structure.
 separator
 msg_info "symlink: setting up soft links to repository configuration"
 safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig-base" "${HOME}/.gitconfig-base"
-safe_symlink "${SCRIPT_DIR}/zsh/config.d" "${HOME}/.zsh/config.d"
-safe_symlink "${SCRIPT_DIR}/zsh/plugins" "${HOME}/.zsh/plugins"
+safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"

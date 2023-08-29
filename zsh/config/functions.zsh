@@ -1,3 +1,16 @@
+safe_source() {
+  [[ ! -e "$1" ]] || source "$1"
+}
+
+# Load local plugin
+zsh_load_local_plugin() {
+  local plugin_name="$1"
+  local plugin_source="$2"
+  local plugin_dir="${ZSH_PLUGIN:-$HOME/.config/zsh/plugin}"
+
+  safe_source "$plugin_dir/$plugin_name/$plugin_source"
+}
+
 genpw() {
   local use_special_char=0
   local pw_length=16 
