@@ -105,7 +105,7 @@ The remaining configuration will be automatically setup by *setup.sh*. It will p
 - Install Golang, with version equal to *--golang_tag*, defaults to 1.21.0.
 - Install Rust 
 - Install NeoVim, with tags equal to *--neovim_tag*. Defaults to 0.9.1.
-- Install ZSH, with OMZ as package manager, as default terminal.
+- Install ZSH and set it as default terminal.
 - Configure ZSH configuration.
 - Configure Git configuration.
 - Configure Wezterm configuration.
