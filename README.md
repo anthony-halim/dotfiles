@@ -70,6 +70,8 @@ ssh-keygen -t rsa
 
 Whitelist the private key by adding the public key from SSH keys generated to your Git user.
 
+## ⚙️  Usage
+
 #### Clone this repository to $HOME/repos/personal/
 
 For convention sake, all repositories will be stored under $HOME/repos.
@@ -82,7 +84,19 @@ mkdir -p $HOME/repos/personal
 mkdir -p $HOME/repos/work 
 ```
 
-## ⚙️  Usage
+We use Git submodules within this repository. To git clone with the submodules,
+
+```sh
+git clone --recurse-submodules --shallow-submodules https://github.com/anthony-halim/dotfiles.git
+```
+
+> NOTE: If repository is already cloned without submodules, you can fetch the submodules by:
+> ```sh
+> git submodule init
+> git submodule update --depth=1
+> ```
+
+#### Run *setup.sh* 
 
 The remaining configuration will be automatically setup by *setup.sh*. It will perform the following:
 
