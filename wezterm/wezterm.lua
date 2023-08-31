@@ -19,9 +19,9 @@ local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
 
 -- Key bindings
 local macos_keybindings = {
-	-- Make Opt-Left equivalent to Alt-b; backward-word
+	-- Make Opt-Left equivalent to backward-word
 	{ key = "LeftArrow", mods = "OPT", action = act({ SendString = "\x1bb" }) },
-	-- Make Opt-Right equivalent to Alt-f; forward-word
+	-- Make Opt-Right equivalent to forward-word
 	{ key = "RightArrow", mods = "OPT", action = act({ SendString = "\x1bf" }) },
 	-- Make Cmd-Left equivalent to backward-line
 	{ key = "LeftArrow", mods = "SUPER", action = act({ SendString = "\x01" }) },
@@ -86,7 +86,11 @@ local macos_keybindings = {
 	{ key = "DownArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Down" }) },
 }
 
-local windows_keybinding = {
+local windows_keybindings = {
+	-- Make Ctrl-Left equivalent backward-word
+	{ key = "LeftArrow", mods = "CTRL", action = act({ SendString = "\x1bb" }) },
+	-- Make Ctrl-Right equivalent forward-word
+	{ key = "RightArrow", mods = "CTRL", action = act({ SendString = "\x1bf" }) },
 	-- Make Alt-Left equivalent to backward-line
 	{ key = "LeftArrow", mods = "ALT", action = act({ SendString = "\x01" }) },
 	-- Make Alt-Right equivalent to forward-line
@@ -194,7 +198,7 @@ if is_macos then
 	config.window_background_opacity = macos_window_background_opacity
 	config.macos_window_background_blur = macos_window_background_blur
 else
-	config.keys = windows_keybinding
+	config.keys = windows_keybindings
 	config.window_background_opacity = windows_window_background_opacity
 	config.win32_system_backdrop = windows_win32_system_backdrop
 end
