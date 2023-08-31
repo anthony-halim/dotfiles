@@ -45,6 +45,8 @@ precmd () {
   print -Pn "\e]0;%~\a"
 }
 
+autoload -Uz compinit && compinit
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # NOTE: We leave p10k config in default location to allow p10k to modify it normally
 [[ ! -f "${HOME}/.p10k.zsh" ]] || source "${HOME}/.p10k.zsh"
