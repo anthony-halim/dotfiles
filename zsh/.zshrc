@@ -11,6 +11,16 @@ ZSH_PLUGIN="${ZSH}/plugin"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 
+# Auto completion
+autoload -Uz compinit && compinit
+
+# History setup
+setopt SHARE_HISTORY
+HISTFILE=$HOME/.zhistory
+SAVEHIST=1000
+HISTSIZE=999
+setopt HIST_EXPIRE_DUPS_FIRST
+
 # Load functions
 [[ ! -e "${ZSH_CONFIG}/functions.zsh" ]] || source "${ZSH_CONFIG}/functions.zsh"
 
@@ -44,8 +54,6 @@ DISABLE_AUTO_TITLE="true"
 precmd () {
   print -Pn "\e]0;%~\a"
 }
-
-autoload -Uz compinit && compinit
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # NOTE: We leave p10k config in default location to allow p10k to modify it normally
