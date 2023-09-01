@@ -14,9 +14,9 @@ fi
 if command -v "exa" &> /dev/null
 then
     alias ls="exa"
-    alias lsd="exa -alrg --icons"
+    alias ll="exa -alrg --icons"
 else
-    alias lsd="ls -alrt"
+    alias ll="ls -alrt"
 fi
 
 alias sush="sudo su -"
