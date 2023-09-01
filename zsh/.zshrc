@@ -16,9 +16,9 @@ autoload -Uz compinit && compinit
 
 # History setup
 setopt SHARE_HISTORY
-HISTFILE=$HOME/.zhistory
-SAVEHIST=1000
-HISTSIZE=999
+HISTFILE=$HOME/.zsh_history
+SAVEHIST=10000
+HISTSIZE=9999
 setopt HIST_EXPIRE_DUPS_FIRST
 
 # Load functions
