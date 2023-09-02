@@ -11,8 +11,19 @@ ZSH_PLUGIN="${ZSH}/plugin"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 
-# Auto completion
-autoload -Uz compinit && compinit
+# Enable colors
+autoload -Uz colors && colors
+
+# Allow comments as suffix to commands e.g. echo test # test
+setopt interactive_comments
+
+# Auto completion with tab
+autoload -Uz compinit
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+compinit
+# Include hidden files.
+_comp_options+=(globdots)
 
 # History setup
 setopt SHARE_HISTORY
