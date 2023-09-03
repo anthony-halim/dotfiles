@@ -35,6 +35,7 @@ setopt HIST_EXPIRE_DUPS_FIRST
 # Load functions
 [[ ! -e "${ZSH_CONFIG}/functions.zsh" ]] || source "${ZSH_CONFIG}/functions.zsh"
 
+safe_source "${ZSH_CONFIG}/omz_functions.zsh"
 safe_source "${ZSH_CONFIG}/aliases.zsh"
 safe_source "${ZSH_CONFIG}/exports.zsh"
 

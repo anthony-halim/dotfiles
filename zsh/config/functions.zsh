@@ -33,3 +33,4 @@ genpw() {
     python -c "import secrets;import string;print(secrets.token_urlsafe($pw_length));"
   fi
 }
+
