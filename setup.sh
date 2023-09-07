@@ -4,8 +4,10 @@ set -Eeuo pipefail
 trap catch_err ERR
 trap cleanup SIGINT SIGTERM EXIT
 
+# Constants
 USER_EXECUTOR=$(whoami)
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
@@ -91,11 +93,11 @@ die() {
 
 confirm() {
 	while true; do
-		read -r -p "    Do you want to proceed? [Y]es/[N]o) " yn
+		read -r -p "  Do you want to proceed? [Y]es/[N]o) " yn
 		case $yn in
 		[Yy]*) return 0 ;;
 		[Nn]*) return 1 ;;
-		*) msg "    Please answer [Y]es or [N]o." ;;
+		*) msg "  Please answer [Y]es or [N]o." ;;
 		esac
 	done
 }
@@ -163,15 +165,15 @@ safe_symlink() {
 	msg "  Creating ${target} -> ${real_file}"
 
 	if [[ -L "${target}" && $(readlink -n "${target}") == "${real_file}" ]]; then
-		msg_info "    -> Symlink already exist."
+		msg_info "  -> Symlink already exist."
 		return 0
 	fi
 
 	if [[ -L "${target}" ]]; then
 		# Create backup symlink
-		msg_warn "    ! ${target} is another symlink. We will create a symlink ${target}.bak to original target."
+		msg_warn "  ! ${target} is another symlink. We will create a symlink ${target}.bak to original target."
 		confirm || {
-			msg_warn "    ! Skipping..."
+			msg_warn " ! Skipping..."
 			return 0
 		}
 		ln -s "${target}.bak" "$(readlink -n "${target}")" && rm "${target}"
@@ -180,14 +182,14 @@ safe_symlink() {
 		# Back up if its a directory or file
 		msg_warn "  ! ${target} exists. We will first backup to ${target}.bak"
 		confirm || {
-			msg_warn "    ! Skipping..."
+			msg_warn "  ! Skipping..."
 			return 0
 		}
 		mv "${target}" "${target}.bak"
 	fi
 
 	ln -s "${real_file}" "${target}"
-	msg_success "    -> Symlink created!"
+	msg_success "  -> Symlink created!"
 }
 
 setup_dependencies() {
@@ -370,29 +372,9 @@ setup_rust() {
 }
 
 setup_go() {
-	remove_go_dir_if_exist() {
-		if [[ -d "/usr/local/go" ]]; then
-			msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
-			confirm || {
-				msg_warn "  ! Skipping..."
-				return 0
-			}
-			sudo rm -rf /usr/local/go
-		fi
-	}
-
 	install_go() {
 		local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
 		wget "https://go.dev/dl/${golang_pkg}"
-
-		if [[ -d "/usr/local/go" ]]; then
-			msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
-			confirm || {
-				msg_warn "  ! Skipping..."
-				return 0
-			}
-			sudo rm -rf /usr/local/go
-		fi
 
 		sudo tar -C /usr/local/ -xzf "${golang_pkg}"
 
@@ -402,18 +384,30 @@ setup_go() {
 
 	if [[ $(command -v go) ]]; then
 		local go_version=$(go version | grep -oE '[0-9]\.[0-9]+\.[0-9]+')
-		if [[ "$go_version" != "${GOLANG_TAG}" ]]; then
+		if [[ "$go_version" == "${GOLANG_TAG}" ]]; then
+			msg_info "  -> already installed, skipping..."
+		else
+			# Version mismatch, upgrade
 			msg_warn "  ! detected Golang of version ${go_version}. Removing existing installation."
 			confirm || {
-				msg_warn "  ! Skipping..."
+				msg_warn "  ! aborted removal of Golang. Skipping Golang setup."
 				return 0
 			}
 			sudo rm -rf /usr/local/go
-		else
-			msg_info "  -> already installed, skipping..."
-			return 0
+
+			msg "  Installing Golang"
+			confirm && install_go
 		fi
 	else
+		if [[ -d "/usr/local/go" ]]; then
+			msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
+			confirm || {
+				msg_warn "  ! aborted removal of Golang. Skipping Golang setup."
+				return 0
+			}
+			sudo rm -rf /usr/local/go
+		fi
+
 		msg "  Installing Golang"
 		confirm && install_go
 	fi
@@ -430,28 +424,33 @@ setup_git() {
 		local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
 		if [[ -n "$git_conf_existing_cmd" ]]; then
 			if [[ "$git_conf_existing_cmd" == "$git_conf_cmd" ]]; then
-				msg_info "    -> Config already exist"
+				msg_info "  -> Config already exist"
 			else
-				msg_warn "    ! Config is already used. To overwrite it, you can execute:"
-				msg_warn "    ! git config $git_location $git_conf_name $git_conf_cmd"
+				msg_warn "  ! Config is already used. To overwrite it, you can execute:"
+				msg_warn "  ! git config $git_location $git_conf_name $git_conf_cmd"
 			fi
 		else
 			bash -c "git config $git_location $git_conf_name '$git_conf_cmd'"
-			msg_success "    -> Config set!"
+			msg_success "  -> Config set!"
 		fi
 	}
 
 	handle_git_user_info() {
 		if [[ -z "$GIT_USER" ]]; then
-			msg_warn "    ! git user.name is not supplied."
-			read -r -p "    ? Please input your git user.name: " git_username_input
+			msg_warn "  ! git user.name is not supplied."
+			read -r -p "  ? Please input your git user.name: " git_username_input
 			GIT_USER="$git_username_input"
 		fi
 		if [[ -z "$GIT_USER_EMAIL" ]]; then
-			msg_warn "    ! git user.email is not supplied."
-			read -r -p "    ? Please input your git user.email: " git_user_email_input
+			msg_warn "  ! git user.email is not supplied."
+			read -r -p "  ? Please input your git user.email: " git_user_email_input
 			GIT_USER_EMAIL="$git_user_email_input"
 		fi
+	}
+
+	confirm || {
+		msg_info "  -> Skipping git configuration"
+		return 0
 	}
 
 	msg "  Checking user information"
@@ -469,13 +468,20 @@ setup_git() {
 
 		if [[ ! -e "$GIT_USER_LOCAL_FILE" ]]; then
 			touch "$GIT_USER_LOCAL_FILE"
-			msg_info "    -> Created local file at $GIT_USER_LOCAL_FILE"
+			msg_info "  -> Created local file at $GIT_USER_LOCAL_FILE"
 		fi
 	fi
 
 	msg "  Setting git user information"
 	set_git_conf "$git_location_flag" "user.name" "$GIT_USER"
 	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL"
+}
+
+setup_local_config() {
+	if [[ ! -d "$LOCAL_CONFIG_DIR" ]]; then
+		mkdir -p "$LOCAL_CONFIG_DIR"
+		msg_success "  -> Created directory for local configs at $LOCAL_CONFIG_DIR"
+	fi
 }
 
 setup_colors
@@ -492,17 +498,14 @@ msg "  -> neovim_tag: ${NEOVIM_TAG}"
 
 # Check OS
 if [[ ! "${OSTYPE}" =~ ^linux ]] && [[ ! "${OSTYPE}" =~ ^darwin ]]; then
-	msg_err "Unsupported OS: ${OSTYPE}"
-	die
+	die "Unsupported OS: ${OSTYPE}"
 fi
 
 # Detected that script is executed under root.
 # This will cause subsequent installation and configuration to be done for root user.
 # Prompt for confirmation.
 if [[ "${USER_EXECUTOR}" == "root" ]]; then
-	separator
-	msg_err "Script is executed as ${USER_EXECUTOR}. Installation and configuration is not meant for system-level."
-	exit 1
+	die "Script is executed as ${USER_EXECUTOR}. Installation and configuration is not meant for system-level."
 fi
 
 # Dependencies installation
@@ -532,7 +535,7 @@ setup_pyenv && msg_success "pyenv: success!"
 
 # Golang installation
 separator
-msg_info "Golang: installing Golang (programming language)"
+msg_info "Golang: installing Golang version ${GOLANG_TAG}"
 setup_go && msg_success "Golang: success!"
 
 # Rust installation
@@ -552,8 +555,8 @@ setup_zsh && msg_success "zsh: success!"
 
 # Create directory to hold local configs
 separator
-mkdir -p "${HOME}/.config/zsh/local_config"
-msg_info "local_configs: created directory for local configs at ${HOME}/.config/zsh/local_config. You can use it to place uncommited configurations."
+msg_info "local_configs: setting up local config directory at $LOCAL_CONFIG_DIR. You can use it to place uncommited configurations."
+setup_local_config && msg_success "local_configs: success!"
 
 # Create symbolic link configuration
 separator
