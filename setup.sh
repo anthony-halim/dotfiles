@@ -11,7 +11,9 @@ usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
+	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] 
+                [--golang_tag golang_semver] [--golang_sys system_type]
+                [--neovim_tag neovim_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -189,7 +191,7 @@ safe_symlink() {
 }
 
 setup_dependencies() {
-	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
+	local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
 	for dependency in "${dependencies[@]}"; do
 		msg_info "  Installing '$dependency'"
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -253,8 +255,8 @@ setup_pyenv() {
 
 setup_neovim() {
 	safe_clean_cache() {
-		timestamp=$(date '+%s')
-		cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
+		local timestamp=$(date '+%s')
+		local cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
 		for cache_location in "${cache_locations[@]}"; do
 			if [[ -e "${cache_location}" ]]; then
 				msg_info "${cache_location} exists. We will back up to ${cache_location}.bak.${timestamp}"
@@ -264,15 +266,21 @@ setup_neovim() {
 		return 0
 	}
 
-	# TODO: Check for version
 	if [[ $(command -v nvim) ]]; then
-		msg_warn "  ! already installed, skipping..."
-		return 0
+		local nvim_version=$(nvim --version | head -1 | grep -o '[0-9]\.[0-9]\.[0-9]')
+		if [[ "$nvim_version" != "${NEOVIM_TAG}" ]]; then
+			msg_warn "  ! detected Neovim of version ${nvim_version}. Please remove it if you wish to install version ${NEOVIM_TAG}."
+			return 0
+		else
+			msg_warn "  ! already installed, skipping..."
+			return 0
+		fi
+
+		msg "  Removing Neovim caches. Existing caches may interfere with subsequent package installations."
+		confirm && safe_clean_cache
 	fi
 
-	msg "  Removing Neovim caches. Existing caches may interfere with package installations."
-	confirm && safe_clean_cache
-
+	local binary_release=""
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		binary_release="nvim-macos"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -307,8 +315,11 @@ setup_zsh() {
 		fi
 	fi
 
-	msg "  Setting zsh as default terminal"
-	sudo chsh --shell "$(which zsh)" "${USER_EXECUTOR}"
+	local user_default_shell=$(finger "${USER_EXECUTOR}" | grep -o "Shell: .*" | cut -d" " -f2 | xargs basename)
+	if [[ "$user_default_shell" != "zsh" ]]; then
+		msg "  Setting zsh as default terminal"
+		sudo chsh -s "$(which zsh)" "${USER_EXECUTOR}"
+	fi
 }
 
 setup_rust() {
@@ -321,19 +332,23 @@ setup_rust() {
 }
 
 setup_go() {
-	# TODO: Check that go version is >= 1.17
 	if [[ $(command -v go) ]]; then
-		msg_warn "  ! already installed, skipping..."
-		return 0
+		local go_version=$(go version | grep -oE '[0-9]\.[0-9]+\.[0-9]+')
+		if [[ "$go_version" != "${GOLANG_TAG}" ]]; then
+			msg_warn "  ! detected Golang of version ${go_version}. Removing existing installation."
+			confirm || {
+				msg_warn "  ! Skipping..."
+				return 0
+			}
+			sudo rm -rf /usr/local/go
+		else
+			msg_warn "  ! already installed, skipping..."
+			return 0
+		fi
 	fi
 
 	local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
 	wget "https://go.dev/dl/${golang_pkg}"
-
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		msg_warn "  ! For Darwin based, please manually open the dowloaded package and follow the prompts: ${golang_pkg}"
-		return 0
-	fi
 
 	if [[ -d "/usr/local/go" ]]; then
 		msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
@@ -341,7 +356,7 @@ setup_go() {
 			msg_warn "  ! Skipping..."
 			return 0
 		}
-		rm -rf /usr/local/go
+		sudo rm -rf /usr/local/go
 	fi
 
 	sudo tar -C /usr/local/ -xzf "${golang_pkg}"
@@ -405,8 +420,8 @@ setup_git() {
 	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL"
 }
 
-parse_params "$@"
 setup_colors
+parse_params "$@"
 
 msg_info "Script Parameters:"
 msg "  -> user: ${USER_EXECUTOR}"
