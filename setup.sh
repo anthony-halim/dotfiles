@@ -8,6 +8,16 @@ trap cleanup SIGINT SIGTERM EXIT
 USER_EXECUTOR=$(whoami)
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
+GIT_USER=""
+GIT_USER_EMAIL=""
+GIT_USER_LOCAL_FILE=""
+NEOVIM_TAG="0.9.1"
+GOLANG_TAG="1.21.0"
+if [[ "${OSTYPE}" =~ ^darwin ]]; then
+	GOLANG_SYS="darwin-amd64"
+elif [[ "${OSTYPE}" =~ ^linux ]]; then
+	GOLANG_SYS="linux-amd64"
+fi
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
@@ -29,12 +39,11 @@ Available options:
                                                      If empty, will default to global .gitconfig. 
                                                      Suitable for users who uses multiple gitconfigs.
 
---golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to 1.21.0.
+--golang_tag              [Optional] [semver, x.x.x] Indicate Golang version to be installed. Defaults to $GOLANG_TAG.
 --golang_sys              [Optional] [string]        Indicate system for Golang installation. 
-                                                     For Linux based, this defaults to linux-amd64. 
-                                                     For Darwin based, this defaults to darwin-amd64. 
+                                                     Based on your current OS: $OSTYPE, defaults to $GOLANG_SYS.
 
---neovim_tag              [Optional] [semver, x.x.x] Indicate Neovim tag to be installed. Defaults to 0.9.1.
+--neovim_tag              [Optional] [semver, x.x.x] Indicate Neovim tag to be installed. Defaults to $NEOVIM_TAG.
 
 -h, --help                                           Print this help and exit
 -v, --verbose             [FLAG]                     Print script debug info
@@ -87,7 +96,7 @@ msg_success() {
 die() {
 	local msg=$1
 	local code=${2-1} # default :exit status 1
-	msg "$msg"
+	msg_err "$msg"
 	exit "$code"
 }
 
@@ -103,18 +112,6 @@ confirm() {
 }
 
 parse_params() {
-	# default values of variables set from params
-	GIT_USER=""
-	GIT_USER_EMAIL=""
-	GIT_USER_LOCAL_FILE=""
-	NEOVIM_TAG="0.9.1"
-	GOLANG_TAG="1.21.0"
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		GOLANG_SYS="darwin-amd64"
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		GOLANG_SYS="linux-amd64"
-	fi
-
 	while :; do
 		case "${1-}" in
 		-h | --help) usage ;;

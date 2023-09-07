@@ -69,7 +69,7 @@ msg_success() {
 die() {
 	local msg=$1
 	local code=${2-1} # default :exit status 1
-	msg "$msg"
+	msg_err "$msg"
 	exit "$code"
 }
 
@@ -114,12 +114,12 @@ parse_params() {
 	return 0
 }
 
-parse_params "$@"
 setup_colors
+parse_params "$@"
+
+msg_info "Script Parameters:"
+msg "  -> flag: ${flag}"
+msg "  -> param: ${param}"
+msg "  -> arguments: ${args[*]-}"
 
 # script logic here
-
-msg "${RED}Read parameters:${NOFORMAT}"
-msg "- flag: ${flag}"
-msg "- param: ${param}"
-msg "- arguments: ${args[*]-}"
