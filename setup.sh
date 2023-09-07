@@ -191,6 +191,11 @@ safe_symlink() {
 }
 
 setup_dependencies() {
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
+
 	local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
 	for dependency in "${dependencies[@]}"; do
 		msg_info "  Installing '$dependency'"
@@ -209,6 +214,11 @@ setup_exa() {
 		return 0
 	fi
 
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
+
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install exa
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -226,6 +236,11 @@ setup_lazygit() {
 		msg_warn "  ! already installed, skipping..."
 		return 0
 	fi
+
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
 
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install lazygit
@@ -246,6 +261,11 @@ setup_pyenv() {
 		return 0
 	fi
 
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
+
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install pyenv
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -254,18 +274,6 @@ setup_pyenv() {
 }
 
 setup_neovim() {
-	safe_clean_cache() {
-		local timestamp=$(date '+%s')
-		local cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
-		for cache_location in "${cache_locations[@]}"; do
-			if [[ -e "${cache_location}" ]]; then
-				msg_info "${cache_location} exists. We will back up to ${cache_location}.bak.${timestamp}"
-				mv "${cache_location}" "${cache_location}.bak.${timestamp}"
-			fi
-		done
-		return 0
-	}
-
 	if [[ $(command -v nvim) ]]; then
 		local nvim_version=$(nvim --version | head -1 | grep -o '[0-9]\.[0-9]\.[0-9]')
 		if [[ "$nvim_version" != "${NEOVIM_TAG}" ]]; then
@@ -275,10 +283,26 @@ setup_neovim() {
 			msg_warn "  ! already installed, skipping..."
 			return 0
 		fi
-
-		msg "  Removing Neovim caches. Existing caches may interfere with subsequent package installations."
-		confirm && safe_clean_cache
 	fi
+
+	msg "  Installing Neovim"
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
+
+	msg "  Removing Neovim caches (if exist). Existing caches may interfere with subsequent package installations."
+	confirm && {
+		local timestamp=$(date '+%s')
+		local cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
+
+		for cache_location in "${cache_locations[@]}"; do
+			if [[ -e "${cache_location}" ]]; then
+				msg_info "${cache_location} exists. We will back up to ${cache_location}.bak.${timestamp}"
+				mv "${cache_location}" "${cache_location}.bak.${timestamp}"
+			fi
+		done
+	}
 
 	local binary_release=""
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -306,7 +330,9 @@ setup_neovim() {
 }
 
 setup_zsh() {
-	if [[ ! $(command -v zsh) ]]; then
+	if [[ $(command -v zsh) ]]; then
+		msg_warn "  ! already installed, skipping..."
+	else
 		msg "  Installing zsh"
 		if [[ "${OSTYPE}" =~ ^darwin ]]; then
 			sudo brew install zsh
@@ -319,6 +345,8 @@ setup_zsh() {
 	if [[ "$user_default_shell" != "zsh" ]]; then
 		msg "  Setting zsh as default terminal"
 		sudo chsh -s "$(which zsh)" "${USER_EXECUTOR}"
+	else
+		msg_warn "  ! already set as default shell, skipping..."
 	fi
 }
 
@@ -327,6 +355,11 @@ setup_rust() {
 		msg_warn "  ! already installed, skipping..."
 		return 0
 	fi
+
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
 
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
@@ -346,6 +379,12 @@ setup_go() {
 			return 0
 		fi
 	fi
+
+	msg "  Installing Golang"
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
 
 	local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
 	wget "https://go.dev/dl/${golang_pkg}"
@@ -385,6 +424,11 @@ setup_git() {
 			bash -c "git config $git_location $git_conf_name '$git_conf_cmd'"
 			msg_success "    -> Config set!"
 		fi
+	}
+
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
 	}
 
 	local git_location_flag="--global"
@@ -450,47 +494,47 @@ fi
 # Dependencies installation
 separator
 msg_info "deps: installing dependencies"
-confirm && setup_dependencies && msg_success "deps: success!"
+setup_dependencies && msg_success "deps: success!"
 
 # Git setup
 separator
 msg_info "git_conf: setting up Git configurations"
-confirm && setup_git && msg_success "git_conf: success!"
+setup_git && msg_success "git_conf: success!"
 
 # Exa installation
 separator
 msg_info "exa: installing exa (better ls)"
-confirm && setup_exa && msg_success "exa: success!"
+setup_exa && msg_success "exa: success!"
 
 # Lazygit installation
 separator
 msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
-confirm && setup_lazygit && msg_success "lazygit: success!"
+setup_lazygit && msg_success "lazygit: success!"
 
 # Pyenv installation
 separator
 msg_info "pyenv: installing pyenv (Python version manager)"
-confirm && setup_pyenv && msg_success "pyenv: success!"
+setup_pyenv && msg_success "pyenv: success!"
 
 # Golang installation
 separator
 msg_info "Golang: installing Golang (programming language)"
-confirm && setup_go && msg_success "Golang: success!"
+setup_go && msg_success "Golang: success!"
 
 # Rust installation
 separator
 msg_info "Rust: installing Rust (programming language) with rustup"
-confirm && setup_rust && msg_success "Rust: success!"
+setup_rust && msg_success "Rust: success!"
 
 # Neovim installation
 separator
 msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
-confirm && setup_neovim && msg_success "Neovim: success!"
+setup_neovim && msg_success "Neovim: success!"
 
 # ZSH installation
 separator
 msg_info "zsh: installing Z-Shell"
-confirm && setup_zsh && msg_success "zsh: success!"
+setup_zsh && msg_success "zsh: success!"
 
 # Create directory to hold local configs
 separator
