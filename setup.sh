@@ -202,6 +202,11 @@ setup_dependencies() {
 }
 
 setup_exa() {
+	if [[ $(command -v exa) ]]; then
+		msg_warn " ! already installed, skipping..."
+		return 0
+	fi
+
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install exa
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -215,6 +220,11 @@ setup_exa() {
 }
 
 setup_lazygit() {
+	if [[ $(command -v lazygit) ]]; then
+		msg_warn "  ! already installed, skipping..."
+		return 0
+	fi
+
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install lazygit
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -229,6 +239,11 @@ setup_lazygit() {
 }
 
 setup_pyenv() {
+	if [[ $(command -v pyenv) ]]; then
+		msg_warn "  ! already installed, skipping..."
+		return 0
+	fi
+
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		brew install pyenv
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -237,6 +252,12 @@ setup_pyenv() {
 }
 
 setup_neovim() {
+	# TODO: Check for version
+	if [[ $(command -v nvim) ]]; then
+		msg_warn "  ! already installed, skipping..."
+		return 0
+	fi
+
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		binary_release="nvim-macos"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
@@ -262,10 +283,13 @@ setup_neovim() {
 }
 
 setup_zsh() {
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		sudo brew install zsh
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		sudo apt install -y zsh
+	if [[ ! $(command -v zsh) ]]; then
+		msg "  Installing zsh"
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			sudo brew install zsh
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			sudo apt install -y zsh
+		fi
 	fi
 
 	msg "  Setting zsh as default terminal"
@@ -273,10 +297,21 @@ setup_zsh() {
 }
 
 setup_rust() {
+	if [[ $(command -v rustup) ]]; then
+		msg_warn "  ! already installed, skipping..."
+		return 0
+	fi
+
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
 
 setup_go() {
+	# TODO: Check that go version is >= 1.17
+	if [[ $(command -v go) ]]; then
+		msg_warn "  ! already installed, skipping..."
+		return 0
+	fi
+
 	local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
 	wget "https://go.dev/dl/${golang_pkg}"
 
@@ -394,66 +429,38 @@ confirm && setup_git && msg_success "git_conf: success!"
 
 # Exa installation
 separator
-if [[ ! $(command -v exa) ]]; then
-	msg_info "exa: installing exa (better ls)"
-	confirm && setup_exa && msg_success "exa: success!"
-else
-	msg_info "exa: installed, skipping..."
-fi
+msg_info "exa: installing exa (better ls)"
+confirm && setup_exa && msg_success "exa: success!"
 
 # Lazygit installation
 separator
-if [[ ! $(command -v lazygit) ]]; then
-	msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
-	confirm && setup_lazygit && msg_success "lazygit: success!"
-else
-	msg_info "lazygit: installed, skipping..."
-fi
+msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
+confirm && setup_lazygit && msg_success "lazygit: success!"
 
 # Pyenv installation
 separator
-if [[ ! $(command -v pyenv) ]]; then
-	msg_info "pyenv: installing pyenv (Python version manager)"
-	confirm && setup_pyenv && msg_success "pyenv: success!"
-else
-	msg_info "pyenv: installed, skipping..."
-fi
+msg_info "pyenv: installing pyenv (Python version manager)"
+confirm && setup_pyenv && msg_success "pyenv: success!"
 
 # Golang installation
 separator
-if [[ ! $(command -v go) ]]; then
-	msg_info "Golang: installing Golang (programming language)"
-	confirm && setup_go && msg_success "Golang: success!"
-else
-	msg_info "Golang: installed, skipping..."
-fi
+msg_info "Golang: installing Golang (programming language)"
+confirm && setup_go && msg_success "Golang: success!"
 
 # Rust installation
 separator
-if [[ ! $(command -v rustup) ]]; then
-	msg_info "Rust: installing Rust (programming language) with rustup"
-	confirm && setup_rust && msg_success "Rust: success!"
-else
-	msg_info "Rust: installed, skipping..."
-fi
+msg_info "Rust: installing Rust (programming language) with rustup"
+confirm && setup_rust && msg_success "Rust: success!"
 
-# NeoVim installation
+# Neovim installation
 separator
-if [[ ! $(command -v nvim) ]]; then
-	msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
-	confirm && setup_neovim && msg_success "Neovim: success!"
-else
-	msg_info "Neovim: installed, skipping..."
-fi
+msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
+confirm && setup_neovim && msg_success "Neovim: success!"
 
 # ZSH installation
 separator
-if [[ ! $(command -v zsh) ]]; then
-	msg_info "zsh: installing Z-Shell"
-	confirm && setup_zsh && msg_success "zsh: success!"
-else
-	msg_info "zsh: installed, skipping..."
-fi
+msg_info "zsh: installing Z-Shell"
+confirm && setup_zsh && msg_success "zsh: success!"
 
 # Create directory to hold local configs
 separator
