@@ -4,14 +4,18 @@ set -Eeuo pipefail
 trap catch_err ERR
 trap cleanup SIGINT SIGTERM EXIT
 
+# Constants
 USER_EXECUTOR=$(whoami)
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] [--golang_tag golang_semver] [--golang_sys system_type] [--neovim_tag neovim_semver]
+	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] 
+                [--golang_tag golang_semver] [--golang_sys system_type]
+                [--neovim_tag neovim_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -89,11 +93,11 @@ die() {
 
 confirm() {
 	while true; do
-		read -r -p "    Do you want to proceed? [Y]es/[N]o) " yn
+		read -r -p "  Do you want to proceed? [Y]es/[N]o) " yn
 		case $yn in
 		[Yy]*) return 0 ;;
 		[Nn]*) return 1 ;;
-		*) msg "    Please answer [Y]es or [N]o." ;;
+		*) msg "  Please answer [Y]es or [N]o." ;;
 		esac
 	done
 }
@@ -161,15 +165,15 @@ safe_symlink() {
 	msg "  Creating ${target} -> ${real_file}"
 
 	if [[ -L "${target}" && $(readlink -n "${target}") == "${real_file}" ]]; then
-		msg_info "    -> Symlink already exist."
+		msg_info "  -> Symlink already exist."
 		return 0
 	fi
 
 	if [[ -L "${target}" ]]; then
 		# Create backup symlink
-		msg_warn "    ! ${target} is another symlink. We will create a symlink ${target}.bak to original target."
+		msg_warn "  ! ${target} is another symlink. We will create a symlink ${target}.bak to original target."
 		confirm || {
-			msg_warn "    ! Skipping..."
+			msg_warn " ! Skipping..."
 			return 0
 		}
 		ln -s "${target}.bak" "$(readlink -n "${target}")" && rm "${target}"
@@ -178,126 +182,235 @@ safe_symlink() {
 		# Back up if its a directory or file
 		msg_warn "  ! ${target} exists. We will first backup to ${target}.bak"
 		confirm || {
-			msg_warn "    ! Skipping..."
+			msg_warn "  ! Skipping..."
 			return 0
 		}
 		mv "${target}" "${target}.bak"
 	fi
 
 	ln -s "${real_file}" "${target}"
-	msg_success "    -> Symlink created!"
+	msg_success "  -> Symlink created!"
 }
 
 setup_dependencies() {
-	dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
-	for dependency in "${dependencies[@]}"; do
-		msg_info "  Installing '$dependency'"
-		if [[ "${OSTYPE}" =~ ^darwin ]]; then
-			brew install "${dependency}"
-		elif [[ "${OSTYPE}" =~ ^linux ]]; then
-			if [[ "${dependency}" == "fd" ]]; then dependency="fd-find"; fi
-			sudo apt install -y "${dependency}"
-		fi
-	done
+	install_dependencies() {
+		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
+		for dependency in "${dependencies[@]}"; do
+			msg_info "  Installing '$dependency'"
+			if [[ "${OSTYPE}" =~ ^darwin ]]; then
+				brew install "${dependency}"
+			elif [[ "${OSTYPE}" =~ ^linux ]]; then
+				if [[ "${dependency}" == "fd" ]]; then dependency="fd-find"; fi
+				sudo apt install -y "${dependency}"
+			fi
+		done
+	}
+
+	confirm && install_dependencies
 }
 
 setup_exa() {
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		brew install exa
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		EXA_VERSION=$(curl -s "https://api.github.com/repos/ogham/exa/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
-		curl -Lo exa.zip "https://github.com/ogham/exa/releases/latest/download/exa-linux-x86_64-v${EXA_VERSION}.zip"
-		sudo unzip -q exa.zip bin/exa -d /usr/local
+	install_exa() {
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			brew install exa
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			EXA_VERSION=$(curl -s "https://api.github.com/repos/ogham/exa/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
+			curl -Lo exa.zip "https://github.com/ogham/exa/releases/latest/download/exa-linux-x86_64-v${EXA_VERSION}.zip"
+			sudo unzip -q exa.zip bin/exa -d /usr/local
 
-		# Clean up
-		[[ ! -e "exa.zip" ]] || rm exa.zip
+			# Clean up
+			[[ ! -e "exa.zip" ]] || rm exa.zip
+		fi
+	}
+
+	if [[ $(command -v exa) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing exa"
+		confirm && install_exa
 	fi
 }
 
 setup_lazygit() {
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		brew install lazygit
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-		curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-		tar xf lazygit.tar.gz lazygit
-		sudo install lazygit /usr/local/bin
+	install_lazygit() {
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			brew install lazygit
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+			curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+			tar xf lazygit.tar.gz lazygit
+			sudo install lazygit /usr/local/bin
+
+			# Clean up
+			[[ ! -e "lazygit.tar.gz" ]] || rm lazygit.tar.gz
+		fi
+	}
+
+	if [[ $(command -v lazygit) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing lazygit"
+		confirm && install_lazygit
 	fi
 
-	# Clean up
-	[[ ! -e "lazygit.tar.gz" ]] || rm lazygit.tar.gz
 }
 
 setup_pyenv() {
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		brew install pyenv
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		git clone https://github.com/pyenv/pyenv.git "${HOME}"/.pyenv
+	install_pyenv() {
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			brew install pyenv
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			git clone https://github.com/pyenv/pyenv.git "${HOME}"/.pyenv
+		fi
+	}
+
+	if [[ $(command -v pyenv) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing pyenv"
+		confirm && install_pyenv
 	fi
 }
 
 setup_neovim() {
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		binary_release="nvim-macos"
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		binary_release="nvim-linux64"
+	safe_remove_nvim_caches() {
+		local timestamp=$(date '+%s')
+		local cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
+
+		for cache_location in "${cache_locations[@]}"; do
+			if [[ -e "${cache_location}" ]]; then
+				msg_info "${cache_location} exists. We will back up to ${cache_location}.bak.${timestamp}"
+				mv "${cache_location}" "${cache_location}.bak.${timestamp}"
+			fi
+		done
+	}
+
+	install_nvim() {
+		local binary_release=""
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			binary_release="nvim-macos"
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			binary_release="nvim-linux64"
+		fi
+
+		# Remove previous installation
+		[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
+
+		wget "https://github.com/neovim/neovim/releases/download/v${NEOVIM_TAG}/${binary_release}.tar.gz"
+
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			# Avoid unknown developer warning
+			xattr -c "./${binary_release}.tar.gz"
+		fi
+
+		tar xzvf "${binary_release}.tar.gz"
+		mv "${binary_release}" /usr/share
+		safe_symlink "/usr/share/${binary_release}/bin/nvim" /usr/bin/nvim
+
+		# Clean up
+		[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
+	}
+
+	if [[ $(command -v nvim) ]]; then
+		local nvim_version=$(nvim --version | head -1 | grep -o '[0-9]\.[0-9]\.[0-9]')
+		if [[ "$nvim_version" != "${NEOVIM_TAG}" ]]; then
+			msg_warn "  ! detected Neovim of version ${nvim_version}. Please remove it if you wish to install version ${NEOVIM_TAG}."
+			return 0
+		else
+			msg_info "  -> already installed, skipping..."
+		fi
+	else
+		msg "  Removing Neovim caches (if exist). Existing caches may interfere with subsequent package installations."
+		confirm && safe_remove_nvim_caches
+
+		msg "  Installing Neovim"
+		confirm && install_nvim
 	fi
-
-	# Remove previous installation
-	[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
-
-	wget "https://github.com/neovim/neovim/releases/download/v${NEOVIM_TAG}/${binary_release}.tar.gz"
-
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		# Avoid unknown developer warning
-		xattr -c "./${binary_release}.tar.gz"
-	fi
-
-	tar xzvf "${binary_release}.tar.gz"
-	mv "${binary_release}" /usr/share
-	safe_symlink "/usr/share/${binary_release}/bin/nvim" /usr/bin/nvim
-
-	# Clean up
-	[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
 }
 
 setup_zsh() {
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		sudo brew install zsh
-	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		sudo apt install -y zsh
+	install_zsh() {
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			sudo brew install zsh
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			sudo apt install -y zsh
+		fi
+	}
+
+	configure_zsh() {
+		local user_default_shell=$(finger "${USER_EXECUTOR}" | grep -o "Shell: .*" | cut -d" " -f2 | xargs basename)
+		if [[ "$user_default_shell" != "zsh" ]]; then
+			msg "  Setting zsh as default terminal"
+			sudo chsh -s "$(which zsh)" "${USER_EXECUTOR}"
+		else
+			msg_info "  -> already set as default shell, skipping..."
+		fi
+	}
+
+	if [[ $(command -v zsh) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing zsh"
+		confirm && install_zsh
 	fi
 
-	msg "  Setting zsh as default terminal"
-	sudo chsh --shell "$(which zsh)" "${USER_EXECUTOR}"
+	msg "  Configuring zsh"
+	configure_zsh
 }
 
 setup_rust() {
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	install_rust() {
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	}
+
+	if [[ $(command -v rustup) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing rust"
+		confirm && install_rust
+	fi
 }
 
 setup_go() {
-	local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
-	wget "https://go.dev/dl/${golang_pkg}"
+	install_go() {
+		local golang_pkg="go${GOLANG_TAG}.${GOLANG_SYS}.tar.gz"
+		wget "https://go.dev/dl/${golang_pkg}"
 
-	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		msg_warn "  ! For Darwin based, please manually open the dowloaded package and follow the prompts: ${golang_pkg}"
-		return 0
+		sudo tar -C /usr/local/ -xzf "${golang_pkg}"
+
+		# Clean up
+		[[ ! -e "${golang_pkg}" ]] || rm -rf "${golang_pkg}"
+	}
+
+	if [[ $(command -v go) ]]; then
+		local go_version=$(go version | grep -oE '[0-9]\.[0-9]+\.[0-9]+')
+		if [[ "$go_version" == "${GOLANG_TAG}" ]]; then
+			msg_info "  -> already installed, skipping..."
+		else
+			# Version mismatch, upgrade
+			msg_warn "  ! detected Golang of version ${go_version}. Removing existing installation."
+			confirm || {
+				msg_warn "  ! aborted removal of Golang. Skipping Golang setup."
+				return 0
+			}
+			sudo rm -rf /usr/local/go
+
+			msg "  Installing Golang"
+			confirm && install_go
+		fi
+	else
+		if [[ -d "/usr/local/go" ]]; then
+			msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
+			confirm || {
+				msg_warn "  ! aborted removal of Golang. Skipping Golang setup."
+				return 0
+			}
+			sudo rm -rf /usr/local/go
+		fi
+
+		msg "  Installing Golang"
+		confirm && install_go
 	fi
-
-	if [[ -d "/usr/local/go" ]]; then
-		msg_warn "  ! Existing go directory is present at /usr/local/go. We need to remove the directory completely to proceed."
-		confirm || {
-			msg_warn "  ! Skipping..."
-			return 0
-		}
-		rm -rf /usr/local/go
-	fi
-
-	sudo tar -C /usr/local/ -xzf "${golang_pkg}"
-
-	# Clean up
-	[[ ! -e "${golang_pkg}" ]] || rm -rf "${golang_pkg}"
 }
 
 setup_git() {
@@ -311,24 +424,43 @@ setup_git() {
 		local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
 		if [[ -n "$git_conf_existing_cmd" ]]; then
 			if [[ "$git_conf_existing_cmd" == "$git_conf_cmd" ]]; then
-				msg_info "    -> Config already exist"
+				msg_info "  -> Config already exist"
 			else
-				msg_warn "    ! Config is already used. To overwrite it, you can execute:"
-				msg_warn "    ! git config $git_location $git_conf_name $git_conf_cmd"
+				msg_warn "  ! Config is already used. To overwrite it, you can execute:"
+				msg_warn "  ! git config $git_location $git_conf_name $git_conf_cmd"
 			fi
 		else
 			bash -c "git config $git_location $git_conf_name '$git_conf_cmd'"
-			msg_success "    -> Config set!"
+			msg_success "  -> Config set!"
 		fi
 	}
 
-	local git_location_flag="--global"
+	handle_git_user_info() {
+		if [[ -z "$GIT_USER" ]]; then
+			msg_warn "  ! git user.name is not supplied."
+			read -r -p "  ? Please input your git user.name: " git_username_input
+			GIT_USER="$git_username_input"
+		fi
+		if [[ -z "$GIT_USER_EMAIL" ]]; then
+			msg_warn "  ! git user.email is not supplied."
+			read -r -p "  ? Please input your git user.email: " git_user_email_input
+			GIT_USER_EMAIL="$git_user_email_input"
+		fi
+	}
 
-	# Global config
+	confirm || {
+		msg_info "  -> Skipping git configuration"
+		return 0
+	}
 
-	set_git_conf "$git_location_flag" "include.path" "${HOME}/.gitconfig-base"
+	msg "  Checking user information"
+	handle_git_user_info
+
+	msg "  Setting global user git config"
+	set_git_conf "--global" "include.path" "${HOME}/.gitconfig-base"
 
 	# User identity
+	local git_location_flag="--global"
 
 	if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
 		msg "  Local user configuration to be set at ${GIT_USER_LOCAL_FILE}"
@@ -336,27 +468,24 @@ setup_git() {
 
 		if [[ ! -e "$GIT_USER_LOCAL_FILE" ]]; then
 			touch "$GIT_USER_LOCAL_FILE"
-			msg_info "    -> Created local file at $GIT_USER_LOCAL_FILE"
+			msg_info "  -> Created local file at $GIT_USER_LOCAL_FILE"
 		fi
 	fi
 
-	if [[ -z "$GIT_USER" ]]; then
-		msg_warn "    ! git user.name is not supplied."
-		read -r -p "    ? Please input your git user.name: " git_username_input
-		GIT_USER="$git_username_input"
-	fi
-	if [[ -z "$GIT_USER_EMAIL" ]]; then
-		msg_warn "    ! git user.email is not supplied."
-		read -r -p "    ? Please input your git user.email: " git_user_email_input
-		GIT_USER_EMAIL="$git_user_email_input"
-	fi
-
+	msg "  Setting git user information"
 	set_git_conf "$git_location_flag" "user.name" "$GIT_USER"
 	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL"
 }
 
-parse_params "$@"
+setup_local_config() {
+	if [[ ! -d "$LOCAL_CONFIG_DIR" ]]; then
+		mkdir -p "$LOCAL_CONFIG_DIR"
+		msg_success "  -> Created directory for local configs at $LOCAL_CONFIG_DIR"
+	fi
+}
+
 setup_colors
+parse_params "$@"
 
 msg_info "Script Parameters:"
 msg "  -> user: ${USER_EXECUTOR}"
@@ -369,96 +498,65 @@ msg "  -> neovim_tag: ${NEOVIM_TAG}"
 
 # Check OS
 if [[ ! "${OSTYPE}" =~ ^linux ]] && [[ ! "${OSTYPE}" =~ ^darwin ]]; then
-	msg_err "Unsupported OS: ${OSTYPE}"
-	die
+	die "Unsupported OS: ${OSTYPE}"
 fi
 
 # Detected that script is executed under root.
 # This will cause subsequent installation and configuration to be done for root user.
 # Prompt for confirmation.
 if [[ "${USER_EXECUTOR}" == "root" ]]; then
-	separator
-	msg_err "Script is executed as ${USER_EXECUTOR}. Installation and configuration is not meant for system-level."
-	exit 1
+	die "Script is executed as ${USER_EXECUTOR}. Installation and configuration is not meant for system-level."
 fi
 
 # Dependencies installation
 separator
 msg_info "deps: installing dependencies"
-confirm && setup_dependencies && msg_success "deps: success!"
+setup_dependencies && msg_success "deps: success!"
 
 # Git setup
 separator
 msg_info "git_conf: setting up Git configurations"
-confirm && setup_git && msg_success "git_conf: success!"
+setup_git && msg_success "git_conf: success!"
 
 # Exa installation
 separator
-if [[ ! $(command -v exa) ]]; then
-	msg_info "exa: installing exa (better ls)"
-	confirm && setup_exa && msg_success "exa: success!"
-else
-	msg_info "exa: installed, skipping..."
-fi
+msg_info "exa: installing exa (better ls)"
+setup_exa && msg_success "exa: success!"
 
 # Lazygit installation
 separator
-if [[ ! $(command -v lazygit) ]]; then
-	msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
-	confirm && setup_lazygit && msg_success "lazygit: success!"
-else
-	msg_info "lazygit: installed, skipping..."
-fi
+msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
+setup_lazygit && msg_success "lazygit: success!"
 
 # Pyenv installation
 separator
-if [[ ! $(command -v pyenv) ]]; then
-	msg_info "pyenv: installing pyenv (Python version manager)"
-	confirm && setup_pyenv && msg_success "pyenv: success!"
-else
-	msg_info "pyenv: installed, skipping..."
-fi
+msg_info "pyenv: installing pyenv (Python version manager)"
+setup_pyenv && msg_success "pyenv: success!"
 
 # Golang installation
 separator
-if [[ ! $(command -v go) ]]; then
-	msg_info "Golang: installing Golang (programming language)"
-	confirm && setup_go && msg_success "Golang: success!"
-else
-	msg_info "Golang: installed, skipping..."
-fi
+msg_info "Golang: installing Golang version ${GOLANG_TAG}"
+setup_go && msg_success "Golang: success!"
 
 # Rust installation
 separator
-if [[ ! $(command -v rustup) ]]; then
-	msg_info "Rust: installing Rust (programming language) with rustup"
-	confirm && setup_rust && msg_success "Rust: success!"
-else
-	msg_info "Rust: installed, skipping..."
-fi
+msg_info "Rust: installing Rust (programming language) with rustup"
+setup_rust && msg_success "Rust: success!"
 
-# NeoVim installation
+# Neovim installation
 separator
-if [[ ! $(command -v nvim) ]]; then
-	msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
-	confirm && setup_neovim && msg_success "Neovim: success!"
-else
-	msg_info "Neovim: installed, skipping..."
-fi
+msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
+setup_neovim && msg_success "Neovim: success!"
 
 # ZSH installation
 separator
-if [[ ! $(command -v zsh) ]]; then
-	msg_info "zsh: installing Z-Shell"
-	confirm && setup_zsh && msg_success "zsh: success!"
-else
-	msg_info "zsh: installed, skipping..."
-fi
+msg_info "zsh: installing Z-Shell"
+setup_zsh && msg_success "zsh: success!"
 
 # Create directory to hold local configs
 separator
-mkdir -p "${HOME}/.config/zsh/local_config"
-msg_info "local_configs: created directory for local configs at ${HOME}/.config/zsh/local_config. You can use it to place uncommited configurations."
+msg_info "local_configs: setting up local config directory at $LOCAL_CONFIG_DIR. You can use it to place uncommited configurations."
+setup_local_config && msg_success "local_configs: success!"
 
 # Create symbolic link configuration
 separator
