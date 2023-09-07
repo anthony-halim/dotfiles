@@ -252,11 +252,26 @@ setup_pyenv() {
 }
 
 setup_neovim() {
+	safe_clean_cache() {
+		timestamp=$(date '+%s')
+		cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
+		for cache_location in "${cache_locations[@]}"; do
+			if [[ -e "${cache_location}" ]]; then
+				msg_info "${cache_location} exists. We will back up to ${cache_location}.bak.${timestamp}"
+				mv "${cache_location}" "${cache_location}.bak.${timestamp}"
+			fi
+		done
+		return 0
+	}
+
 	# TODO: Check for version
 	if [[ $(command -v nvim) ]]; then
 		msg_warn "  ! already installed, skipping..."
 		return 0
 	fi
+
+	msg "  Removing Neovim caches. Existing caches may interfere with package installations."
+	confirm && safe_clean_cache
 
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
 		binary_release="nvim-macos"
