@@ -54,12 +54,12 @@ Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) pag
 
 ## 🌱  Usage
 
-##### Git clone this repository to $HOME/repos/personal/
+##### Git clone this repository to `$HOME/repos/personal/`
 
 My personal convention is to store repositories based on their use cases.
 
-- $HOME/repos/personal to hold personal repositories.
-- $HOME/repos/work to hold work-related repositories.
+- `$HOME/repos/personal` to hold personal repositories.
+- `$HOME/repos/work` to hold work-related repositories.
 
 ```sh
 mkdir -p $HOME/repos/personal 
@@ -90,7 +90,7 @@ I use this to store machine-specific configurations, functions, or aliases. For 
 
 ##### (Optional) Swap Keys 
 
-The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hand will thank you! 
+The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you! 
 
 <details>
   <summary>Windows</summary>
