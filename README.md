@@ -46,7 +46,7 @@ We need to allow SSH authentication to do Git operations with Git repositories.
 ssh-keygen -t rsa
 ```
 
-White-list the private key by adding the public key from SSH keys generated to your Git user.
+Whitelist the private key by adding the public key from SSH keys generated to your Git user.
 
 ##### WezTerm
 
@@ -130,7 +130,7 @@ The default key bindings are not the most ergonomic for programmers, and we can 
                      [--neovim_tag neovim_semver]
 ```
 
-I have prepared a script that automates the rest of the configuration. The script has **tons** of user confirmation; (i) partly to ensure that the user knows what happening and (ii) partly to allow the user to skip specific configurations.
+I have prepared a script that automates the rest of the configuration. The script has **tons** of user confirmation; (i) partly to ensure that the user knows what is happening and (ii) partly to allow the user to skip specific configurations.
 
 *Feel free to run the setup script for fun and skip all configurations to see what would be configured.*
 
