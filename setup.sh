@@ -173,7 +173,7 @@ safe_symlink() {
 			msg_warn " ! Skipping..."
 			return 0
 		}
-		ln -s "${target}.bak" "$(readlink -n "${target}")" && rm "${target}"
+		ln -s "$(readlink -n "${target}")" "${target}.bak" && rm "${target}"
 
 	elif [[ -f "${target}" || -d "${target}" ]]; then
 		# Back up if its a directory or file
@@ -191,7 +191,7 @@ safe_symlink() {
 
 setup_dependencies() {
 	install_dependencies() {
-		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc")
+		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger")
 		for dependency in "${dependencies[@]}"; do
 			msg_info "  Installing '$dependency'"
 			if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -410,24 +410,41 @@ setup_go() {
 	fi
 }
 
+setup_gitdelta() {
+	install_gitdelta() {
+		curl -sS https://webi.sh/delta | sh
+	}
+
+	if [[ $(command -v delta) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing git-delta"
+		confirm && install_gitdelta
+	fi
+}
+
 setup_git() {
 	set_git_conf() {
 		local git_location=$1
 		local git_conf_name=$2
 		local git_conf_cmd=$3
+		local git_add_conf=${4-0}
 
 		msg "  Setting $git_location: $git_conf_name = $git_conf_cmd"
 
+		local git_conf_execute_cmd="git config $git_location $git_conf_name '$git_conf_cmd'"
+		if [[ "$git_add_conf" -ne 0 ]]; then
+			git_conf_execute_cmd="git config $git_location --add $git_conf_name '$git_conf_cmd'"
+		fi
+
 		local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
-		if [[ -n "$git_conf_existing_cmd" ]]; then
-			if [[ "$git_conf_existing_cmd" == "$git_conf_cmd" ]]; then
-				msg_info "  -> Config already exist"
-			else
-				msg_warn "  ! Config is already used. To overwrite it, you can execute:"
-				msg_warn "  ! git config $git_location $git_conf_name $git_conf_cmd"
-			fi
+		if [[ -n "$git_conf_existing_cmd" ]] && [[ "$git_conf_existing_cmd" =~ "$git_conf_cmd" ]]; then
+			msg_info "  -> Config already exist"
+		elif [[ -n "$git_conf_existing_cmd" ]] && [[ "$git_add_conf" -eq 0 ]]; then
+			msg_warn "  ! Config is already used. To overwrite it, you can execute:"
+			msg_warn "  ! $git_conf_execute_cmd"
 		else
-			bash -c "git config $git_location $git_conf_name '$git_conf_cmd'"
+			bash -c "$git_conf_execute_cmd"
 			msg_success "  -> Config set!"
 		fi
 	}
@@ -453,8 +470,9 @@ setup_git() {
 	msg "  Checking user information"
 	handle_git_user_info
 
-	msg "  Setting global user git config"
-	set_git_conf "--global" "include.path" "${HOME}/.gitconfig-base"
+	# Global user configuration
+	set_git_conf "--global" "include.path" "${HOME}/.gitconfig-base" 1
+	set_git_conf "--global" "include.path" "${HOME}/.gitconfig-themes" 1
 
 	# User identity
 	local git_location_flag="--global"
@@ -469,9 +487,8 @@ setup_git() {
 		fi
 	fi
 
-	msg "  Setting git user information"
-	set_git_conf "$git_location_flag" "user.name" "$GIT_USER"
-	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL"
+	set_git_conf "$git_location_flag" "user.name" "$GIT_USER" 0
+	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL" 0
 }
 
 setup_local_config() {
@@ -514,6 +531,11 @@ setup_dependencies && msg_success "deps: success!"
 separator
 msg_info "git_conf: setting up Git configurations"
 setup_git && msg_success "git_conf: success!"
+
+# git-delta installation
+separator
+msg_info "git-delta: installing git-delta (syntax highlighter for git, diff, and grep output)"
+setup_gitdelta && msg_success "git-delta: success!"
 
 # Exa installation
 separator
@@ -558,7 +580,8 @@ setup_local_config && msg_success "local_configs: success!"
 # Create symbolic link configuration
 separator
 msg_info "symlink: setting up soft links to repository configuration"
-safe_symlink "${SCRIPT_DIR}/gitconfig/.gitconfig-base" "${HOME}/.gitconfig-base"
+safe_symlink "${SCRIPT_DIR}/gitconfig/gitconfig-base" "${HOME}/.gitconfig-base"
+safe_symlink "${SCRIPT_DIR}/gitconfig/gitconfig-themes" "${HOME}/.gitconfig-themes"
 safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
