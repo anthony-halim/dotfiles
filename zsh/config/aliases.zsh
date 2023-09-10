@@ -29,7 +29,9 @@ alias nv="nvim"
 
 alias vim="nvim"
 
-alias rp="cd $HOME/repos"
+alias cdrepos="cd $HOME/repos"
+
+alias cdnotes="cd $HOME/notes"
 
 alias gg="lazygit"
 
