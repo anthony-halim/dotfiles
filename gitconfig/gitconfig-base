@@ -20,6 +20,9 @@
     # Show the user email for the current repository.
     whoami = config user.email
 
+    # Show git root dir
+    root = rev-parse --show-toplevel
+
 [core]
     editor = vim
     pager = delta
