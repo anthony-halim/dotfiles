@@ -206,25 +206,21 @@ setup_dependencies() {
 	confirm && install_dependencies
 }
 
-setup_exa() {
-	install_exa() {
-		if [[ "${OSTYPE}" =~ ^darwin ]]; then
-			brew install exa
-		elif [[ "${OSTYPE}" =~ ^linux ]]; then
-			EXA_VERSION=$(curl -s "https://api.github.com/repos/ogham/exa/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
-			curl -Lo exa.zip "https://github.com/ogham/exa/releases/latest/download/exa-linux-x86_64-v${EXA_VERSION}.zip"
-			sudo unzip -q exa.zip bin/exa -d /usr/local
-
-			# Clean up
-			[[ ! -e "exa.zip" ]] || rm exa.zip
+setup_eza() {
+	install_eza() {
+		if [[ ! $(command -v cargo) ]]; then
+			msg_err "  -> cargo command not found! eza installation require cargo."
+			return 0
 		fi
+
+		cargo install eza
 	}
 
-	if [[ $(command -v exa) ]]; then
+	if [[ $(command -v eza) ]]; then
 		msg_info "  -> already installed, skipping..."
 	else
-		msg "  Installing exa"
-		confirm && install_exa
+		msg "  Installing eza"
+		confirm && install_eza
 	fi
 }
 
@@ -537,11 +533,6 @@ separator
 msg_info "git-delta: installing git-delta (syntax highlighter for git, diff, and grep output)"
 setup_gitdelta && msg_success "git-delta: success!"
 
-# Exa installation
-separator
-msg_info "exa: installing exa (better ls)"
-setup_exa && msg_success "exa: success!"
-
 # Lazygit installation
 separator
 msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
@@ -561,6 +552,11 @@ setup_go && msg_success "Golang: success!"
 separator
 msg_info "Rust: installing Rust (programming language) with rustup"
 setup_rust && msg_success "Rust: success!"
+
+# Exa installation
+separator
+msg_info "eza: installing eza (better ls). Require rust."
+setup_eza && msg_success "eza: success!"
 
 # Neovim installation
 separator

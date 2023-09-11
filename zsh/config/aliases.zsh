@@ -11,10 +11,10 @@ then
     alias open="explorer.exe $1"
 fi
 
-if command -v "exa" &> /dev/null
+if command -v "eza" &> /dev/null
 then
-    alias ls="exa"
-    alias ll="exa -alrg --icons"
+    alias ls="eza"
+    alias ll="eza -alrg --icons"
 else
     alias ll="ls -alrt"
 fi
