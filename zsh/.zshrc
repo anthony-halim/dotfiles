@@ -18,10 +18,13 @@ autoload -Uz colors && colors
 setopt interactive_comments
 
 # Auto completion with tab
-autoload -Uz compinit
+autoload -Uz compinit bashcompinit
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
+bashcompinit
+# Enable auto completion for terraform if exist
+[[ ! -x /usr/bin/terraform ]] || complete -o nospace -C /usr/bin/terraform terraform
 # Include hidden files.
 _comp_options+=(globdots)
 
