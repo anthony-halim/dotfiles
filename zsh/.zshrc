@@ -25,6 +25,8 @@ compinit
 bashcompinit
 # Enable auto completion for terraform if exist
 [[ ! -x /usr/bin/terraform ]] || complete -o nospace -C /usr/bin/terraform terraform
+# Enable auto completion for kubectl if exist
+[[ ! -x /usr/bin/kubectl ]] || source <(kubectl completion zsh) 
 # Include hidden files.
 _comp_options+=(globdots)
 
