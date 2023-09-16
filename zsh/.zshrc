@@ -38,11 +38,12 @@ HISTSIZE=9999
 setopt HIST_EXPIRE_DUPS_FIRST
 
 # Load functions
+[[ ! -e "${ZSH_CONFIG}/omz_functions.zsh" ]] || source "${ZSH_CONFIG}/omz_functions.zsh"
 [[ ! -e "${ZSH_CONFIG}/functions.zsh" ]] || source "${ZSH_CONFIG}/functions.zsh"
 
-safe_source "${ZSH_CONFIG}/omz_functions.zsh"
-safe_source "${ZSH_CONFIG}/aliases.zsh"
+# NOTE: Exports activates necessary environments (which is dependency for some tools); source first.
 safe_source "${ZSH_CONFIG}/exports.zsh"
+safe_source "${ZSH_CONFIG}/aliases.zsh"
 
 # Source theme 
 safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
