@@ -19,6 +19,16 @@ else
     alias ll="ls -alrt"
 fi
 
+if command -v "kubectl" &> /dev/null
+then
+  alias k="kubectl"
+fi
+
+if command -v "terraform" &> /dev/null
+then
+  alias t="terraform"
+fi
+
 alias sush="sudo su -"
 
 alias src="source $HOME/.zshrc"
