@@ -24,9 +24,9 @@ zmodload zsh/complist
 compinit
 bashcompinit
 # Enable auto completion for terraform if exist
-[[ ! -x /usr/bin/terraform ]] || complete -o nospace -C /usr/bin/terraform terraform
+[[ ! $(command -v terraform) ]] || complete -o nospace -C $(which terraform) terraform
 # Enable auto completion for kubectl if exist
-[[ ! -x /usr/bin/kubectl ]] || source <(kubectl completion zsh) 
+[[ ! $(command -v kubectl) ]] || source <(kubectl completion zsh) 
 # Include hidden files.
 _comp_options+=(globdots)
 
