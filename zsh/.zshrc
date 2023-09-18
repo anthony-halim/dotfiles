@@ -23,10 +23,10 @@ zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
 bashcompinit
-# Enable auto completion for terraform if exist
+# Enable auto completion for tools
 [[ ! $(command -v terraform) ]] || complete -o nospace -C $(which terraform) terraform
-# Enable auto completion for kubectl if exist
 [[ ! $(command -v kubectl) ]] || source <(kubectl completion zsh) 
+[[ ! $(command -v minikube) ]] || source <(minikube completion zsh) 
 # Include hidden files.
 _comp_options+=(globdots)
 
@@ -41,7 +41,7 @@ setopt HIST_EXPIRE_DUPS_FIRST
 [[ ! -e "${ZSH_CONFIG}/omz_functions.zsh" ]] || source "${ZSH_CONFIG}/omz_functions.zsh"
 [[ ! -e "${ZSH_CONFIG}/functions.zsh" ]] || source "${ZSH_CONFIG}/functions.zsh"
 
-# NOTE: Exports activates necessary environments (which is dependency for some tools); source first.
+# Exports activates necessary environments (which is dependency for some tools); source first.
 safe_source "${ZSH_CONFIG}/exports.zsh"
 safe_source "${ZSH_CONFIG}/aliases.zsh"
 

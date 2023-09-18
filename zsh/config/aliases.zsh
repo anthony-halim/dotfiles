@@ -6,10 +6,7 @@ then
     alias cat="bat --paging=never"
 fi
 
-if command -v "explorer.exe" &> /dev/null
-then
-    alias open="explorer.exe $1"
-fi
+[[ ! $(command -v "explorer.exe") ]] || alias open="explorer.exe"
 
 if command -v "eza" &> /dev/null
 then
@@ -19,15 +16,9 @@ else
     alias ll="ls -alrt"
 fi
 
-if command -v "kubectl" &> /dev/null
-then
-  alias k="kubectl"
-fi
+[[ ! $(command -v "kubectl") ]] || alias k="kubectl"
 
-if command -v "terraform" &> /dev/null
-then
-  alias t="terraform"
-fi
+[[ ! $(command -v "terraform") ]] || alias t="terraform"
 
 alias sush="sudo su -"
 
