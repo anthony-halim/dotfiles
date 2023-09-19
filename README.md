@@ -14,6 +14,7 @@ This repository holds my local configurations.
 
 - WSL2 - Ubuntu 20.04, on Windows 11
 - MacOS Big Sur
+- Ubuntu 22.04
 
 ## 🧱 Components
 

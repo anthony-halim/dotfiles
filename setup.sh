@@ -210,6 +210,8 @@ setup_eza() {
 	install_eza() {
 		if [[ ! $(command -v cargo) ]]; then
 			msg_err "  -> cargo command not found! eza installation require cargo."
+			msg_warn "  ! If you have installed cargo during this script run, cargo env may have not been loaded."
+			msg_warn "  ! Kindly re-run this script after ensuring cargo has been sourced."
 			return 0
 		fi
 
@@ -434,7 +436,7 @@ setup_git() {
 		fi
 
 		local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
-		if [[ -n "$git_conf_existing_cmd" ]] && [[ "$git_conf_existing_cmd" =~ "$git_conf_cmd" ]]; then
+		if [[ -n "$git_conf_existing_cmd" ]] && [[ "$git_conf_existing_cmd" =~ $git_conf_cmd ]]; then
 			msg_info "  -> Config already exist"
 		elif [[ -n "$git_conf_existing_cmd" ]] && [[ "$git_add_conf" -eq 0 ]]; then
 			msg_warn "  ! Config is already used. To overwrite it, you can execute:"
