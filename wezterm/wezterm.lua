@@ -33,7 +33,7 @@ local macos_keybindings = {
 	{ key = "Enter", mods = "OPT", action = act.ToggleFullScreen },
 	{ key = "-", mods = "SUPER", action = act.DecreaseFontSize },
 	{ key = "=", mods = "SUPER", action = act.IncreaseFontSize },
-	{ key = "t", mods = "SUPER", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+	{ key = "t", mods = "SUPER", action = act.SpawnCommandInNewTab({ cwd = "~" }) },
 	{ key = "w", mods = "SUPER", action = act.CloseCurrentPane({ confirm = false }) },
 	{ key = "W", mods = "SUPER|SHIFT", action = act.CloseCurrentTab({ confirm = false }) },
 	{ key = "1", mods = "SUPER", action = act({ ActivateTab = 0 }) },
@@ -63,7 +63,15 @@ local macos_keybindings = {
 	{ key = "UpArrow", mods = "SUPER|SHIFT", action = act({ ActivatePaneDirection = "Up" }) },
 	{ key = "DownArrow", mods = "SUPER|SHIFT", action = act({ ActivatePaneDirection = "Down" }) },
 	{ key = "Z", mods = "SUPER|SHIFT", action = act.TogglePaneZoomState },
-	{ key = ">", mods = "SUPER|SHIFT", action = act.SplitPane({ direction = "Down", size = { Percent = 20 } }) },
+	{
+		key = ">",
+		mods = "SUPER|SHIFT",
+		action = act.SplitPane({
+			direction = "Down",
+			size = { Percent = 20 },
+			command = { domain = "CurrentPaneDomain" },
+		}),
+	},
 	-- Some options are doubled from windows
 	-- Ctrl-C is to copy on text highlight, else do terminate action
 	{
@@ -114,7 +122,7 @@ local windows_keybindings = {
 	{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 	{ key = "-", mods = "CTRL", action = act.DecreaseFontSize },
 	{ key = "=", mods = "CTRL", action = act.IncreaseFontSize },
-	{ key = "t", mods = "CTRL", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+	{ key = "t", mods = "CTRL", action = act.SpawnCommandInNewTab({ cwd = "~" }) },
 	{ key = "w", mods = "CTRL", action = act.CloseCurrentPane({ confirm = false }) },
 	{ key = "W", mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = false }) },
 	{ key = "1", mods = "CTRL", action = act({ ActivateTab = 0 }) },
@@ -144,7 +152,15 @@ local windows_keybindings = {
 	{ key = "UpArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Up" }) },
 	{ key = "DownArrow", mods = "CTRL|SHIFT", action = act({ ActivatePaneDirection = "Down" }) },
 	{ key = "Z", mods = "CTRL|SHIFT", action = act.TogglePaneZoomState },
-	{ key = ">", mods = "CTRL|SHIFT", action = act.SplitPane({ direction = "Down", size = { Percent = 20 } }) },
+	{
+		key = ">",
+		mods = "CTRL|SHIFT",
+		action = act.SplitPane({
+			direction = "Down",
+			size = { Percent = 20 },
+			command = { domain = "CurrentPaneDomain" },
+		}),
+	},
 }
 
 -- This table will hold the configuration
