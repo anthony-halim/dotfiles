@@ -5,7 +5,7 @@ local act = wezterm.action
 local is_macos = string.find(wezterm.target_triple, "darwin")
 
 -- Refactor frequently changed configurations
-local windows_window_background_opacity = 0.8
+local windows_window_background_opacity = 0.9
 local windows_win32_system_backdrop = "Disable"
 local macos_window_background_opacity = 0.6
 local macos_window_background_blur = 20
@@ -13,7 +13,7 @@ local font_with_fallback = wezterm.font_with_fallback({
 	"JetBrains Mono",
 	"Symbols Nerd Font Mono",
 })
-local font_size = 10
+local font_size = 11
 local color_scheme_name = "nightfox"
 local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
 
