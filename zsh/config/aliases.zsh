@@ -18,7 +18,7 @@ fi
 
 [[ ! $(command -v "kubectl") ]] || alias k="kubectl"
 
-[[ ! $(command -v "terraform") ]] || alias t="terraform"
+[[ ! $(command -v "terraform") ]] || alias tf="terraform"
 
 alias sush="sudo su -"
 
