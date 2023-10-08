@@ -42,3 +42,6 @@ alias gitconf="git config --list --show-origin"
 
 alias dateunixnow="date '+%s'"
 
+# Shortcuts to nvim functionalities
+alias daily="nvim +'Telekasten goto_today'"
+alias weekly="nvim +'Telekasten goto_thisweek'"
