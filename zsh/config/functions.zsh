@@ -15,15 +15,24 @@ zsh_load_local_plugin() {
 }
 
 # Generate random string, optionally use special characters.
-# String will be plain printed to the screen.
-# usage: genpw [--s, --special_char] [-l, --length <password_length>]
+#
+# String will be copied into the clipboard.
+# Will attempt to check for common clipboards utility. Alternatively, you can pass the clipboard binary directly.
+# If every clipboard fail, we give up and print to the screen.
+#
+# usage: genpw [--s, --special_char] [-l, --length <password_length>] [-x, --clipboard <clipboard binary to use>]
 genpw() {
   local use_special_char=0
   local pw_length=16 
+  local clipboard_bin=""
 
   while :; do
     case "${1-}" in
     -s | --special_char) use_special_char=1 ;;
+    -x | --clipboard) 
+      clipboard_bin="${2-}"
+      shift
+      ;;
     -l | --length)
       pw_length="${2-}"
       shift
@@ -34,10 +43,34 @@ genpw() {
     shift
   done
 
+  local generated_pw=""
   if [[ "${use_special_char}" -eq 1 ]]; then
-    python -c "import secrets;import string;alphabets=string.ascii_letters+string.digits+string.punctuation;print(''.join([secrets.choice(alphabets) for n in range($pw_length)]));"
+    generated_pw=$(python -c "import secrets;import string;alphabets=string.ascii_letters+string.digits+string.punctuation;print(''.join([secrets.choice(alphabets) for n in range($pw_length)]));")
   else
-    python -c "import secrets;import string;print(secrets.token_urlsafe($pw_length));"
+    generated_pw=$(python -c "import secrets;import string;print(secrets.token_urlsafe($pw_length));")
+  fi
+
+  # Find clipboard binary
+  if [[ -z "$clipboard_bin" ]]; then
+    if [[ $(command -v clip.exe) ]]; then
+      # WSL
+      clipboard_bin="clip.exe"
+    elif [[ $(command -v xclip) ]]; then
+      # Gnome, MacOs
+      clipboard_bin="xclip -sel clip"
+    elif [[ $(command -v pbcopy) ]]; then
+      # MacOS
+      clipboard_bin="pbcopy"
+    fi
+  fi
+
+  # Copy to clipboard
+  if [[ $(command -v "$clipboard_bin") ]]; then
+    # Use supplied binary if valid
+    echo -n "$generated_pw" | "$clipboard_bin"
+    echo "Copied to clipboard!"
+  else
+    echo "Unable to find clipboard. Here is your password anyway: $generated_pw"
   fi
 }
 
