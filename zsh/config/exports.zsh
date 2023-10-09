@@ -2,28 +2,35 @@ export PATH="${HOME}/.local/bin:$PATH"
 export EDITOR="nvim"
 
 # Pyenv 
-if [[ -d "${HOME}/.pyenv" ]]; then
+[[ -d "${HOME}/.pyenv" ]] && {
     export PYENV_ROOT="${HOME}/.pyenv"
     command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
     eval  "$(pyenv init -)"
-fi
+}
 
 # Golang 
-if [[ -x "/usr/local/go/bin/go" ]]; then
+[[ -x "/usr/local/go/bin/go" ]] && {
     command -v go >/dev/null || export PATH="/usr/local/go/bin:$PATH"
-fi
+}
 
 # Rust
-if [[ -e "${HOME}/.cargo/env" ]]; then
+[[ -e "${HOME}/.cargo/env" ]] && {
     source "${HOME}/.cargo/env" 
-fi
+}
+
+# Bob / Neovim
+# NOTE: Must be loaded after rust environment
+[[ -d "${HOME}/.local/share/bob/nvim-bin" ]] && {
+    command -v nvim >/dev/null || export PATH="${HOME}/.local/share/bob/nvim-bin:$PATH"
+}
 
 # Fzf
-if [[ -f "${HOME}/.fzf.zsh" ]]; then
+[[ -f "${HOME}/.fzf.zsh" ]] && {
     source "${HOME}/.fzf.zsh"
-fi 
+}
 
 # Sword
-if [[ -d "${HOME}/.sword" ]]; then
+[[ -d "${HOME}/.sword" ]] && {
     export SWORD_PATH="${HOME}/.sword"
-fi
+}
+

@@ -11,7 +11,7 @@ LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
 GIT_USER=""
 GIT_USER_EMAIL=""
 GIT_USER_LOCAL_FILE=""
-NEOVIM_TAG="0.9.1"
+NEOVIM_TAG="latest"
 GOLANG_TAG="1.21.0"
 if [[ "${OSTYPE}" =~ ^darwin ]]; then
 	GOLANG_SYS="darwin-amd64"
@@ -189,8 +189,15 @@ safe_symlink() {
 	msg_success "  -> Symlink created!"
 }
 
-attempt_load_cargo() {
-	[[ ! $(command -v cargo) && -e "${HOME}/.cargo/env" ]] && source "${HOME}/.cargo/env"
+load_cargo() {
+	local cargo_path="${HOME}/.cargo/env}"
+
+	[[ ! $(command -v cargo) && -e "$cargo_path" ]] && source "$cargo_path"
+
+	# If it still does not exist, return err
+	[[ ! $(command -v cargo) ]] && return 1
+
+	return 0
 }
 
 setup_dependencies() {
@@ -212,15 +219,10 @@ setup_dependencies() {
 
 setup_eza() {
 	install_eza() {
-		attempt_load_cargo
-
-		if [[ ! $(command -v cargo) ]]; then
+		load_cargo || {
 			msg_err "  -> cargo command not found! eza installation require cargo."
-			msg_warn "  ! If you have installed cargo during this script run, cargo env may have not been loaded."
-			msg_warn "  ! Kindly re-run this script after ensuring cargo has been sourced."
 			return 0
-		fi
-
+		}
 		cargo install eza
 	}
 
@@ -273,6 +275,23 @@ setup_pyenv() {
 	fi
 }
 
+setup_bob() {
+	install_bob() {
+		load_cargo || {
+			msg_err "  -> cargo command not found! bob installation require cargo."
+			return 0
+		}
+		cargo install --git https://github.com/MordechaiHadad/bob.git
+	}
+
+	if [[ $(command -v bob) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing Bob"
+		confirm && install_bob
+	fi
+}
+
 setup_neovim() {
 	safe_remove_nvim_caches() {
 		local timestamp=$(date '+%s')
@@ -287,29 +306,13 @@ setup_neovim() {
 	}
 
 	install_nvim() {
-		local binary_release=""
-		if [[ "${OSTYPE}" =~ ^darwin ]]; then
-			binary_release="nvim-macos"
-		elif [[ "${OSTYPE}" =~ ^linux ]]; then
-			binary_release="nvim-linux64"
+		if [[ ! $(command -v bob) ]]; then
+			msg_err "  -> bob command not found! neovim installation require Bob."
+			return 0
 		fi
 
-		# Remove previous installation
-		[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
-
-		wget "https://github.com/neovim/neovim/releases/download/v${NEOVIM_TAG}/${binary_release}.tar.gz"
-
-		if [[ "${OSTYPE}" =~ ^darwin ]]; then
-			# Avoid unknown developer warning
-			xattr -c "./${binary_release}.tar.gz"
-		fi
-
-		tar xzvf "${binary_release}.tar.gz"
-		mv "${binary_release}" /usr/share
-		safe_symlink "/usr/share/${binary_release}/bin/nvim" /usr/bin/nvim
-
-		# Clean up
-		[[ ! -e "${binary_release}.tar.gz" ]] || rm -rf "${binary_release}.tar.gz"
+		bob install "${NEOVIM_TAG}"
+		bob use "${NEOVIM_TAG}"
 	}
 
 	if [[ $(command -v nvim) ]]; then
@@ -566,9 +569,14 @@ separator
 msg_info "eza: installing eza (better ls). Require rust."
 setup_eza && msg_success "eza: success!"
 
+# Bob installation
+separator
+msg_info "Neovim: installing Bob (Neovim version manager). Require rust."
+setup_bob && msg_success "Bob: success!"
+
 # Neovim installation
 separator
-msg_info "Neovim: installing Neovim version ${NEOVIM_TAG}"
+msg_info "Neovim: installing Neovim version '${NEOVIM_TAG}'"
 setup_neovim && msg_success "Neovim: success!"
 
 # ZSH installation
