@@ -30,10 +30,6 @@ alias nv="nvim"
 
 alias vim="nvim"
 
-alias cdrepos="cd $HOME/repos"
-
-alias cdnotes="cd $HOME/notes"
-
 alias gg="lazygit"
 
 alias sshconf="cat $HOME/.ssh/config"

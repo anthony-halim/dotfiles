@@ -34,3 +34,29 @@ genpw() {
   fi
 }
 
+## budget version of zsh-z
+
+# usage: bm (bookmark current directory)
+bm () {
+  local directory_cache="${HOME}/.cache/dirjump"
+  [[ -f "${directory_cache}" ]] || touch "${directory_cache}"
+
+  if grep -E ${PWD}'$' "${directory_cache}" 
+  then
+      echo "${PWD} is already bookmarked"
+  else
+      echo "$PWD" >> "${directory_cache}"
+      echo "${PWD} bookmarked"
+  fi
+}
+
+# fast travel to directory saved in the list of bookmark
+# usage: to foo (foo is the partial/full name of directory)
+to () {
+  local directory_cache="${HOME}/.cache/dirjump"
+  q=" $*"
+  q=${q// -/ !}
+
+  # allows typing "to foo -bar", which becomes "foo !bar" in the fzf query
+  cd "$(fzf -1 +m -q "$q" < "${directory_cache}")"
+}
