@@ -56,7 +56,7 @@ genpw() {
       # WSL
       clipboard_bin="clip.exe"
     elif [[ $(command -v xclip) ]]; then
-      # Gnome, MacOs
+      # Gnome, MacOS
       clipboard_bin="xclip -sel clip"
     elif [[ $(command -v pbcopy) ]]; then
       # MacOS
@@ -92,7 +92,7 @@ bm () {
 # fast travel to directory saved in the list of bookmark
 # usage: to foo (foo is the partial/full name of directory)
 to () {
-  local directory_cache="${ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
+  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
   q=" $*"
   q=${q// -/ !}
 
@@ -113,9 +113,6 @@ ndaily() {
 nweekly() {
   nvim +'Telekasten goto_thisweek'
 }
-
-# Open todo notes
-# usage: ntodo
 
 # Git commit notes and update to git upstream and git branch.
 # By default, will git commit NOTES_DEFAULT_VAULT notes vault to origin main.
@@ -180,7 +177,7 @@ ncommit() {
   echo "  -> Git upstream: $git_upstream"
   echo "  -> Git branch: $git_branch"
 
-  bash -c "git -C '$vault_path' commit -am '$commit_message' && git -C '$vault_path' push $git_upstream $git_branch"
+  bash -c "git -C '$vault_path' add . && git -C '$vault_path' commit -m '$commit_message' && git -C '$vault_path' push $git_upstream $git_branch"
   
   echo "Success!"
 }

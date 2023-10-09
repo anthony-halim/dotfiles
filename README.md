@@ -5,25 +5,48 @@
 
 ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
 
-This repository holds my local configurations.
+This repository holds my local configurations. Feel free to take ideas from it to improve your own dotfiles.
 
 > ❗If you want to use this repository, I recommend forking this repository before usage.
 > I do **unannounced breaking changes** regularly.
 
-## 🖥️ Supported OS
-
-- WSL2 - Ubuntu 20.04, on Windows 11
-- MacOS Big Sur
-- Ubuntu 22.04
+> This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) by allowing terminal shortcuts to trigger Neovim functionalities.  
 
 ## 🧱 Components
 
 - [Wezterm](https://wezfurlong.org/wezterm/index.html) as the terminal emulator, with additional configurations and key bindings.
-- [ZSH](https://en.wikipedia.org/wiki/Z_shell) as default terminal and custom configurations and aliases. I don't install any plugin manager for ZSH. *I am* the plugin manager.
+- [Zellij](https://github.com/zellij-org/zellij) as terminal multiplexer and session management.
+- [ZSH](https://en.wikipedia.org/wiki/Z_shell) as default shell and custom configurations and aliases. No plugin manager for ZSH though. *I am* the plugin manager.
 - [powerlevel10k](https://github.com/romkatv/powerlevel10k) as ZSH theme.
 - [lazygit](https://github.com/jesseduffield/lazygit) as simple Git terminal UI.
 - [Neovim](neovim.io) as text editor. The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
 - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv)
+
+## ✨ Features
+
+This repository included common tools that somehow everyone uses (for good reason) e.g. fzf, fd, ripgrep, etc. Below are additional functionalities (or ideas) that was integrated in the repository due to my circumstances. If any of these circumstances is similar to yours, feel free to use or adopt it!
+
+#### Allow for machine specific configuration 
+
+TODO
+
+#### Highlighted (common) commands output
+
+TODO
+
+#### Zettelkasten notes taking utilities
+
+TODO
+
+## Environment Variables
+
+TODO
+
+## 🖥️ Supported OS
+
+- WSL2 - Ubuntu 20.04, on Windows 11
+- Ubuntu 22.04, Jammy LTS
+- ~~Mac OS Big Sur~~ (deprecated)
 
 ## 📋 Prerequisites
 
@@ -164,6 +187,3 @@ Below is a screenshot of a snippet of the script run:
 > - On `Caps Lock` tap, map it as `Esc`. 
 > - On `Caps Lock` hold, map it as `Ctrl`.
 
-**Q: No tmux?**
-
-> I have not found the use case for tmux; Wezterm currently fulfils all my tick boxes.

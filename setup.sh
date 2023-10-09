@@ -190,7 +190,7 @@ safe_symlink() {
 }
 
 load_cargo() {
-	local cargo_path="${HOME}/.cargo/env}"
+	local cargo_path="${HOME}/.cargo/env"
 
 	[[ ! $(command -v cargo) && -e "$cargo_path" ]] && source "$cargo_path"
 
