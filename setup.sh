@@ -189,6 +189,10 @@ safe_symlink() {
 	msg_success "  -> Symlink created!"
 }
 
+attempt_load_cargo() {
+	[[ ! $(command -v cargo) && -e "${HOME}/.cargo/env" ]] && source "${HOME}/.cargo/env"
+}
+
 setup_dependencies() {
 	install_dependencies() {
 		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger")
@@ -208,6 +212,8 @@ setup_dependencies() {
 
 setup_eza() {
 	install_eza() {
+		attempt_load_cargo
+
 		if [[ ! $(command -v cargo) ]]; then
 			msg_err "  -> cargo command not found! eza installation require cargo."
 			msg_warn "  ! If you have installed cargo during this script run, cargo env may have not been loaded."
