@@ -571,7 +571,7 @@ setup_eza && msg_success "eza: success!"
 
 # Bob installation
 separator
-msg_info "Neovim: installing Bob (Neovim version manager). Require rust."
+msg_info "bob: installing Bob (Neovim version manager). Require rust."
 setup_bob && msg_success "Bob: success!"
 
 # Neovim installation
