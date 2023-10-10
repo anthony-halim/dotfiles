@@ -111,6 +111,17 @@ confirm() {
 	done
 }
 
+parse_semver() {
+	local input_semver="$1"
+	local info_msg="$2"
+
+	if [[ "$input_semver" =~ ^v ]]; then
+		input_semver=$(echo "$input_semver" | cut --delimiter='v' --fields=2)
+		msg_info "  Translated $info_msg: v$input_semver to $input_semver"
+	fi
+	echo "$input_semver"
+}
+
 parse_params() {
 	while :; do
 		case "${1-}" in
@@ -151,6 +162,22 @@ parse_params() {
 
 	# Expand path
 	GIT_USER_LOCAL_FILE="${GIT_USER_LOCAL_FILE/#\~/$HOME}"
+
+	# Auto-fix semver parameters
+	NEOVIM_TAG=$(parse_semver "$NEOVIM_TAG" "neovim_tag")
+	GOLANG_TAG=$(parse_semver "$GOLANG_TAG" "golang_tag")
+
+	# Expand neovim version
+	if [[ "$NEOVIM_TAG" == "latest" ]]; then
+		msg_info "  neovim_tag is set to '$NEOVIM_TAG'. Fetching latest tag..."
+		NEOVIM_TAG=$(
+			git -c 'versionsort.suffix=-' \
+				ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/neovim/neovim '*.*.*' |
+				tail --lines=1 |
+				cut --delimiter='/' --fields=3 | cut --delimiter='v' --fields=2
+		)
+		msg_success "  -> Translated neovim_tag to '$NEOVIM_TAG'."
+	fi
 
 	return 0
 }
@@ -506,6 +533,8 @@ setup_local_config() {
 }
 
 setup_colors
+
+msg_info "Beginning setup..."
 parse_params "$@"
 
 msg_info "Script Parameters:"
