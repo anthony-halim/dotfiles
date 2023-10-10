@@ -117,7 +117,7 @@ parse_semver() {
 
 	if [[ "$input_semver" =~ ^v ]]; then
 		input_semver=$(echo "$input_semver" | cut --delimiter='v' --fields=2)
-		msg_info "  Translated $info_msg: v$input_semver to $input_semver"
+		msg "  Translated $info_msg: v$input_semver to $input_semver"
 	fi
 	echo "$input_semver"
 }
@@ -169,7 +169,7 @@ parse_params() {
 
 	# Expand neovim version
 	if [[ "$NEOVIM_TAG" == "latest" ]]; then
-		msg_info "  neovim_tag is set to '$NEOVIM_TAG'. Fetching latest tag..."
+		msg "  neovim_tag is set to '$NEOVIM_TAG'. Fetching latest tag..."
 		NEOVIM_TAG=$(
 			git -c 'versionsort.suffix=-' \
 				ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/neovim/neovim '*.*.*' |
@@ -345,8 +345,14 @@ setup_neovim() {
 	if [[ $(command -v nvim) ]]; then
 		local nvim_version=$(nvim --version | head -1 | grep -o '[0-9]\.[0-9]\.[0-9]')
 		if [[ "$nvim_version" != "${NEOVIM_TAG}" ]]; then
-			msg_warn "  ! detected Neovim of version ${nvim_version}. Please remove it if you wish to install version ${NEOVIM_TAG}."
-			return 0
+			msg_warn "  ! detected Neovim of version ${nvim_version}. Do you want to change the version to '$NEOVIM_TAG'?"
+			confirm || {
+				msg_info "  -> Skipping neovim version change"
+				return 0
+			}
+
+			install_nvim
+			msg_success "  -> Changed Neovim version from '$nvim_version' to '$NEOVIM_TAG'"
 		else
 			msg_info "  -> already installed, skipping..."
 		fi
