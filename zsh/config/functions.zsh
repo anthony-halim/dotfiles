@@ -214,3 +214,62 @@ ncommit() {
   
   echo "Success!"
 }
+
+# Git pull notes to git upstream and git branch.
+# By default, will git pull NOTES_DEFAULT_VAULT notes vault from origin main.
+#
+# usage: npull [-v, --vault <vault_type>] [-p, --path <vault_path]
+#              [-u <git_upstream> ] [-b <git_branch> ]
+npull() {
+  local chosen_vault=${(P)NOTES_DEFAULT_VAULT:-personal}
+  local personal_vault_path=${(P)NOTES_PERSONAL_VAULT:-$HOME/notes/personal}
+  local work_vault_path=${(P)NOTES_WORK_VAULT:-$HOME/notes/work}
+  local vault_path=""
+
+  local git_upstream="origin"
+  local git_branch="main"
+
+  while :; do
+    case "${1-}" in
+    -v | --vault)
+      chosen_vault="${2-}"
+      shift
+      ;;
+    -p | --path)
+      vault_path="${2-}"
+      shift
+      ;;
+    -u | --upstream)
+      git_upstream="${2-}"
+      shift
+      ;;
+    -b | --branch)
+      git_branch="${2-}"
+      shift
+      ;;
+    -?*) echo "Unknown option: $1" && return ;;
+    *) break ;;
+    esac
+    shift
+  done
+
+  if [[ -z "$vault_path" ]]; then
+    if [[ "${chosen_vault}" =~ ^personal ]]; then
+      vault_path="${personal_vault_path}"
+    elif [[ "${chosen_vault}" =~ ^work ]]; then
+      vault_path="${work_vault_path}"
+    else
+      echo "Unable to get path to vault!"
+      return
+    fi
+  fi
+
+  echo "Pulling notes:"
+  echo "  -> Hault: $vault_path"
+  echo "  -> Git upstream: $git_upstream"
+  echo "  -> Git branch: $git_branch"
+
+  bash -c "git -C '$vault_path' pull --rebase $git_upstream $git_branch"
+  
+  echo "Success!"
+}
