@@ -135,6 +135,18 @@ ntags() {
   nvim +'Telekasten show_tags'
 }
 
+# Create new note
+# usage: nnew
+nnew() {
+  nvim +'Telekasten new_note'
+}
+
+# Create new templated note
+# usage: ntmplnew
+ntmplnew() {
+  nvim +'Telekasten new_templated_note'
+}
+
 # Git commit notes and update to git upstream and git branch.
 # By default, will git commit NOTES_DEFAULT_VAULT notes vault to origin main.
 #
