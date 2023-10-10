@@ -75,6 +75,7 @@ genpw() {
 }
 
 ## budget version of zsh-z: bm & to
+# bookmark current directory
 # usage: bm (bookmark current directory)
 bm () {
   local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
@@ -82,14 +83,16 @@ bm () {
 
   if grep -E ${PWD}'$' "${directory_cache}" 
   then
-      echo "${PWD} is already bookmarked"
+      echo "-> ${PWD} is already bookmarked"
   else
       echo "$PWD" >> "${directory_cache}"
-      echo "${PWD} bookmarked"
+      echo "-> ${PWD} bookmarked"
   fi
 }
 
-# fast travel to directory saved in the list of bookmark
+# fast travel to directory saved in the list of bookmark.
+# If there is conflicting names, will spawn fzf window.
+# e.g. to <dir_name> (fuzzy search)
 # usage: to foo (foo is the partial/full name of directory)
 to () {
   local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
@@ -112,6 +115,24 @@ ndaily() {
 # usage: nweekly
 nweekly() {
   nvim +'Telekasten goto_thisweek'
+}
+
+# Find notes
+# usage: nfind
+nfind() {
+  nvim +'Telekasten find_notes'
+}
+
+# Search notes (grep)
+# usage: ngrep
+ngrep() {
+  nvim +'Telekasten search_notes'
+}
+
+# Find notes tags
+# usage: ntags
+ntags() {
+  nvim +'Telekasten show_tags'
 }
 
 # Git commit notes and update to git upstream and git branch.
