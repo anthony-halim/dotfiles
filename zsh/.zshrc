@@ -10,6 +10,7 @@ ZSH_CUSTOM="${ZSH}/custom"
 ZSH_PLUGIN="${ZSH}/plugin"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
+ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
 
 # Enable colors
 autoload -Uz colors && colors
@@ -32,7 +33,7 @@ _comp_options+=(globdots)
 
 # History setup
 setopt SHARE_HISTORY
-HISTFILE=$HOME/.zsh_history
+HISTFILE="$ZSH_HISTORY_CACHE"
 SAVEHIST=10000
 HISTSIZE=9999
 setopt HIST_EXPIRE_DUPS_FIRST

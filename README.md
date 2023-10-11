@@ -10,90 +10,153 @@ This repository holds my local configurations. Feel free to take ideas from it t
 > ❗If you want to use this repository, I recommend forking this repository before usage.
 > I do **unannounced breaking changes** regularly.
 
-> This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) by allowing terminal shortcuts to trigger Neovim functionalities.  
+> This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) as it incorporates terminal shortcuts to trigger Neovim functionalities.  
 
-## 🧱 Components
-
-- [Wezterm](https://wezfurlong.org/wezterm/index.html) as the terminal emulator, with additional configurations and key bindings.
-- [Zellij](https://github.com/zellij-org/zellij) as terminal multiplexer and session management.
-- [ZSH](https://en.wikipedia.org/wiki/Z_shell) as default shell and custom configurations and aliases. No plugin manager for ZSH though. *I am* the plugin manager.
-- [powerlevel10k](https://github.com/romkatv/powerlevel10k) as ZSH theme.
-- [lazygit](https://github.com/jesseduffield/lazygit) as simple Git terminal UI.
-- [Neovim](neovim.io) as text editor. The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
-- Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv)
-
-## ✨ Features
-
-This repository included common tools that somehow everyone uses (for good reason) e.g. fzf, fd, ripgrep, etc. Below are additional functionalities (or ideas) that was integrated in the repository due to my circumstances. If any of these circumstances is similar to yours, feel free to use or adopt it!
-
-#### Allow for machine specific configuration 
-
-TODO
-
-#### Highlighted (common) commands output
-
-TODO
-
-#### Zettelkasten notes taking utilities
-
-TODO
-
-## Environment Variables
-
-TODO
+---
 
 ## 🖥️ Supported OS
 
 - WSL2 - Ubuntu 20.04, on Windows 11
 - Ubuntu 22.04, Jammy LTS
-- ~~Mac OS Big Sur~~ (deprecated)
+- ~~Mac OS Big Sur~~ (not tested)
 
-## 📋 Prerequisites
+---
 
-The following prerequisites are not automatically set up and must be done manually.
+## ✨ Features
 
-##### Windows: WSL Installation 
+The features integrated within this repository stems from my workflows. 
 
-Run Powershell as administrator & install Ubuntu distribution.
+#### Allows for machine specific configurations
 
-```sh
-wsl --install -d Ubuntu
-# For Ubuntu 20.04, do wsl --install -d Ubuntu-20.04
-```
+My workflows use different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to commit to this repository.
 
-##### Git SSH Keys
+There are 2 ways custom configuration can be made:
 
-We need to allow SSH authentication to do Git operations with Git repositories.
+- Adding [custom local configs](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
+- Set [environment variables](#environment-variables).
 
-```sh
-# Generate fresh SSH keys
-ssh-keygen -t rsa
-```
+#### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
 
-Whitelist the private key by adding the public key from SSH keys generated to your Git user.
+For those have not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository provides a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
 
-##### WezTerm
+- `bm` bookmarks the current directory.
+- `gt` fast travels to the directory e.g. `gt foo`, where `foo` is a fuzzy match to the full path.
+- On name conflict, `fzf` window will be spawned.
 
-Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) page and follow the installation steps.
+#### Notes Taking
+
+This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten.de/posts/overview/) style of note taking. It depends on Neovim and [telekasten.nvim](https://github.com/renerocksai/telekasten.nvim) plugin.
+
+- Notes are markdown file based. This avoids additional GUI or application to view the notes.
+- The followings shortcuts are provided to increase ease of use:
+
+  <details>
+    <summary>Shortcuts</summary>
+    <br/>
+
+    - `ndaily` opens daily note (create if does not exist).
+    - `nweekly` opens weekly note (create if does not exist).
+    - `nfind` find notes by title
+    - `ngrep` find notes by content grep
+    - `ntags` find notes by tags
+    - `nnew` create new notes
+    - `ntmplnew` create new templated note
+    - `ncommit` commits note repository to upstream branch
+    - `npull` pull latest changes of note repository from upstream branch
+  </details>
+
+  For more information and usage, see [functions.zsh](zsh/config/functions.zsh).
+
+---
+
+## 🧱 Components
+
+#### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
+
+<details>
+  <br/>
+
+  - Due to heavy TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
+  - Zellij is used to provide terminal session management and multiplexer.
+  - ZSH is battle tested shell that is easily configurable and is widely supported. Note that I do not use an plugin manager (at least for now). *I am* the plugin manager.
+  - powerlevel10k as performant shell theme. 
+</details>
+
+<details>
+  <summary>Showcase</summary>
+  <br/>
+
+  ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
+</details>
+
+#### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
+
+<details>
+  <br/>
+
+  - `eza` as better `ls`. Aliased to `ls`.
+  - `bat` as better `cat`. Aliased to `cat`.
+  - `lazygit` as simple Git terminal UI.
+  - `delta` as syntax highlighter for Git.
+  - `fzf`, `fd`, `ripgrep` as search utilities.
+</details>
+
+<details>
+  <summary>Showcase</summary>
+  <br/>
+
+  *eza* 
+
+  ![credit to source repository](https://github.com/eza-community/eza/blob/main/screenshots.png) 
+
+  *bat* 
+
+  ![credit to source repository](https://camo.githubusercontent.com/7b7c397acc5b91b4c4cf7756015185fe3c5f700f70d256a212de51294a0cf673/68747470733a2f2f696d6775722e636f6d2f724773646e44652e706e67)
+
+  *lazygit*
+
+  ![credit to source repository](https://github.com/jesseduffield/lazygit/blob/assets/demo/commit_and_push-compressed.gif)
+
+  *delta*
+
+  ![credit to source repository](https://user-images.githubusercontent.com/50617144/266825290-21025bbd-89c4-4ff7-ba81-81a273604632.png)
+
+</details>
+
+#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
+
+<details>
+  <br/>
+
+  - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
+  - The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
+</details>
+
+<details>
+  <summary>Showcase</summary>
+  <br/>
+
+  ![img](https://user-images.githubusercontent.com/50617144/274354764-2c92be00-09c7-4573-8098-b170b832e0b0.png) 
+</details>
+
+#### Programming languages and utilities: Golang, Python, Rust
+
+<details>
+  <br/>
+
+  - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
+</details>
+
+---
 
 ## 🌱  Usage
 
-##### Git clone this repository to `$HOME/repos/personal/`
-
-My personal convention is to store repositories based on their use cases.
-
-- `$HOME/repos/personal` to hold personal repositories.
-- `$HOME/repos/work` to hold work-related repositories.
-
-```sh
-mkdir -p $HOME/repos/personal 
-mkdir -p $HOME/repos/work 
-```
+#### Git clone this repository
 
 We use Git submodules within this repository. To git clone with the submodules,
 
 ```sh
-git clone --recurse-submodules --shallow-submodules https://github.com/anthony-halim/dotfiles.git $HOME/repos/personal/dotfiles
+git clone --recurse-submodules --shallow-submodules https://github.com/anthony-halim/dotfiles.git 
 ```
 
 > NOTE: If the repository is already cloned without submodules, you can fetch the submodules by:
@@ -102,17 +165,40 @@ git clone --recurse-submodules --shallow-submodules https://github.com/anthony-h
 > git submodule update --depth=1
 > ```
 
-##### Run *setup.sh*
+#### Windows: WSL Installation 
+
+Run Powershell as administrator & install Ubuntu distribution.
+
+```sh
+wsl --install -d Ubuntu
+# For Ubuntu 20.04, do wsl --install -d Ubuntu-20.04
+```
+#### Install WezTerm
+
+Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) page and follow the installation steps.
+
+#### Run *setup.sh*
 
 Refer to [Setup](#setup) for details.
 
-##### (Optional) Add custom local configurations at `$HOME/.config/zsh/local_config` directory
+#### (Optional) Add custom local configurations at `$HOME/.config/zsh/local_config` directory
 
-Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository.
+Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository. 
 
-I use this to store machine-specific configurations, functions, or aliases. For example, my work machine would have VPN shortcuts which I do not want to committed to this repository.
+You can use this to add additional aliases, environment variables, or functions.
 
-##### (Optional) Swap Keys 
+#### (Optional) Set environment variables
+
+The following environment variables affects the repository behaviour. You can set it by exporting the variable in a custom `.zsh` file. See [adding custom configuration](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
+
+<details>
+    <summary>Environment variables</summary>
+    <br/>
+
+    TODO
+</details>
+
+#### (Optional) Swap Keys 
 
 The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you! 
 
@@ -146,6 +232,8 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 
 </details>
 
+---
+
 ## ⚙️ Setup
 
 ```sh
@@ -168,18 +256,20 @@ I have done my best to ensure that the script is:
 > ```Powershell
 > # Given installation dir: "C:\Program Files\Wezterm"
 > # Given local repository configuration: "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles"
-> New-Item -Path "C:\Program Files\WezTerm\wezterm.lua" -ItemType SymbolicLink -Value "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles\wezterm\wezterm-wsl.lua"
+> New-Item -Path "C:\Program Files\WezTerm\wezterm.lua" -ItemType SymbolicLink -Value "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles\wezterm\wezterm.lua"
 > ```
 
 Below is a screenshot of a snippet of the script run:
   
 ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/2ed8a968-4f67-4555-a6f6-6838503c5229)
 
+---
+
 ## 🤔 FAQ
 
 **Q: Why not use third-party keyboard managers?** 
 
-> There are lots of third-party software that aids key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or be allowed) to install third-party software that customises close to the firmware level. 
+> There are lots of third-party softwares that aid key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or be allowed) to install third-party software that customises close to the firmware level. 
 >
 > Due to this, I opt to use built-in or officially supported by the OS, albeit it supports less extensive customisation.
 >
