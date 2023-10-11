@@ -12,7 +12,64 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 > This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) by allowing terminal shortcuts to trigger Neovim functionalities.  
 
-## 🧱 Components
+## 🖥️ Supported OS
+
+- WSL2 - Ubuntu 20.04, on Windows 11
+- Ubuntu 22.04, Jammy LTS
+- ~~Mac OS Big Sur~~ (not tested)
+
+## ✨ Features
+
+The functionalities that are integrated within this repository stems from my workflow and usages. If any of these circumstances is similar to yours, feel free to use or adopt the idea!
+
+<details>
+  <summary>Cross-platform</summary>
+  <br/>
+
+  *Use case:* 
+  > I work with multiple machines with varying OS. 
+
+  *Solution:*
+  > The tools need to be available on multiple platforms.
+</details>
+
+<details>
+  <summary>Able to support machine specific configuration</summary>
+  <br/>
+
+  *Use case:* 
+  > Different machines may need to support slightly different configuration, tools, and usage. For example, there are in-house tools shortcuts in my work machine that I do not want to be included in the repository.
+
+  *Solution:*
+  > Support additional, uncommited, configurations and/or feature flags to influence the behaviour or its configuration. 
+</details>
+
+<details>
+  <summary>Use terminal as much as possible</summary>
+  <br/>
+
+  *Use case:* 
+  > I often SSH remotely to my machine and is restricted to the terminal.
+
+  *Solution:*
+  > - Prefer TUI (Terminal UI) and CLI tools.
+  > - TODO: Terminal to have a session manager to create allow working from multiple machines.
+</details>
+
+<details>
+  <summary>Provide note taking utilities that is doable everywhere</summary>
+  <br/>
+
+  *Use case:* 
+  > Taking notes (for to do list and building knowledge base) is a big part of my workflow and I want to be able to do it with as little friction as possible and from any machines.
+
+  *Solution:*
+  > - Provide shortcuts for notes taking.
+  > - File-based notes storage to not depend on specific application to view; hence note taking application that uses internal representation is not ideal.
+  > - TODO: Automatic syncing to remote storage to avoid conflicting changes.
+</details>
+
+#### Components
 
 - [Wezterm](https://wezfurlong.org/wezterm/index.html) as the terminal emulator, with additional configurations and key bindings.
 - [Zellij](https://github.com/zellij-org/zellij) as terminal multiplexer and session management.
@@ -21,14 +78,6 @@ This repository holds my local configurations. Feel free to take ideas from it t
 - [lazygit](https://github.com/jesseduffield/lazygit) as simple Git terminal UI.
 - [Neovim](neovim.io) as text editor. The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
 - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv)
-
-## ✨ Features
-
-This repository included common tools that somehow everyone uses (for good reason) e.g. fzf, fd, ripgrep, etc. Below are additional functionalities (or ideas) that was integrated in the repository due to my circumstances. If any of these circumstances is similar to yours, feel free to use or adopt it!
-
-#### Allow for machine specific configuration 
-
-TODO
 
 #### Highlighted (common) commands output
 
@@ -40,6 +89,13 @@ TODO
 
 ## Environment Variables
 
+Below are environment variables that can be set freely to configure the behaviour.
+
+| Environment Variable Name | Description    | Behaviour    |
+| ------------------------- | -------------- | ------------ |
+| Item1.1    | Item2.1    | Item3.1    |
+
+> HINT: You can set these 
 TODO
 
 ## 🖥️ Supported OS
