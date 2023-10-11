@@ -1,11 +1,26 @@
 # Safely source argument if it exists
-# usage: safe_source <filename>
+#
+# Usage: 
+#   safe_source <filename>
+#
+# Params:
+#   - filename  STRING  path to file
 safe_source() {
   [[ ! -e "$1" ]] || source "$1"
 }
 
-# Load local plugin
-# usage: zsh_load_local_plugin <plugin_name> <plugin_source>
+# Load local plugin from the plugin_name and plugin_source.
+#
+# Usage: 
+#   zsh_load_local_plugin <plugin_name> <plugin_source>
+# 
+# Example:
+#   zsh_load_local_plugin "zsh-autosuggestions" "zsh-autosuggestions.zsh"
+#
+# Params:
+#   - plugin_name     STRING            refers to the name of plugin, e.g. zsh-syntax-highlighting
+#   - plugin_source   STRING            refers to the path to entry point of the plugin, e.g. zsh-syntax-highlighting.zsh
+#   - plugin_dir      ENV:$ZSH_PLUGIN   directory to find the plugin_dir from. Fetched via environment variable: $ZSH_PLUGIN. Defaults to ${HOME}/.config/zsh/plugin
 zsh_load_local_plugin() {
   local plugin_name="$1"
   local plugin_source="$2"
@@ -14,13 +29,24 @@ zsh_load_local_plugin() {
   safe_source "$plugin_dir/$plugin_name/$plugin_source"
 }
 
-# Generate random string, optionally use special characters.
+# Generate random string that is URL safe and attempt to copy it to the clipboard.
+# Optionally, we can include special characters; but resulting string will no longer be URL safe.
 #
-# String will be copied into the clipboard.
-# Will attempt to check for common clipboards utility. Alternatively, you can pass the clipboard binary directly.
+# For copying into the clipboard, we can provide explicit clipboard binary to use by using '-x'. 
+# Else, we will attempt to check for common clipboards utility. 
 # If every clipboard fail, we give up and print to the screen.
 #
-# usage: genpw [--s, --special_char] [-l, --length <password_length>] [-x, --clipboard <clipboard binary to use>]
+# Usage: 
+#   genpw [--s, --special_char] [-l, --length <password_length>] [-x, --clipboard <clipboard binary to use>]
+#
+# Example:
+#   # Generates random string with special characters, length of 24, and copied to clipboard using clip.exe.
+#   genpw -s -l 24 -x clip.exe
+#
+# Flags/Options:
+#   -s, --special_char  FLAG    whether to include special characters. Defaults to false.
+#   -l, --length        INT     length of string to be generated. Defaults to 16.
+#   -x, --clipboard     STRING  name of clipboard binary to use. If not provided, will attempt to use common clipboards.
 genpw() {
   local use_special_char=0
   local pw_length=16 
@@ -74,9 +100,16 @@ genpw() {
   fi
 }
 
-## budget version of zsh-z: bm & to
-# bookmark current directory
-# usage: bm (bookmark current directory)
+## Budget version of z: https://github.com/rupa/z
+
+# Bookmark current directory.
+#
+# Usage: 
+#   bm
+#
+# Example:
+#   # bookmark current directory
+#   bm
 bm () {
   local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
   [[ -f "${directory_cache}" ]] || touch "${directory_cache}"
@@ -90,11 +123,15 @@ bm () {
   fi
 }
 
-# fast travel to directory saved in the list of bookmark.
-# If there is conflicting names, will spawn fzf window.
-# e.g. to <dir_name> (fuzzy search)
-# usage: to foo (foo is the partial/full name of directory)
-to () {
+# Go to (gt) directory saved in the list of bookmarks. If there is conflicting names, will spawn fzf window.
+#
+# Usage:
+#   gt <dir_name>
+#
+# Example:
+#   # foo is partial/full name of path to directory
+#   gt foo
+gt () {
   local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
   q=" $*"
   q=${q// -/ !}
@@ -106,53 +143,65 @@ to () {
 ## Note taking related
 
 # Open daily notes in Neovim
-# usage: ndaily
+# Usage: ndaily
 ndaily() {
   nvim +'Telekasten goto_today'
 }
 
 # Open weekly notes
-# usage: nweekly
+# Usage: nweekly
 nweekly() {
   nvim +'Telekasten goto_thisweek'
 }
 
 # Find notes
-# usage: nfind
+# Usage: nfind
 nfind() {
   nvim +'Telekasten find_notes'
 }
 
 # Search notes (grep)
-# usage: ngrep
+# Usage: ngrep
 ngrep() {
   nvim +'Telekasten search_notes'
 }
 
 # Find notes tags
-# usage: ntags
+# Usage: ntags
 ntags() {
   nvim +'Telekasten show_tags'
 }
 
 # Create new note
-# usage: nnew
+# Usage: nnew
 nnew() {
   nvim +'Telekasten new_note'
 }
 
 # Create new templated note
-# usage: ntmplnew
+# Usage: ntmplnew
 ntmplnew() {
   nvim +'Telekasten new_templated_note'
 }
 
 # Git commit notes and update to git upstream and git branch.
-# By default, will git commit NOTES_DEFAULT_VAULT notes vault to origin main.
+# By default, will git commit NOTES_DEFAULT_VAULT notes vault to git origin/main.
 #
-# usage: ncommit [-m, --message <commit_message>] 
-#                [-v, --vault <vault_type>] [-p, --path <vault_path]
-#                [-u <git_upstream> ] [-b <git_branch> ]
+# Usage: 
+#   ncommit [-m, --message <commit_message>] 
+#           [-v, --vault <vault_type>] [-p, --path <vault_path]
+#           [-u <git_upstream> ] [-b <git_branch> ]
+#
+# Example:
+#   # Commit default vault with -m "custom message" to "chore-branch" branch in default upstream
+#   ncommit -m "custom message" -b "chore-branch"
+#
+# Flags/Options:
+#   -m, --message       STRING                                          commit message. Defaults to 'Notes upload - $TIMESTAMP'
+#   -v  --vault         ENV:$NOTES_DEFAULT_VAULT:("personal"|"work")    type of vault. If environment variable is not present, defaults to "personal".
+#   -p, --path          STRING                                          path to vault. Will overrides --vault.
+#   -u, --upstream      STRING                                          git upstream to commit to. Defaults to "origin".
+#   -b, --branch        STRING                                          git branch to commit to. Defaults to "main".
 ncommit() {
   local hdate=$(date +"%D %T")
   local commit_message="Notes upload - ${hdate}"
@@ -215,11 +264,22 @@ ncommit() {
   echo "Success!"
 }
 
-# Git pull notes to git upstream and git branch.
-# By default, will git pull NOTES_DEFAULT_VAULT notes vault from origin main.
+# Git pull (with --rebase) notes and update from git upstream and git branch.
+# By default, will git pull NOTES_DEFAULT_VAULT notes vault from git origin/main.
 #
-# usage: npull [-v, --vault <vault_type>] [-p, --path <vault_path]
-#              [-u <git_upstream> ] [-b <git_branch> ]
+# Usage: 
+#   npull [-v, --vault <vault_type>] [-p, --path <vault_path]
+#         [-u <git_upstream> ] [-b <git_branch> ]
+#
+# Example:
+#   # Pull default vault with from "chore-branch" branch in default upstream
+#   npull  -b "chore-branch"
+#
+# Flags/Options:
+#   -v  --vault         ENV:$NOTES_DEFAULT_VAULT:("personal"|"work")    type of vault. If environment variable is not present, defaults to "personal".
+#   -p, --path          STRING                                          path to vault. Will overrides --vault.
+#   -u, --upstream      STRING                                          git upstream to commit to. Defaults to "origin".
+#   -b, --branch        STRING                                          git branch to commit to. Defaults to "main".
 npull() {
   local chosen_vault=${(P)NOTES_DEFAULT_VAULT:-personal}
   local personal_vault_path=${(P)NOTES_PERSONAL_VAULT:-$HOME/notes/personal}
