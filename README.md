@@ -33,7 +33,7 @@ There are 2 ways custom configuration can be made:
 
 #### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
 
-For those has not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository implemented a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
+For those have not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository provides a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
 
 - `bm` bookmarks the current directory.
 - `gt` fast travels to the directory e.g. `gt foo`, where `foo` is a fuzzy match to the full path.
