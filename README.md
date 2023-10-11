@@ -35,20 +35,10 @@ There are 2 ways such configuration can be added:
 
 For those has not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository implemented a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
 
-<details>
-  <summary>Showcase</summary>
-  <br/>
-
-  `bm` *bookmarks the current directory*
-  ![img](https://user-images.githubusercontent.com/50617144/274351751-dd6da333-57f0-4fae-bf62-2a607ad3e139.png) 
-  
-  `gt` *fast travels to the directory*
-path
-  ![img](https://user-images.githubusercontent.com/50617144/274352486-b43284e9-ad95-4b33-8886-f2d6ce8a04b5.png) 
-
-  *On conflict, fzf window will be spawned*
+- `bm` bookmarks the current directory.
+- `gt` fast travels to the directory.
+- On conflict, `fzf` window will be spawned.
   ![img](https://user-images.githubusercontent.com/50617144/274351422-8e5e51dc-5db0-4997-8ab0-0e39060d4178.png)
-</details>
 
 #### Note Taking
 
