@@ -10,7 +10,7 @@ This repository holds my local configurations. Feel free to take ideas from it t
 > ❗If you want to use this repository, I recommend forking this repository before usage.
 > I do **unannounced breaking changes** regularly.
 
-> This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) by allowing terminal shortcuts to trigger Neovim functionalities.  
+> This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) as it incorporates terminal shortcuts to trigger Neovim functionalities.  
 
 ## 🖥️ Supported OS
 
@@ -24,9 +24,10 @@ The functionalities that are integrated within this repository stems from my [wo
 
 #### Workflows
 
+###### Cross platform
+
 <details>
-  <summary>Cross-platform</summary>
-  <br/>
+  <br />
 
   *Use case:* 
   > I work with multiple machines with varying OS. 
@@ -35,19 +36,21 @@ The functionalities that are integrated within this repository stems from my [wo
   > The tools need to be available on multiple platforms.
 </details>
 
+###### Support machine specific configurations 
+
 <details>
-  <summary>Able to support machine specific configuration</summary>
   <br/>
 
   *Use case:* 
   > Different machines may need to support slightly different configuration, tools, and usage. For example, there are in-house tools shortcuts in my work machine that I do not want to be included in the repository.
 
   *Solution:*
-  > Support additional, uncommited, configurations and/or feature flags to influence the behaviour or its configuration. 
+  > Supports additional, uncommited, configurations and/or feature flags to influence the behaviour or its configuration. 
 </details>
 
+###### Use terminal as much as possible
+
 <details>
-  <summary>Use terminal as much as possible</summary>
   <br/>
 
   *Use case:* 
@@ -58,8 +61,9 @@ The functionalities that are integrated within this repository stems from my [wo
   > - TODO: Terminal to have a session manager to create allow working from multiple machines.
 </details>
 
+###### Provide note taking utilities that is doable everywhere
+
 <details>
-  <summary>Provide note taking utilities that is doable everywhere</summary>
   <br/>
 
   *Use case:* 
@@ -67,32 +71,66 @@ The functionalities that are integrated within this repository stems from my [wo
 
   *Solution:*
   > - Provide shortcuts for notes taking.
-  > - File-based notes storage to not depend on specific application to view; hence note taking application that uses internal representation is not ideal.
+  > - File-based notes storage to not depend on specific application to view to avoid additional application/GUI dependencies
   > - TODO: Automatic syncing to remote storage to avoid conflicting changes.
 </details>
 
 #### Components
 
-###### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal Emulator), [Zellij](https://github.com/zellij-org/zellij) (Session Manager)
+###### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager)
 
-- Due to all of the TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
-- Zellij is used to provide terminal session management and multiplexer.
+<details>
+  <br/>
 
-###### Text editor: [Neovim](neovim.io)
+  - Due to heavy TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
+  - Zellij is used to provide terminal session management and multiplexer.
+</details>
 
-- Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is incredible.
-- The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
+###### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
 
-###### Shell: [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme), eza, bat, lazygit, 
+<details>
+  <br/>
+
+  - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
+  - The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
+</details>
+
+###### Shell: [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
+
+<details>
+  <br/>
 
 - ZSH is battle tested shell that is easily configurable and is widely supported. Note that I do not use an plugin manager (at least for now). *I am* the plugin manager.
 - powerlevel10k as performant shell theme. 
+</details>
 
-###### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit) , [delta](https://github.com/dandavison/delta) 
+###### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
 
-- [lazygit](https://github.com/jesseduffield/lazygit) as simple Git terminal UI.
-- [Neovim](neovim.io) as text editor. The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
-- Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv)
+<details>
+  <br/>
+
+  - `eza` as better `ls`.
+  - `bat` as better `cat`.
+  - `lazygit` as simple Git terminal UI.
+  - `delta` as syntax highlighter for Git.
+  - `fzf`, `fd`, `ripgrep` as search utilities.
+</details>
+
+<details>
+  <summary>Showcase</summary>
+
+  - eza: ![eza](https://github.com/eza-community/eza/blob/main/screenshots.png) 
+
+</details>
+
+###### Programming languages and utilities
+
+<details>
+  <br/>
+
+  - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
+</details>
+
 
 #### Highlighted (common) commands output
 
