@@ -269,7 +269,7 @@ Below is a screenshot of a snippet of the script run:
 
 **Q: Why not use third-party keyboard managers?** 
 
-> There are lots of third-party software that aids key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or be allowed) to install third-party software that customises close to the firmware level. 
+> There are lots of third-party softwares that aid key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or be allowed) to install third-party software that customises close to the firmware level. 
 >
 > Due to this, I opt to use built-in or officially supported by the OS, albeit it supports less extensive customisation.
 >
