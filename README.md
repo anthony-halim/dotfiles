@@ -20,7 +20,9 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 ## ✨ Features
 
-The functionalities that are integrated within this repository stems from my workflow and usages. If any of these circumstances is similar to yours, feel free to use or adopt the idea!
+The functionalities that are integrated within this repository stems from my [workflows](#workflows). If any of these circumstances is similar to yours, feel free to use or adopt the idea!
+
+#### Workflows
 
 <details>
   <summary>Cross-platform</summary>
@@ -71,10 +73,23 @@ The functionalities that are integrated within this repository stems from my wor
 
 #### Components
 
-- [Wezterm](https://wezfurlong.org/wezterm/index.html) as the terminal emulator, with additional configurations and key bindings.
-- [Zellij](https://github.com/zellij-org/zellij) as terminal multiplexer and session management.
-- [ZSH](https://en.wikipedia.org/wiki/Z_shell) as default shell and custom configurations and aliases. No plugin manager for ZSH though. *I am* the plugin manager.
-- [powerlevel10k](https://github.com/romkatv/powerlevel10k) as ZSH theme.
+###### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal Emulator), [Zellij](https://github.com/zellij-org/zellij) (Session Manager)
+
+- Due to all of the TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
+- Zellij is used to provide terminal session management and multiplexer.
+
+###### Text editor: [Neovim](neovim.io)
+
+- Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is incredible.
+- The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
+
+###### Shell: [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme), eza, bat, lazygit, 
+
+- ZSH is battle tested shell that is easily configurable and is widely supported. Note that I do not use an plugin manager (at least for now). *I am* the plugin manager.
+- powerlevel10k as performant shell theme. 
+
+###### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit) , [delta](https://github.com/dandavison/delta) 
+
 - [lazygit](https://github.com/jesseduffield/lazygit) as simple Git terminal UI.
 - [Neovim](neovim.io) as text editor. The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
 - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv)
