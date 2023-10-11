@@ -173,19 +173,7 @@ Run Powershell as administrator & install Ubuntu distribution.
 wsl --install -d Ubuntu
 # For Ubuntu 20.04, do wsl --install -d Ubuntu-20.04
 ```
-
-#### Git SSH Keys
-
-We need to allow SSH authentication to do Git operations with Git repositories.
-
-```sh
-# Generate fresh SSH keys
-ssh-keygen -t rsa
-```
-
-Whitelist the private key by adding the public key from SSH keys generated to your Git user.
-
-#### WezTerm
+#### Install WezTerm
 
 Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) page and follow the installation steps.
 
