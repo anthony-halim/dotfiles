@@ -28,7 +28,7 @@ My workflows use different machines with slightly different configuration, tools
 
 There are 2 ways custom configuration can be made:
 
-- Adding [custom local configs](#(optional)-add-custom-local-configurations-at-%24home%2F.config%2Fzsh%2Flocal_config-directory).
+- Adding [custom local configs](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
 - Set [environment variables](#environment-variables).
 
 #### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
@@ -141,14 +141,6 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
 </details>
 
-## Environment Variables
-
-Below are environment variables that can be set freely to configure the behaviour.
-
-| Environment Variable Name | Description    | Behaviour    |
-| ------------------------- | -------------- | ------------ |
-| Item1.1    | Item2.1    | Item3.1    |
-
 ## 📋 Prerequisites
 
 The following prerequisites are not automatically set up and must be done manually.
@@ -179,22 +171,12 @@ Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) pag
 
 ## 🌱  Usage
 
-#### Git clone this repository to `$HOME/repos/personal/`
-
-My personal convention is to store repositories based on their use cases.
-
-- `$HOME/repos/personal` to hold personal repositories.
-- `$HOME/repos/work` to hold work-related repositories.
-
-```sh
-mkdir -p $HOME/repos/personal 
-mkdir -p $HOME/repos/work 
-```
+#### Git clone this repository
 
 We use Git submodules within this repository. To git clone with the submodules,
 
 ```sh
-git clone --recurse-submodules --shallow-submodules https://github.com/anthony-halim/dotfiles.git $HOME/repos/personal/dotfiles
+git clone --recurse-submodules --shallow-submodules https://github.com/anthony-halim/dotfiles.git 
 ```
 
 > NOTE: If the repository is already cloned without submodules, you can fetch the submodules by:
@@ -212,6 +194,19 @@ Refer to [Setup](#setup) for details.
 Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository. 
 
 You can use this to add additional aliases, environment variables, or functions.
+
+#### (Optional) Set environment variables
+
+The following environment variables affects the repository behaviour. You can set it by exporting the variable in a custom `.zsh` file. See [adding custom configuration](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
+
+<details>
+    <summary>Environment variables</summary>
+    <br/>
+
+    | Environment Variable Name | Description    | Behaviour    |
+    | ------------------------- | -------------- | ------------ |
+    | Item1.1    | Item2.1    | Item3.1    |
+</details>
 
 #### (Optional) Swap Keys 
 
