@@ -20,11 +20,9 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 ## ✨ Features
 
-The functionalities that are integrated within this repository stems from my [workflows](#workflows). If any of these circumstances is similar to yours, feel free to use or adopt the idea!
+The functionalities that are integrated within this repository stems from my workflows. If any of these circumstances is similar to yours, feel free to use or adopt the idea!
 
-#### Workflows
-
-###### Cross platform
+#### Cross platform
 
 <details>
   <br />
@@ -36,7 +34,7 @@ The functionalities that are integrated within this repository stems from my [wo
   > The tools need to be available on multiple platforms.
 </details>
 
-###### Support machine specific configurations 
+#### Support machine specific configurations 
 
 <details>
   <br/>
@@ -48,7 +46,7 @@ The functionalities that are integrated within this repository stems from my [wo
   > Supports additional, uncommited, configurations and/or feature flags to influence the behaviour or its configuration. 
 </details>
 
-###### Use terminal as much as possible
+#### Use terminal as much as possible
 
 <details>
   <br/>
@@ -61,7 +59,7 @@ The functionalities that are integrated within this repository stems from my [wo
   > - TODO: Terminal to have a session manager to create allow working from multiple machines.
 </details>
 
-###### Provide note taking utilities that is doable everywhere
+#### Provide note taking utilities that is doable everywhere
 
 <details>
   <br/>
@@ -75,18 +73,27 @@ The functionalities that are integrated within this repository stems from my [wo
   > - TODO: Automatic syncing to remote storage to avoid conflicting changes.
 </details>
 
-#### Components
+## 🧱 Components
 
-###### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager)
+#### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
 
 <details>
   <br/>
 
   - Due to heavy TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
   - Zellij is used to provide terminal session management and multiplexer.
+  - ZSH is battle tested shell that is easily configurable and is widely supported. Note that I do not use an plugin manager (at least for now). *I am* the plugin manager.
+  - powerlevel10k as performant shell theme. 
 </details>
 
-###### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
+<details>
+  <summary>Showcase</summary>
+  <br/>
+
+  ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
+</details>
+
+#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
 
 <details>
   <br/>
@@ -95,14 +102,14 @@ The functionalities that are integrated within this repository stems from my [wo
   - The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
 </details>
 
-###### Shell: [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
-
 <details>
-  <br/>
+  <summary>Showcase</summary>
 
-- ZSH is battle tested shell that is easily configurable and is widely supported. Note that I do not use an plugin manager (at least for now). *I am* the plugin manager.
-- powerlevel10k as performant shell theme. 
+  *Neovim (Text editor)*
+  ![neovim](https://user-images.githubusercontent.com/50617144/266051464-f4dfa286-c1f4-492a-b977-069570c6b06d.png)
+  <br/>
 </details>
+
 
 ###### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
 
@@ -118,12 +125,14 @@ The functionalities that are integrated within this repository stems from my [wo
 
 <details>
   <summary>Showcase</summary>
+  <br/>
 
   *eza* 
   ![credit to source repository](https://github.com/eza-community/eza/blob/main/screenshots.png) 
 
-  *bat (credit to source repository)* 
+  *bat* 
   ![credit to source repository](https://camo.githubusercontent.com/7b7c397acc5b91b4c4cf7756015185fe3c5f700f70d256a212de51294a0cf673/68747470733a2f2f696d6775722e636f6d2f724773646e44652e706e67)
+
   *lazygit*
   ![credit to source repository](https://github.com/jesseduffield/lazygit/blob/assets/demo/commit_and_push-compressed.gif)
 
