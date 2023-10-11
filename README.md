@@ -12,11 +12,15 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 > This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) as it incorporates terminal shortcuts to trigger Neovim functionalities.  
 
+---
+
 ## 🖥️ Supported OS
 
 - WSL2 - Ubuntu 20.04, on Windows 11
 - Ubuntu 22.04, Jammy LTS
 - ~~Mac OS Big Sur~~ (not tested)
+
+---
 
 ## ✨ Features
 
@@ -62,6 +66,8 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   </details>
   <br/>
   For more information and usage, see [functions.zsh](zsh/config/functions.zsh).
+
+---
 
 ## 🧱 Components
 
@@ -141,6 +147,8 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
 </details>
 
+---
+
 ## 📋 Prerequisites
 
 The following prerequisites are not automatically set up and must be done manually.
@@ -168,6 +176,8 @@ Whitelist the private key by adding the public key from SSH keys generated to yo
 #### WezTerm
 
 Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) page and follow the installation steps.
+
+---
 
 ## 🌱  Usage
 
@@ -242,6 +252,8 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 
 </details>
 
+---
+
 ## ⚙️ Setup
 
 ```sh
@@ -270,6 +282,7 @@ I have done my best to ensure that the script is:
 Below is a screenshot of a snippet of the script run:
   
 ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/2ed8a968-4f67-4555-a6f6-6838503c5229)
+---
 
 ## 🤔 FAQ
 
