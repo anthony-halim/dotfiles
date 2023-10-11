@@ -20,58 +20,35 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 ## ✨ Features
 
-The functionalities that are integrated within this repository stems from my workflows. If any of these circumstances is similar to yours, feel free to use or adopt the idea!
+The features integrated within this repository stems from my workflows. 
 
-#### Cross platform
+#### Allows for machine specific configurations
+
+My workflows uses different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to committed to this repository.
+
+There are 2 ways such configuration can be added:
+
+- Adding [custom local configs](#(optional)-add-custom-local-configurations-at-%24home%2F.config%2Fzsh%2Flocal_config-directory).
+- Set [environment variables](#environment-variables).
+
+#### Budget version of [z](https://github.com/rupa/z) for directory traverse
+
+For those has not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository implemented a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
 
 <details>
-  <br />
-
-  *Use case:* 
-  > I work with multiple machines with varying OS. 
-
-  *Solution:*
-  > The tools need to be available on multiple platforms.
-</details>
-
-#### Support machine specific configurations 
-
-<details>
+  <summary>Showcase</summary>
   <br/>
 
-  *Use case:* 
-  > Different machines may need to support slightly different configuration, tools, and usage. For example, there are in-house tools shortcuts in my work machine that I do not want to be included in the repository.
+  `bm` *bookmarks the current directory*
+  ![img](https://user-images.githubusercontent.com/50617144/274351751-dd6da333-57f0-4fae-bf62-2a607ad3e139.png) 
+  
+  `gt` *fast travels to the directory*
 
-  *Solution:*
-  > Supports additional, uncommited, configurations and/or feature flags to influence the behaviour or its configuration. 
+  *On conflict, fzf window will be spawned*
+  ![img](https://user-images.githubusercontent.com/50617144/274351422-8e5e51dc-5db0-4997-8ab0-0e39060d4178.png)
 </details>
 
-#### Use terminal as much as possible
-
-<details>
-  <br/>
-
-  *Use case:* 
-  > I often SSH remotely to my machine and is restricted to the terminal.
-
-  *Solution:*
-  > - Prefer TUI (Terminal UI) and CLI tools.
-  > - TODO: Terminal to have a session manager to create allow working from multiple machines.
-</details>
-
-#### Provide note taking utilities that is doable everywhere
-
-<details>
-  <br/>
-
-  *Use case:* 
-  > Taking notes (for to do list and building knowledge base) is a big part of my workflow and I want to be able to do it with as little friction as possible and from any machines.
-
-  *Solution:*
-  > - Provide shortcuts for notes taking.
-  > - File-based notes storage to not depend on specific application to view to avoid additional application/GUI dependencies
-  > - TODO: Automatic syncing to remote storage to avoid conflicting changes.
-</details>
+#### Note Taking
 
 ## 🧱 Components
 
@@ -93,25 +70,7 @@ The functionalities that are integrated within this repository stems from my wor
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
 </details>
 
-#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
-
-<details>
-  <br/>
-
-  - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
-  - The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
-</details>
-
-<details>
-  <summary>Showcase</summary>
-
-  *Neovim (Text editor)*
-  ![neovim](https://user-images.githubusercontent.com/50617144/266051464-f4dfa286-c1f4-492a-b977-069570c6b06d.png)
-  <br/>
-</details>
-
-
-###### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
+#### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
 
 <details>
   <br/>
@@ -141,22 +100,29 @@ The functionalities that are integrated within this repository stems from my wor
 
 </details>
 
-###### Programming languages and utilities
+#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
+
+<details>
+  <br/>
+
+  - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
+  - The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
+</details>
+
+<details>
+  <summary>Showcase</summary>
+  <br/>
+
+  ![neovim](https://user-images.githubusercontent.com/50617144/266051464-f4dfa286-c1f4-492a-b977-069570c6b06d.png)
+</details>
+
+#### Programming languages and utilities: Golang, Python, Rust
 
 <details>
   <br/>
 
   - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
 </details>
-
-
-#### Highlighted (common) commands output
-
-TODO
-
-#### Zettelkasten notes taking utilities
-
-TODO
 
 ## Environment Variables
 
@@ -166,8 +132,6 @@ Below are environment variables that can be set freely to configure the behaviou
 | ------------------------- | -------------- | ------------ |
 | Item1.1    | Item2.1    | Item3.1    |
 
-> HINT: You can set these 
-TODO
 
 ## 🖥️ Supported OS
 
@@ -235,9 +199,9 @@ Refer to [Setup](#setup) for details.
 
 ##### (Optional) Add custom local configurations at `$HOME/.config/zsh/local_config` directory
 
-Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository.
+Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository. 
 
-I use this to store machine-specific configurations, functions, or aliases. For example, my work machine would have VPN shortcuts which I do not want to committed to this repository.
+You can use this to add additional aliases, environment variables, or functions.
 
 ##### (Optional) Swap Keys 
 
