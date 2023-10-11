@@ -28,7 +28,7 @@ The features integrated within this repository stems from my workflows.
 
 #### Allows for machine specific configurations
 
-My workflows use different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to committed to this repository.
+My workflows use different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to commit to this repository.
 
 There are 2 ways custom configuration can be made:
 
