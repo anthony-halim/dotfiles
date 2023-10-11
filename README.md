@@ -64,7 +64,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
     - `ncommit` commits note repository to upstream
     - `npull` pull latest changes of note repository to upstream
   </details>
-  <br/>
+
   For more information and usage, see [functions.zsh](zsh/config/functions.zsh).
 
 ---
@@ -195,9 +195,7 @@ The following environment variables affects the repository behaviour. You can se
     <summary>Environment variables</summary>
     <br/>
 
-    | Environment Variable Name | Description    | Behaviour    |
-    | ------------------------- | -------------- | ------------ |
-    | Item1.1    | Item2.1    | Item3.1    |
+    TODO
 </details>
 
 #### (Optional) Swap Keys 
