@@ -61,8 +61,8 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
     - `ntags` find notes by tags
     - `nnew` create new notes
     - `ntmplnew` create new templated note
-    - `ncommit` commits note repository to upstream
-    - `npull` pull latest changes of note repository to upstream
+    - `ncommit` commits note repository to upstream branch
+    - `npull` pull latest changes of note repository from upstream branch
   </details>
 
   For more information and usage, see [functions.zsh](zsh/config/functions.zsh).
@@ -262,6 +262,7 @@ I have done my best to ensure that the script is:
 Below is a screenshot of a snippet of the script run:
   
 ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/2ed8a968-4f67-4555-a6f6-6838503c5229)
+
 ---
 
 ## 🤔 FAQ
