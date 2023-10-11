@@ -22,7 +22,7 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 The features integrated within this repository stems from my workflows. 
 
-##### Allows for machine specific configurations
+#### Allows for machine specific configurations
 
 My workflows use different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to committed to this repository.
 
@@ -31,7 +31,7 @@ There are 2 ways custom configuration can be made:
 - Adding [custom local configs](#(optional)-add-custom-local-configurations-at-%24home%2F.config%2Fzsh%2Flocal_config-directory).
 - Set [environment variables](#environment-variables).
 
-##### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
+#### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
 
 For those has not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository implemented a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
 
@@ -39,7 +39,7 @@ For those has not checked out [z](https://github.com/rupa/z), I recommend trying
 - `gt` fast travels to the directory e.g. `gt foo`, where `foo` is a fuzzy match to the full path.
 - On name conflict, `fzf` window will be spawned.
 
-##### Notes Taking
+#### Notes Taking
 
 This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten.de/posts/overview/) style of note taking. It depends on Neovim and [telekasten.nvim](https://github.com/renerocksai/telekasten.nvim) plugin.
 
@@ -65,7 +65,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
 ## 🧱 Components
 
-##### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
+#### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
 
 <details>
   <br/>
@@ -83,7 +83,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
 </details>
 
-##### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
+#### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
 
 <details>
   <br/>
@@ -117,7 +117,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
 </details>
 
-##### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
+#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
 
 <details>
   <br/>
@@ -133,7 +133,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   ![img](https://user-images.githubusercontent.com/50617144/274354764-2c92be00-09c7-4573-8098-b170b832e0b0.png) 
 </details>
 
-##### Programming languages and utilities: Golang, Python, Rust
+#### Programming languages and utilities: Golang, Python, Rust
 
 <details>
   <br/>
@@ -153,7 +153,7 @@ Below are environment variables that can be set freely to configure the behaviou
 
 The following prerequisites are not automatically set up and must be done manually.
 
-##### Windows: WSL Installation 
+#### Windows: WSL Installation 
 
 Run Powershell as administrator & install Ubuntu distribution.
 
@@ -162,7 +162,7 @@ wsl --install -d Ubuntu
 # For Ubuntu 20.04, do wsl --install -d Ubuntu-20.04
 ```
 
-##### Git SSH Keys
+#### Git SSH Keys
 
 We need to allow SSH authentication to do Git operations with Git repositories.
 
@@ -173,13 +173,13 @@ ssh-keygen -t rsa
 
 Whitelist the private key by adding the public key from SSH keys generated to your Git user.
 
-##### WezTerm
+#### WezTerm
 
 Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) page and follow the installation steps.
 
 ## 🌱  Usage
 
-##### Git clone this repository to `$HOME/repos/personal/`
+#### Git clone this repository to `$HOME/repos/personal/`
 
 My personal convention is to store repositories based on their use cases.
 
@@ -203,17 +203,17 @@ git clone --recurse-submodules --shallow-submodules https://github.com/anthony-h
 > git submodule update --depth=1
 > ```
 
-##### Run *setup.sh*
+#### Run *setup.sh*
 
 Refer to [Setup](#setup) for details.
 
-##### (Optional) Add custom local configurations at `$HOME/.config/zsh/local_config` directory
+#### (Optional) Add custom local configurations at `$HOME/.config/zsh/local_config` directory
 
 Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository. 
 
 You can use this to add additional aliases, environment variables, or functions.
 
-##### (Optional) Swap Keys 
+#### (Optional) Swap Keys 
 
 The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you! 
 
