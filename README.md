@@ -109,8 +109,8 @@ The functionalities that are integrated within this repository stems from my [wo
 <details>
   <br/>
 
-  - `eza` as better `ls`.
-  - `bat` as better `cat`.
+  - `eza` as better `ls`. Aliased to `ls`.
+  - `bat` as better `cat`. Aliased to `cat`.
   - `lazygit` as simple Git terminal UI.
   - `delta` as syntax highlighter for Git.
   - `fzf`, `fd`, `ripgrep` as search utilities.
@@ -119,7 +119,16 @@ The functionalities that are integrated within this repository stems from my [wo
 <details>
   <summary>Showcase</summary>
 
-  - eza: ![eza](https://github.com/eza-community/eza/blob/main/screenshots.png) 
+  *eza* 
+  ![credit to source repository](https://github.com/eza-community/eza/blob/main/screenshots.png) 
+
+  *bat (credit to source repository)* 
+  ![credit to source repository](https://camo.githubusercontent.com/7b7c397acc5b91b4c4cf7756015185fe3c5f700f70d256a212de51294a0cf673/68747470733a2f2f696d6775722e636f6d2f724773646e44652e706e67)
+  *lazygit*
+  ![credit to source repository](https://github.com/jesseduffield/lazygit/blob/assets/demo/commit_and_push-compressed.gif)
+
+  *delta*
+  ![credit to source repository](https://user-images.githubusercontent.com/50617144/266825290-21025bbd-89c4-4ff7-ba81-81a273604632.png)
 
 </details>
 
