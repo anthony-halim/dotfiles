@@ -22,29 +22,50 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 The features integrated within this repository stems from my workflows. 
 
-#### Allows for machine specific configurations
+##### Allows for machine specific configurations
 
-My workflows uses different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to committed to this repository.
+My workflows use different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to committed to this repository.
 
-There are 2 ways such configuration can be added:
+There are 2 ways custom configuration can be made:
 
 - Adding [custom local configs](#(optional)-add-custom-local-configurations-at-%24home%2F.config%2Fzsh%2Flocal_config-directory).
 - Set [environment variables](#environment-variables).
 
-#### Budget version of [z](https://github.com/rupa/z) for directory traverse
+##### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
 
 For those has not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository implemented a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
 
 - `bm` bookmarks the current directory.
-- `gt` fast travels to the directory.
-- On conflict, `fzf` window will be spawned.
-  ![img](https://user-images.githubusercontent.com/50617144/274351422-8e5e51dc-5db0-4997-8ab0-0e39060d4178.png)
+- `gt` fast travels to the directory e.g. `gt foo`, where `foo` is a fuzzy match to the full path.
+- On name conflict, `fzf` window will be spawned.
 
-#### Note Taking
+##### Notes Taking
+
+This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten.de/posts/overview/) style of note taking. It depends on Neovim and [telekasten.nvim](https://github.com/renerocksai/telekasten.nvim) plugin.
+
+- Notes are markdown file based. This avoids additional GUI or application to view the notes.
+- The followings shortcuts are provided to increase ease of use:
+
+  <details>
+    <summary>Shortcuts</summary>
+    <br/>
+
+    - `ndaily` opens daily note (create if does not exist).
+    - `nweekly` opens weekly note (create if does not exist).
+    - `nfind` find notes by title
+    - `ngrep` find notes by content grep
+    - `ntags` find notes by tags
+    - `nnew` create new notes
+    - `ntmplnew` create new templated note
+    - `ncommit` commits note repository to upstream
+    - `npull` pull latest changes of note repository to upstream
+  </details>
+  <br/>
+  For more information and usage, see [functions.zsh](zsh/config/functions.zsh).
 
 ## 🧱 Components
 
-#### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
+##### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
 
 <details>
   <br/>
@@ -62,7 +83,7 @@ For those has not checked out [z](https://github.com/rupa/z), I recommend trying
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
 </details>
 
-#### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
+##### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
 
 <details>
   <br/>
@@ -79,20 +100,24 @@ For those has not checked out [z](https://github.com/rupa/z), I recommend trying
   <br/>
 
   *eza* 
+
   ![credit to source repository](https://github.com/eza-community/eza/blob/main/screenshots.png) 
 
   *bat* 
+
   ![credit to source repository](https://camo.githubusercontent.com/7b7c397acc5b91b4c4cf7756015185fe3c5f700f70d256a212de51294a0cf673/68747470733a2f2f696d6775722e636f6d2f724773646e44652e706e67)
 
   *lazygit*
+
   ![credit to source repository](https://github.com/jesseduffield/lazygit/blob/assets/demo/commit_and_push-compressed.gif)
 
   *delta*
+
   ![credit to source repository](https://user-images.githubusercontent.com/50617144/266825290-21025bbd-89c4-4ff7-ba81-81a273604632.png)
 
 </details>
 
-#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
+##### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
 
 <details>
   <br/>
@@ -105,10 +130,10 @@ For those has not checked out [z](https://github.com/rupa/z), I recommend trying
   <summary>Showcase</summary>
   <br/>
 
-  ![neovim](https://user-images.githubusercontent.com/50617144/266051464-f4dfa286-c1f4-492a-b977-069570c6b06d.png)
+  ![img](https://user-images.githubusercontent.com/50617144/274354764-2c92be00-09c7-4573-8098-b170b832e0b0.png) 
 </details>
 
-#### Programming languages and utilities: Golang, Python, Rust
+##### Programming languages and utilities: Golang, Python, Rust
 
 <details>
   <br/>
@@ -123,13 +148,6 @@ Below are environment variables that can be set freely to configure the behaviou
 | Environment Variable Name | Description    | Behaviour    |
 | ------------------------- | -------------- | ------------ |
 | Item1.1    | Item2.1    | Item3.1    |
-
-
-## 🖥️ Supported OS
-
-- WSL2 - Ubuntu 20.04, on Windows 11
-- Ubuntu 22.04, Jammy LTS
-- ~~Mac OS Big Sur~~ (deprecated)
 
 ## 📋 Prerequisites
 
