@@ -229,7 +229,7 @@ load_cargo() {
 
 setup_dependencies() {
 	install_dependencies() {
-		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger")
+		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger" "tldr")
 		for dependency in "${dependencies[@]}"; do
 			msg_info "  Installing '$dependency'"
 			if [[ "${OSTYPE}" =~ ^darwin ]]; then

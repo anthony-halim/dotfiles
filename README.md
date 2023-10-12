@@ -89,7 +89,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/b15ee4f8-27b4-4d25-972b-5b8d6a8ea323)
 </details>
 
-#### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep) 
+#### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep), [tldr](https://tldr.sh/)
 
 <details>
   <br/>
@@ -99,6 +99,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   - `lazygit` as simple Git terminal UI.
   - `delta` as syntax highlighter for Git.
   - `fzf`, `fd`, `ripgrep` as search utilities.
+  - `tldr` as simplified `man` pages.
 </details>
 
 <details>
@@ -121,6 +122,8 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
   ![credit to source repository](https://user-images.githubusercontent.com/50617144/266825290-21025bbd-89c4-4ff7-ba81-81a273604632.png)
 
+  *tar* 
+  ![credit to source repository](https://tldr.sh/assets/img/screenshot.png) 
 </details>
 
 #### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
