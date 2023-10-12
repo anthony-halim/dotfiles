@@ -123,15 +123,15 @@ bm () {
   fi
 }
 
-# Go to (gt) directory saved in the list of bookmarks. If there is conflicting names, will spawn fzf window.
+# Go to (goto) directory saved in the list of bookmarks. If there is conflicting names, will spawn fzf window.
 #
 # Usage:
-#   gt <dir_name>
+#   goto <dir_name>
 #
 # Example:
 #   # foo is partial/full name of path to directory
-#   gt foo
-gt () {
+#   goto foo
+goto () {
   local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
   q=" $*"
   q=${q// -/ !}

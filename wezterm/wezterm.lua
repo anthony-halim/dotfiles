@@ -208,6 +208,9 @@ config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 -- Override keys
 config.disable_default_key_bindings = true
 
+-- Warnings
+config.warn_about_missing_glyphs = false
+
 -- OS specific settings
 if is_macos then
   config.keys = macos_keybindings

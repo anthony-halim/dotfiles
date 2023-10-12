@@ -35,12 +35,12 @@ There are 2 ways custom configuration can be made:
 - Adding [custom local configs](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
 - Set [environment variables](#environment-variables).
 
-#### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `gt`
+#### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `goto`
 
-For those have not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository provides a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `gt (goto)`.
+For those have not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository provides a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `goto`.
 
 - `bm` bookmarks the current directory.
-- `gt` fast travels to the directory e.g. `gt foo`, where `foo` is a fuzzy match to the full path.
+- `goto` fast travels to the directory e.g. `goto foo`, where `foo` is a fuzzy match to the full path.
 - On name conflict, `fzf` window will be spawned.
 
 #### Notes Taking
@@ -191,13 +191,20 @@ You can use this to add additional aliases, environment variables, or functions.
 
 The following environment variables affects the repository behaviour. You can set it by exporting the variable in a custom `.zsh` file. See [adding custom configuration](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
 
-<details>
-    <summary>Environment variables</summary>
-    <br/>
+**Notes** 
 
-    TODO
-</details>
+| Name                   | Type                   | Defaults                 | Description     |
+|----------------------- | ---------------------- | ------------------------ | --------------- |
+| NOTES_DEFAULT_VAULT    | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
+| NOTES_WORK_VAULT       | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
+| NOTES_PERSONAL_VAULT   | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
 
+**ZSH** 
+
+| Name                   | Type                   | Defaults                       | Description     |
+|----------------------- | ---------------------- | ------------------------------ | --------------- |
+| ZSH_DIRJUMP            | string                 | "$HOME/.cache/.zsh_dirjump"    | Path to file to store bookmarked directories. |
+ 
 #### (Optional) Swap Keys 
 
 The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you! 

@@ -6,8 +6,8 @@ if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" 
 fi
 
 export ZSH="${HOME}/.config/zsh"
+export ZSH_PLUGIN="${ZSH}/plugin"
 ZSH_CUSTOM="${ZSH}/custom"
-ZSH_PLUGIN="${ZSH}/plugin"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
