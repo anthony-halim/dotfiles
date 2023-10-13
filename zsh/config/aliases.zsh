@@ -20,6 +20,10 @@ fi
 
 [[ ! $(command -v "terraform") ]] || alias tf="terraform"
 
+[[ ! $(command -v "zellij") ]] || {
+  alias z="zellij --layout compact"
+} 
+
 alias sush="sudo su -"
 
 alias src="source $HOME/.zshrc"

@@ -1,6 +1,15 @@
 export PATH="${HOME}/.local/bin:$PATH"
 export EDITOR="nvim"
 
+# Rust
+# NOTE We source this first, as many tools have cargo as dependency. Primarily those installed via cargo.
+[[ -e "${HOME}/.cargo/env" ]] && {
+  source "${HOME}/.cargo/env" 
+}
+
+# Zellij
+export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
+
 # Pyenv 
 [[ -d "${HOME}/.pyenv" ]] && {
     export PYENV_ROOT="${HOME}/.pyenv"
@@ -13,13 +22,7 @@ export EDITOR="nvim"
     command -v go >/dev/null || export PATH="/usr/local/go/bin:$PATH"
 }
 
-# Rust
-[[ -e "${HOME}/.cargo/env" ]] && {
-    source "${HOME}/.cargo/env" 
-}
-
 # Bob / Neovim
-# NOTE: Must be loaded after rust environment
 [[ -d "${HOME}/.local/share/bob/nvim-bin" ]] && {
     command -v nvim >/dev/null || export PATH="${HOME}/.local/share/bob/nvim-bin:$PATH"
 }

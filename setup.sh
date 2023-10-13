@@ -7,7 +7,8 @@ trap cleanup SIGINT SIGTERM EXIT
 # Constants
 USER_EXECUTOR=$(whoami)
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
-LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
+
+# Default arguments
 GIT_USER=""
 GIT_USER_EMAIL=""
 GIT_USER_LOCAL_FILE=""
@@ -18,6 +19,11 @@ if [[ "${OSTYPE}" =~ ^darwin ]]; then
 elif [[ "${OSTYPE}" =~ ^linux ]]; then
 	GOLANG_SYS="linux-amd64"
 fi
+LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
+NOTES_PERSONAL_DIR="$HOME/notes/personal"
+NOTES_WORK_DIR="$HOME/notes/work"
+REPO_PERSONAL_DIR="$HOME/repos/personal"
+REPO_WORK_DIR="$HOME/repos/work"
 
 usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
@@ -258,6 +264,23 @@ setup_eza() {
 	else
 		msg "  Installing eza"
 		confirm && install_eza
+	fi
+}
+
+setup_zellij() {
+	install_zellij() {
+		load_cargo || {
+			msg_err "  -> cargo command not found! zellij installation require cargo."
+			return 0
+		}
+		cargo install --locked zellij
+	}
+
+	if [[ $(command -v zellij) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing zellij"
+		confirm && install_zellij
 	fi
 }
 
@@ -531,10 +554,24 @@ setup_git() {
 	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL" 0
 }
 
-setup_local_config() {
-	if [[ ! -d "$LOCAL_CONFIG_DIR" ]]; then
-		mkdir -p "$LOCAL_CONFIG_DIR"
-		msg_success "  -> Created directory for local configs at $LOCAL_CONFIG_DIR"
+setup_dir() {
+	local dir_to_create=$1
+	local description=${2:-}
+
+	msg "  Setting up $dir_to_create."
+	if [[ -n "$description" ]]; then
+		msg_info "  -> Directory description: $description"
+	fi
+
+	if [[ ! -d "$dir_to_create" ]]; then
+		confirm || {
+			msg_warn " ! Skipping..."
+			return 0
+		}
+		mkdir -p "$dir_to_create"
+		msg_success "  -> Created directory: $dir_to_create"
+	else
+		msg_info "  -> Directory already exist, skipping."
 	fi
 }
 
@@ -619,10 +656,20 @@ separator
 msg_info "zsh: installing Z-Shell"
 setup_zsh && msg_success "zsh: success!"
 
-# Create directory to hold local configs
+# Zellij installation
 separator
-msg_info "local_configs: setting up local config directory at $LOCAL_CONFIG_DIR. You can use it to place uncommited configurations."
-setup_local_config && msg_success "local_configs: success!"
+msg_info "zellij: installing Zellij (terminal session manager and terminal multiplexer)"
+setup_zellij && msg_success "zellij: success!"
+
+# Create required directories
+separator
+msg_info "directories: setting up directories"
+setup_dir "$LOCAL_CONFIG_DIR" "directory to place uncommitted configurations (functions, aliases, env). Any *.zsh files in this directory will automatically be sourced."
+setup_dir "$REPO_PERSONAL_DIR" "personal repository directory."
+setup_dir "$REPO_WORK_DIR" "work repository directory."
+setup_dir "$NOTES_PERSONAL_DIR" "personal notes vault (note directory)."
+setup_dir "$NOTES_WORK_DIR" "work notes vault (note directory)."
+msg_success "directories: success!"
 
 # Create symbolic link configuration
 separator
@@ -633,6 +680,7 @@ safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
+safe_symlink "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
 msg_success "symlink: success!"
 
 # Report git information at the very end to make it clear to user

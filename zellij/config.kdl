@@ -1,0 +1,8 @@
+theme "nightfox"
+
+simplified_ui true
+
+pane_frames false
+
+mouse_mode true
+
