@@ -16,7 +16,7 @@ local font_with_fallback = wezterm.font_with_fallback({
 local font_size = 11
 local color_scheme_name = "nightfox"
 local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
-local use_tab_bar = false
+local use_tab_bar = true
 
 local keymaps = {
   -- Make Ctrl-Left equivalent backward-word
@@ -46,6 +46,7 @@ local keymaps = {
   { key = "Enter", mods = "ALT",        action = act.ToggleFullScreen },
   { key = "-",     mods = "CTRL",       action = act.DecreaseFontSize },
   { key = "=",     mods = "CTRL",       action = act.IncreaseFontSize },
+  { key = "T",     mods = "CTRL|SHIFT", action = act.SpawnCommandInNewTab({ cwd = "~" }) },
   { key = "W",     mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = false }) },
   { key = "r",     mods = "CTRL",       action = act.ReloadConfiguration },
   { key = "L",     mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
@@ -84,7 +85,7 @@ config.color_scheme = color_scheme_name
 -- Tab
 config.enable_tab_bar = use_tab_bar
 if use_tab_bar then
-  config.show_tabs_in_tab_bar = false
+  config.hide_tab_bar_if_only_one_tab = true
   config.use_fancy_tab_bar = true
   config.colors = {
     tab_bar = color_scheme.tab_bar,

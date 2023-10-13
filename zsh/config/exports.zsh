@@ -9,6 +9,7 @@ export EDITOR="nvim"
 
 # Zellij
 export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
+export ZELLIJ_AUTO_ATTACH=true
 
 # Pyenv 
 [[ -d "${HOME}/.pyenv" ]] && {
