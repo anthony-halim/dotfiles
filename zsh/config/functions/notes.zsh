@@ -192,15 +192,3 @@ npull() {
   echo "Success!"
 }
 
-## Zellij
-
-# Starts zellij session, connecting to existing session if possible.
-zs() {
-  # [[ ! $(command -v zellij) ]] || {
-  #   if [[ -z "$ZELLIJ" && "$ZELLIJ_AUTO_ATTACH" == "true"]]; then
-  #     zellij --layout compact attach -c
-  #   else
-  #     zellij --layout compact
-  #   fi
-  # }
-}
