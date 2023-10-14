@@ -1,16 +1,36 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
+# Set directories
 export ZSH="${HOME}/.config/zsh"
 export ZSH_PLUGIN="${ZSH}/plugin"
 ZSH_CUSTOM="${ZSH}/custom"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
+
+# Load requirements, fail if files not found
+source "${ZSH_CONFIG}/functions/omz_functions.zsh"
+source "${ZSH_CONFIG}/functions/utils.zsh"
+source "${ZSH_CONFIG}/exports.zsh"
+
+# Load local config files
+if [[ -d "${ZSH_LOCAL_CONFIG}" ]]
+then 
+  for conf in "${ZSH_LOCAL_CONFIG}/"*.zsh(.N); do
+    source "${conf}"
+  done
+  unset conf
+fi
+
+# NOTE: Must be done before p10k setup (instant prompt and actual sourcing)
+if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
+  eval "$(zellij setup --generate-auto-start zsh)"
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # Enable colors
 autoload -Uz colors && colors
@@ -24,10 +44,6 @@ zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
 bashcompinit
-# Enable auto completion for tools
-[[ ! $(command -v terraform) ]] || complete -o nospace -C $(which terraform) terraform
-[[ ! $(command -v kubectl) ]] || source <(kubectl completion zsh) 
-[[ ! $(command -v minikube) ]] || source <(minikube completion zsh) 
 # Include hidden files.
 _comp_options+=(globdots)
 
@@ -38,18 +54,11 @@ SAVEHIST=10000
 HISTSIZE=9999
 setopt HIST_EXPIRE_DUPS_FIRST
 
-# Load basic functions, fail if files not found
-source "${ZSH_CONFIG}/functions/omz_functions.zsh"
-source "${ZSH_CONFIG}/functions/utils.zsh"
-
 # Load add on functions
+safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
 safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
 safe_source "${ZSH_CONFIG}/functions/pw.zsh"
 safe_source "${ZSH_CONFIG}/functions/notes.zsh"
-
-# Exports activates necessary environments (which is dependency for some tools); source first.
-safe_source "${ZSH_CONFIG}/exports.zsh"
-safe_source "${ZSH_CONFIG}/aliases.zsh"
 
 # Load plugins
 zsh_load_local_plugin "zsh-autosuggestions" "zsh-autosuggestions.zsh"
@@ -61,23 +70,17 @@ zsh_load_local_plugin "web-search" "web-search.plugin.zsh"
 # Bindkeys includes plugin keymaps, so must be done after plugin load
 safe_source "${ZSH_CONFIG}/bindkeys.zsh"
 
-# Load local config files
-if [[ -d "${ZSH_LOCAL_CONFIG}" ]]
-then 
-  for conf in "${ZSH_LOCAL_CONFIG}/"*.zsh(.N); do
-    source "${conf}"
-  done
-  unset conf
-fi
+# Load aliases
+safe_source "${ZSH_CONFIG}/aliases.zsh"
+
+# Source theme 
+safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
 
 # Settle tab title
 DISABLE_AUTO_TITLE="true"
 precmd () {
   print -Pn "\e]0;%~\a"
 }
-
-# Source theme 
-safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # NOTE: We leave p10k config in default location to allow p10k to modify it normally

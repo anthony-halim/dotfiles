@@ -207,6 +207,16 @@ The following environment variables affects the repository behaviour. You can se
 | Name                   | Type                   | Defaults                       | Description     |
 |----------------------- | ---------------------- | ------------------------------ | --------------- |
 | ZSH_DIRJUMP            | string                 | "$HOME/.cache/.zsh_dirjump"    | Path to file to store bookmarked directories. |
+
+**Zellij** 
+
+> See [Zellij Integration](https://zellij.dev/documentation/integration) for `ZELLIJ_AUTO_ATTACH` and `ZELLIJ_AUTO_EXIT`.
+
+| Name                   | Type                   | Defaults                       | Description     |
+|----------------------- | ---------------------- | ------------------------------ | --------------- |
+| ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
+| ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
+| ZELLIJ_AUTO_EXIT       | bool                   | false                          | When zellij exits, the shell exists as well.  |
  
 #### (Optional) Swap Keys 
 
