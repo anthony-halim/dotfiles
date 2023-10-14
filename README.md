@@ -196,11 +196,13 @@ The following environment variables affects the repository behaviour. You can se
 
 **Notes** 
 
-| Name                   | Type                   | Defaults                 | Description     |
-|----------------------- | ---------------------- | ------------------------ | --------------- |
-| NOTES_DEFAULT_VAULT    | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
-| NOTES_WORK_VAULT       | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
-| NOTES_PERSONAL_VAULT   | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
+| Name                       | Type                   | Defaults                 | Description     |
+|--------------------------- | ---------------------- | ------------------------ | --------------- |
+| NOTES_DEFAULT_VAULT        | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
+| NOTES_WORK_VAULT           | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
+| NOTES_PERSONAL_VAULT       | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
+| NOTES_DEFAULT_GIT_UPSTREAM | string                 | "origin"                 | Default git upstream to commit notes to.            |
+| NOTES_DEFAULT_GIT_BRANCH   | string                 | "main"                   | Default git branch to commit notes to.              |
 
 **ZSH** 
 
