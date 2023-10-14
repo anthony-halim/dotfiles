@@ -45,7 +45,7 @@ For those have not checked out [z](https://github.com/rupa/z), I recommend tryin
 
 #### Notes Taking
 
-This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten.de/posts/overview/) style of note taking. It depends on Neovim and [telekasten.nvim](https://github.com/renerocksai/telekasten.nvim) plugin.
+This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten.de/posts/overview/) style of note taking. It depends on [Neovim](neovim.io) and [telekasten.nvim](https://github.com/renerocksai/telekasten.nvim) plugin.
 
 - Notes are markdown file based. This avoids additional GUI or application to view the notes.
 - The followings shortcuts are provided to increase ease of use:
@@ -61,11 +61,11 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
     - `ntags` find notes by tags
     - `nnew` create new notes
     - `ntmplnew` create new templated note
-    - `ncommit` commits note repository to upstream branch
+    - `npush` commits and push note repository to upstream branch
     - `npull` pull latest changes of note repository from upstream branch
   </details>
 
-  For more information and usage, see [functions.zsh](zsh/config/functions.zsh).
+  For more information and usage, see [notes.zsh](zsh/config/functions/notes.zsh).
 
 ---
 
@@ -196,17 +196,29 @@ The following environment variables affects the repository behaviour. You can se
 
 **Notes** 
 
-| Name                   | Type                   | Defaults                 | Description     |
-|----------------------- | ---------------------- | ------------------------ | --------------- |
-| NOTES_DEFAULT_VAULT    | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
-| NOTES_WORK_VAULT       | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
-| NOTES_PERSONAL_VAULT   | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
+| Name                       | Type                   | Defaults                 | Description     |
+|--------------------------- | ---------------------- | ------------------------ | --------------- |
+| NOTES_DEFAULT_VAULT        | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
+| NOTES_WORK_VAULT           | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
+| NOTES_PERSONAL_VAULT       | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
+| NOTES_DEFAULT_GIT_UPSTREAM | string                 | "origin"                 | Default git upstream to commit notes to.            |
+| NOTES_DEFAULT_GIT_BRANCH   | string                 | "main"                   | Default git branch to commit notes to.              |
 
 **ZSH** 
 
 | Name                   | Type                   | Defaults                       | Description     |
 |----------------------- | ---------------------- | ------------------------------ | --------------- |
 | ZSH_DIRJUMP            | string                 | "$HOME/.cache/.zsh_dirjump"    | Path to file to store bookmarked directories. |
+
+**Zellij** 
+
+> See [Zellij Integration](https://zellij.dev/documentation/integration) for `ZELLIJ_AUTO_ATTACH` and `ZELLIJ_AUTO_EXIT`.
+
+| Name                   | Type                   | Defaults                       | Description     |
+|----------------------- | ---------------------- | ------------------------------ | --------------- |
+| ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
+| ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
+| ZELLIJ_AUTO_EXIT       | bool                   | false                          | When zellij exits, the shell exists as well.  |
  
 #### (Optional) Swap Keys 
 

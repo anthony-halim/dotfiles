@@ -42,8 +42,8 @@ ntmplnew() {
   nvim +'Telekasten new_templated_note'
 }
 
-# Git commit notes and update to git upstream and git branch.
-# By default, will git commit NOTES_DEFAULT_VAULT notes vault to git origin/main.
+# Git commit notes and push it to git upstream and git branch.
+# By default, will git commit NOTES_DEFAULT_VAULT notes vault and push it to git origin/main.
 #
 # Usage: 
 #   ncommit [-m, --message <commit_message>] 
@@ -58,9 +58,9 @@ ntmplnew() {
 #   -m, --message       STRING                                          commit message. Defaults to 'Notes upload - $TIMESTAMP'
 #   -v  --vault         ENV:$NOTES_DEFAULT_VAULT:("personal"|"work")    type of vault. If environment variable is not present, defaults to "personal".
 #   -p, --path          STRING                                          path to vault. Will overrides --vault.
-#   -u, --upstream      STRING                                          git upstream to commit to. Defaults to "origin".
-#   -b, --branch        STRING                                          git branch to commit to. Defaults to "main".
-ncommit() {
+#   -u, --upstream      ENV:$NOTES_DEFAULT_GIT_UPSTREAM                 git upstream to commit to. Defaults to "origin".
+#   -b, --branch        ENV:$NOTES_DEFAULT_GITBRANCH                    git branch to commit to. Defaults to "main".
+npush() {
   local hdate=$(date +"%D %T")
   local commit_message="Notes upload - ${hdate}"
 
@@ -69,8 +69,8 @@ ncommit() {
   local work_vault_path=${(P)NOTES_WORK_VAULT:-$HOME/notes/work}
   local vault_path=""
 
-  local git_upstream="origin"
-  local git_branch="main"
+  local git_upstream=${(P)NOTES_DEFAULT_GIT_UPSTREAM:-origin}
+  local git_branch=${(P)NOTES_DEFAULT_GIT_BRANCH:-main}
 
   while :; do
     case "${1-}" in
@@ -136,16 +136,16 @@ ncommit() {
 # Flags/Options:
 #   -v  --vault         ENV:$NOTES_DEFAULT_VAULT:("personal"|"work")    type of vault. If environment variable is not present, defaults to "personal".
 #   -p, --path          STRING                                          path to vault. Will overrides --vault.
-#   -u, --upstream      STRING                                          git upstream to commit to. Defaults to "origin".
-#   -b, --branch        STRING                                          git branch to commit to. Defaults to "main".
+#   -u, --upstream      ENV:$NOTES_DEFAULT_GIT_UPSTREAM                 git upstream to commit to. Defaults to "origin".
+#   -b, --branch        ENV:$NOTES_DEFAULT_GIT_BRANCH                   git branch to commit to. Defaults to "main".
 npull() {
   local chosen_vault=${(P)NOTES_DEFAULT_VAULT:-personal}
   local personal_vault_path=${(P)NOTES_PERSONAL_VAULT:-$HOME/notes/personal}
   local work_vault_path=${(P)NOTES_WORK_VAULT:-$HOME/notes/work}
   local vault_path=""
 
-  local git_upstream="origin"
-  local git_branch="main"
+  local git_upstream=${(P)NOTES_DEFAULT_GIT_UPSTREAM:-origin}
+  local git_branch=${(P)NOTES_DEFAULT_GIT_BRANCH:-main}
 
   while :; do
     case "${1-}" in
@@ -191,3 +191,4 @@ npull() {
   
   echo "Success!"
 }
+

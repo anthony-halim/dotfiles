@@ -1,0 +1,10 @@
+theme "catppuccin-mocha"
+
+simplified_ui true
+
+pane_frames false
+
+mouse_mode true
+
+on_force_close "quit"
+
