@@ -43,7 +43,7 @@ local keymaps = {
   },
   { key = "v",     mods = "CTRL",       action = act({ PasteFrom = "Clipboard" }) },
   { key = "n",     mods = "CTRL",       action = act.SpawnWindow },
-  { key = "Enter", mods = "AlT",        action = act.ToggleFullScreen },
+  { key = "Enter", mods = "ALT",        action = act.ToggleFullScreen },
   { key = "-",     mods = "CTRL",       action = act.DecreaseFontSize },
   { key = "=",     mods = "CTRL",       action = act.IncreaseFontSize },
   { key = "Tab",   mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
