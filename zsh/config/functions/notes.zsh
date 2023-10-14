@@ -42,11 +42,8 @@ ntmplnew() {
   nvim +'Telekasten new_templated_note'
 }
 
-_parse_nparams() {
-
-}
-# Git commit notes and update to git upstream and git branch.
-# By default, will git commit NOTES_DEFAULT_VAULT notes vault to git origin/main.
+# Git commit notes and push it to git upstream and git branch.
+# By default, will git commit NOTES_DEFAULT_VAULT notes vault and push it to git origin/main.
 #
 # Usage: 
 #   ncommit [-m, --message <commit_message>] 
@@ -63,7 +60,7 @@ _parse_nparams() {
 #   -p, --path          STRING                                          path to vault. Will overrides --vault.
 #   -u, --upstream      ENV:$NOTES_DEFAULT_GIT_UPSTREAM                 git upstream to commit to. Defaults to "origin".
 #   -b, --branch        ENV:$NOTES_DEFAULT_GITBRANCH                    git branch to commit to. Defaults to "main".
-ncommit() {
+npush() {
   local hdate=$(date +"%D %T")
   local commit_message="Notes upload - ${hdate}"
 
