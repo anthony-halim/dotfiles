@@ -16,7 +16,6 @@ local font_with_fallback = wezterm.font_with_fallback({
 local font_size = 11
 local color_scheme_name = "nightfox"
 local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
-local use_tab_bar = true
 
 local keymaps = {
   -- Make Ctrl-Left equivalent backward-word
@@ -42,18 +41,18 @@ local keymaps = {
     end),
   },
   { key = "v",     mods = "CTRL",       action = act({ PasteFrom = "Clipboard" }) },
-  { key = "n",     mods = "CTRL",       action = act.SpawnWindow },
-  { key = "Enter", mods = "ALT",        action = act.ToggleFullScreen },
   { key = "-",     mods = "CTRL",       action = act.DecreaseFontSize },
   { key = "=",     mods = "CTRL",       action = act.IncreaseFontSize },
+  { key = "f",     mods = "CTRL",       action = act.Search({ CaseSensitiveString = "" }) },
+  { key = "F",     mods = "CTRL|SHIFT", action = act.Search({ CaseInSensitiveString = "" }) },
+  { key = "N",     mods = "CTRL|SHIFT", action = act.SpawnWindow },
+  { key = "Enter", mods = "CTRL|SHIFT", action = act.ToggleFullScreen },
   { key = "Tab",   mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
   { key = "T",     mods = "CTRL|SHIFT", action = act.SpawnCommandInNewTab({ cwd = "~" }) },
   { key = "W",     mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = false }) },
-  { key = "r",     mods = "CTRL",       action = act.ReloadConfiguration },
+  { key = "R",     mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
   { key = "L",     mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
   { key = "P",     mods = "CTRL|SHIFT", action = act.ActivateCommandPalette },
-  { key = "f",     mods = "CTRL",       action = act.Search({ CaseSensitiveString = "" }) },
-  { key = "F",     mods = "CTRL|SHIFT", action = act.Search({ CaseInSensitiveString = "" }) },
 }
 
 -- This table will hold the configuration
@@ -84,14 +83,11 @@ config.font_size = font_size
 config.color_scheme = color_scheme_name
 
 -- Tab
-config.enable_tab_bar = use_tab_bar
-if use_tab_bar then
-  config.hide_tab_bar_if_only_one_tab = true
-  config.use_fancy_tab_bar = true
-  config.colors = {
-    tab_bar = color_scheme.tab_bar,
-  }
-end
+config.hide_tab_bar_if_only_one_tab = true
+config.use_fancy_tab_bar = true
+config.colors = {
+  tab_bar = color_scheme.tab_bar,
+}
 
 -- Window
 config.window_padding = {
