@@ -1,15 +1,13 @@
 export PATH="${HOME}/.local/bin:$PATH"
 export EDITOR="nvim"
 
+# Zellij
+export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
+
 # Rust
-# NOTE We source this first, as many tools have cargo as dependency. Primarily those installed via cargo.
 [[ -e "${HOME}/.cargo/env" ]] && {
   source "${HOME}/.cargo/env" 
 }
-
-# Zellij
-export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
-export ZELLIJ_AUTO_ATTACH=true
 
 # Pyenv 
 [[ -d "${HOME}/.pyenv" ]] && {
