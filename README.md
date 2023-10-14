@@ -122,7 +122,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
   ![credit to source repository](https://user-images.githubusercontent.com/50617144/266825290-21025bbd-89c4-4ff7-ba81-81a273604632.png)
 
-  *tar* 
+  *tldr* 
   ![credit to source repository](https://tldr.sh/assets/img/screenshot.png) 
 </details>
 
