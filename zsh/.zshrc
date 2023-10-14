@@ -38,16 +38,18 @@ SAVEHIST=10000
 HISTSIZE=9999
 setopt HIST_EXPIRE_DUPS_FIRST
 
-# Load functions
-[[ ! -e "${ZSH_CONFIG}/omz_functions.zsh" ]] || source "${ZSH_CONFIG}/omz_functions.zsh"
-[[ ! -e "${ZSH_CONFIG}/functions.zsh" ]] || source "${ZSH_CONFIG}/functions.zsh"
+# Load basic functions, fail if files not found
+source "${ZSH_CONFIG}/functions/omz_functions.zsh"
+source "${ZSH_CONFIG}/functions/utils.zsh"
+
+# Load add on functions
+safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
+safe_source "${ZSH_CONFIG}/functions/pw.zsh"
+safe_source "${ZSH_CONFIG}/functions/notes.zsh"
 
 # Exports activates necessary environments (which is dependency for some tools); source first.
 safe_source "${ZSH_CONFIG}/exports.zsh"
 safe_source "${ZSH_CONFIG}/aliases.zsh"
-
-# Source theme 
-safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
 
 # Load plugins
 zsh_load_local_plugin "zsh-autosuggestions" "zsh-autosuggestions.zsh"
@@ -73,6 +75,9 @@ DISABLE_AUTO_TITLE="true"
 precmd () {
   print -Pn "\e]0;%~\a"
 }
+
+# Source theme 
+safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # NOTE: We leave p10k config in default location to allow p10k to modify it normally
