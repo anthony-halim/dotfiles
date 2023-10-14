@@ -33,7 +33,7 @@ My workflows use different machines with slightly different configuration, tools
 There are 2 ways custom configuration can be made:
 
 - Adding [custom local configs](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
-- Set [environment variables](#environment-variables).
+- Set [environment variables](#optional-set-environment-variables).
 
 #### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `goto`
 
