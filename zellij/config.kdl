@@ -13,6 +13,7 @@ copy_on_select true
 keybinds clear-defaults=true {
     normal {
         unbind "Ctrl h"   // Unbind move, I'm not using it...
+        unbind "Ctrl o"   // Unbind session, all the shortcuts are in global shortcuts
     }
     locked {
         bind "Ctrl g" { SwitchToMode "Normal"; }
@@ -82,17 +83,6 @@ keybinds clear-defaults=true {
     renamepane {
         bind "Ctrl c" "Esc" { UndoRenamePane; SwitchToMode "Normal"; }
     }
-    session {
-        bind "Ctrl o" { SwitchToMode "Normal"; }
-        bind "d" { Detach; }
-        bind "w" {
-            LaunchOrFocusPlugin "zellij:session-manager" {
-                floating true
-                move_to_focused_tab true
-            };
-            SwitchToMode "Normal"
-        }
-    }
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Ctrl q" { Quit; }
@@ -137,14 +127,8 @@ keybinds clear-defaults=true {
     shared_except "scroll" "locked" {
         bind "Ctrl s" { SwitchToMode "Scroll"; }
     }
-    shared_except "session" "locked" {
-        bind "Ctrl o" { SwitchToMode "Session"; }
-    }
     shared_except "tab" "locked" {
         bind "Ctrl t" { SwitchToMode "Tab"; }
-    }
-    shared_except "move" "locked" {
-        bind "Ctrl h" { SwitchToMode "Move"; }
     }
 }
 
