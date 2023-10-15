@@ -22,7 +22,18 @@ fi
 
 # NOTE: Must be done before p10k setup (instant prompt and actual sourcing)
 if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
-  eval "$(zellij setup --generate-auto-start zsh)"
+  # From 'eval "$(zellij setup --generate-auto-start zsh)"'
+  if [[ -z "$ZELLIJ" ]]; then
+      if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
+          zellij attach -c
+      else
+          zellij 
+      fi
+
+      if [[ "$ZELLIJ_AUTO_EXIT" == "true" ]]; then
+          exit
+      fi
+  fi
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.

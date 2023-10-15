@@ -20,7 +20,10 @@ fi
 
 [[ ! $(command -v "terraform") ]] || alias tf="terraform"
 
-[[ ! $(command -v "zellij") ]] || alias ze="zellij"
+[[ ! $(command -v "zellij") ]] || {
+  alias ze="zellij"
+  alias zea="zellij attach -c"
+}
 
 alias sush="sudo su -"
 
