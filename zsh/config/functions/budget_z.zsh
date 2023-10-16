@@ -56,5 +56,5 @@ goto () {
   q=${q// -/ !}
 
   # allows typing "to foo -bar", which becomes "foo !bar" in the fzf query
-  cd "$(fzf --height=25% --layout=reverse --info=inline --border --margin=1 --padding=1 -1 +m -q "$q" < "${directory_cache}")"
+  cd "$(fzf --height=25% --layout=reverse --info=inline --border --margin=1 -1 +m -q "$q" < "${directory_cache}")"
 }
