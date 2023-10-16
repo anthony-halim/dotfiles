@@ -25,13 +25,9 @@ if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
   # From 'eval "$(zellij setup --generate-auto-start zsh)"'
   if [[ -z "$ZELLIJ" ]]; then
       if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
-          zellij attach -c
+          zellij --layout compact attach -c
       else
-          zellij 
-      fi
-
-      if [[ "$ZELLIJ_AUTO_EXIT" == "true" ]]; then
-          exit
+          zellij --layout compact
       fi
   fi
 fi
