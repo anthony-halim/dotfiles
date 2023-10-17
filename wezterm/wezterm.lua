@@ -40,17 +40,14 @@ local keymaps = {
       end
     end),
   },
-  { key = "v",     mods = "CTRL",       action = act({ PasteFrom = "Clipboard" }) },
-  { key = "_",     mods = "CTRL|SHIFT", action = act.DecreaseFontSize },
-  { key = "+",     mods = "CTRL|SHIFT", action = act.IncreaseFontSize },
-  { key = "N",     mods = "CTRL|SHIFT", action = act.SpawnWindow },
-  { key = "Enter", mods = "CTRL|SHIFT", action = act.ToggleFullScreen },
-  { key = "Tab",   mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
-  { key = "T",     mods = "CTRL|SHIFT", action = act.SpawnCommandInNewTab({ cwd = "~" }) },
-  { key = "W",     mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = false }) },
-  { key = "R",     mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
-  { key = "L",     mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
-  { key = "P",     mods = "CTRL|SHIFT", action = act.ActivateCommandPalette },
+  { key = "v",     mods = "CTRL",     action = act({ PasteFrom = "Clipboard" }) },
+  { key = "-",     mods = "CTRL|ALT", action = act.DecreaseFontSize },
+  { key = "=",     mods = "CTRL|ALT", action = act.IncreaseFontSize },
+  { key = "n",     mods = "CTRL|ALT", action = act.SpawnWindow },
+  { key = "Enter", mods = "CTRL|ALT", action = act.ToggleFullScreen },
+  { key = "r",     mods = "CTRL|ALT", action = act.ReloadConfiguration },
+  { key = "`",     mods = "CTRL|ALT", action = act.ShowDebugOverlay },
+  { key = "p",     mods = "CTRL|ALT", action = act.ActivateCommandPalette },
 }
 
 -- This table will hold the configuration
