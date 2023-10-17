@@ -27,9 +27,6 @@
     editor = vim
     pager = delta
 
-[fetch]
-    prune = true
-
 [pull]
     rebase = true
 

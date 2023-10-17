@@ -20,11 +20,11 @@ return {
     opts = {
       mappings = {
         close = "q",
-        go_in = "L",
-        go_in_plus = "l",
-        go_out = "h",
-        go_out_plus = "H",
-        reset = "<BS>",
+        go_in = "",
+        go_in_plus = "<cr>",
+        go_out = "<bs>",
+        go_out_plus = "",
+        reset = ".",
         reveal_cwd = "@",
         show_help = "g?",
         synchronize = "=",
