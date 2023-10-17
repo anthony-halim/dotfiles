@@ -10,8 +10,6 @@ This repository holds my local configurations. Feel free to take ideas from it t
 > ❗If you want to use this repository, I recommend forking this repository before usage.
 > I do **unannounced breaking changes** regularly.
 
-> This repository works best with my [Neovim Repo](https://github.com/anthony-halim/nvim) as it incorporates terminal shortcuts to trigger Neovim functionalities.  
-
 ---
 
 ## 🖥️ Supported OS
@@ -132,7 +130,8 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   <br/>
 
   - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
-  - The complete configuration and set-up are done on a separate repository; check my [Neovim Repo](https://github.com/anthony-halim/nvim).
+  - The Neovim has been configured to include LSP, auto-completion, UI and quality of life plugins that I use often.
+  - Note taking with [Telekasten.nvim](https://github.com/renerocksai/telekasten.nvim)
 </details>
 
 <details>
@@ -216,7 +215,13 @@ The following environment variables affects the repository behaviour. You can se
 |----------------------- | ---------------------- | ------------------------------ | --------------- |
 | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
 | ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
- 
+
+**[bible-verse.nvim](https://github.com/anthony-halim/bible-verse.nvim)** 
+
+| Name                       | Type                   | Defaults                 | Description     |
+|--------------------------- | ---------------------- | ------------------------ | --------------- |
+| NVIM_DISABLE_BIBLE_VERSE   | boolean                | false                    | Disable `bible-verse.nvim`. |
+
 #### (Optional) Swap Keys 
 
 The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you! 
@@ -296,3 +301,10 @@ Below is a screenshot of a snippet of the script run:
 > - On `Caps Lock` tap, map it as `Esc`. 
 > - On `Caps Lock` hold, map it as `Ctrl`.
 
+
+**Q: The Diatheke module is not installed correctly.**
+> Try to completely uninstall module `installmgr -u <module_name>` and rerun `./setup.sh` again.
+
+
+**Q: The [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) Neovim plugin is not installed correctly.**
+> Try to upgrade `Node` and `npm` to the latest version and restart Neovim.
