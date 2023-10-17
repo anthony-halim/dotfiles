@@ -253,7 +253,7 @@ setup_dependencies() {
 setup_eza() {
 	install_eza() {
 		load_cargo || {
-			msg_err "  -> cargo command not found! eza installation require cargo."
+			msg_err "   cargo command not found! eza installation require cargo."
 			return 0
 		}
 		cargo install eza
@@ -270,7 +270,7 @@ setup_eza() {
 setup_zellij() {
 	install_zellij() {
 		load_cargo || {
-			msg_err "  -> cargo command not found! zellij installation require cargo."
+			msg_err "   cargo command not found! zellij installation require cargo."
 			return 0
 		}
 		cargo install --locked zellij
@@ -328,7 +328,7 @@ setup_pyenv() {
 setup_bob() {
 	install_bob() {
 		load_cargo || {
-			msg_err "  -> cargo command not found! bob installation require cargo."
+			msg_err "   cargo command not found! bob installation require cargo."
 			return 0
 		}
 		cargo install --git https://github.com/MordechaiHadad/bob.git
@@ -357,7 +357,7 @@ setup_neovim() {
 
 	install_nvim() {
 		if [[ ! $(command -v bob) ]]; then
-			msg_err "  -> bob command not found! neovim installation require Bob."
+			msg_err "   bob command not found! neovim installation require Bob."
 			return 0
 		fi
 
@@ -554,6 +554,56 @@ setup_git() {
 	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL" 0
 }
 
+setup_diatheke() {
+	install_diatheke() {
+		if [[ "${OSTYPE}" =~ ^darwin ]]; then
+			brew install sword
+		elif [[ "${OSTYPE}" =~ ^linux ]]; then
+			sudo apt install -y libsword-utils diatheke
+		fi
+	}
+
+	configure_diatheke() {
+		if [[ ! $(command -v installmgr) ]]; then
+			msg_err "    installmgr is not found"
+			return 0
+		fi
+
+		export SWORD_PATH="${HOME}/.sword"
+		local sword_mods="${SWORD_PATH}/mods.d"
+		msg "  SWORD mods.d is set at: ${sword_mods}."
+		mkdir -p "$sword_mods"
+
+		msg "  Initialising user config file"
+		confirm && {
+			yes "yes" 2>/dev/null | installmgr -init # create a basic user config file
+		}
+
+		msg "  Setting up installmgr with remote sources for diatheke"
+		confirm && {
+			yes "yes" 2>/dev/null | installmgr -sc # sync config with list of known remote repos
+			msg_success "  -> Remote sources synced"
+		}
+
+		msg "  Installing CrossWire's KJV bible module"
+		confirm && {
+			yes "yes" 2>/dev/null | installmgr -r CrossWire      # refresh remote source
+			yes "yes" 2>/dev/null | installmgr -ri CrossWire KJV # install module from remote source
+			msg_success "  -> Installed"
+		}
+	}
+
+	if [[ $(command -v diatheke) ]] && [[ $(command -v installmgr) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing diatheke and its dependencies"
+		confirm && install_diatheke
+	fi
+
+	msg "  Configuring diatheke and its module"
+	confirm && configure_diatheke
+}
+
 setup_dir() {
 	local dir_to_create=$1
 	local description=${2:-}
@@ -651,6 +701,11 @@ separator
 msg_info "Neovim: installing Neovim version '${NEOVIM_TAG}'"
 setup_neovim && msg_success "Neovim: success!"
 
+# diatheke installation
+separator
+msg_info "diatheke: installing diatheke (CLI for the SWORD project, OSS Bible Software). This is used for bible-verse.nvim."
+setup_diatheke && msg_success "diatheke: success!"
+
 # ZSH installation
 separator
 msg_info "zsh: installing Z-Shell"
@@ -681,6 +736,7 @@ safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
 safe_symlink "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
+safe_symlink "${SCRIPT_DIR}/nvim" "${HOME}/.config/nvim"
 msg_success "symlink: success!"
 
 # Report git information at the very end to make it clear to user
