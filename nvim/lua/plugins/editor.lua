@@ -39,15 +39,15 @@ return {
       },
       windows = {
         -- Maximum number of windows to show side by side
-        max_number = 3,
+        max_number = math.huge,
         -- Whether to show preview of file/directory under cursor
         preview = true,
         -- Width of focused window
-        width_focus = 30,
+        width_focus = math.max(math.floor(vim.o.columns * 0.4), 40),
         -- Width of non-focused window
-        width_nofocus = 15,
+        width_nofocus = math.max(math.floor(vim.o.columns * 0.2), 25),
         -- Width of preview window
-        width_preview = 25,
+        width_preview = math.floor(vim.o.columns * 0.3),
       },
       options = {
         use_as_default_explorer = false,
