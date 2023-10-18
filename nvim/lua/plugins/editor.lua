@@ -43,11 +43,11 @@ return {
         -- Whether to show preview of file/directory under cursor
         preview = true,
         -- Width of focused window
-        width_focus = math.max(math.floor(vim.o.columns * 0.4), 40),
+        width_focus = math.min(math.floor(vim.o.columns * 0.4), 40),
         -- Width of non-focused window
-        width_nofocus = math.max(math.floor(vim.o.columns * 0.2), 25),
+        width_nofocus = math.min(math.floor(vim.o.columns * 0.2), 25),
         -- Width of preview window
-        width_preview = math.floor(vim.o.columns * 0.3),
+        width_preview = math.min(math.floor(vim.o.columns * 0.3), 80),
       },
       options = {
         use_as_default_explorer = false,
