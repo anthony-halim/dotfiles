@@ -48,6 +48,7 @@ local keymaps = {
   { key = "r",     mods = "CTRL|ALT", action = act.ReloadConfiguration },
   { key = "`",     mods = "CTRL|ALT", action = act.ShowDebugOverlay },
   { key = "p",     mods = "CTRL|ALT", action = act.ActivateCommandPalette },
+  { key = "w",     mods = "CTRL|ALT", action = act.CloseCurrentTab({ confirm = false }) },
 }
 
 -- This table will hold the configuration
