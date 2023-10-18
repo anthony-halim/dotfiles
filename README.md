@@ -207,7 +207,7 @@ The following environment variables affects the repository behaviour. You can se
 
 | Name                   | Type                   | Defaults                       | Description     |
 |----------------------- | ---------------------- | ------------------------------ | --------------- |
-| ZSH_DIRJUMP            | string                 | "$HOME/.cache/.zsh_dirjump"    | Path to file to store bookmarked directories. |
+| ZSH_DIRJUMP            | string                 | "$HOME/.cache/.dirjump"        | Path to file to store bookmarked directories. |
 
 **Zellij** 
 

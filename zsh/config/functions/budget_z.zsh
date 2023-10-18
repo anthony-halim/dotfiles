@@ -51,7 +51,7 @@ bm () {
 #   # foo is partial/full name of path to directory
 #   goto foo
 goto () {
-  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
+  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/.dirjump}"
   q=" $*"
   q=${q// -/ !}
 
