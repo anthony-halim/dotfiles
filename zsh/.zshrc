@@ -11,14 +11,8 @@ source "${ZSH_CONFIG}/functions/omz_functions.zsh"
 source "${ZSH_CONFIG}/functions/utils.zsh"
 source "${ZSH_CONFIG}/exports.zsh"
 
-# Load local config files
-if [[ -d "${ZSH_LOCAL_CONFIG}" ]]
-then 
-  for conf in "${ZSH_LOCAL_CONFIG}/"*.zsh(.N); do
-    source "${conf}"
-  done
-  unset conf
-fi
+# If there is local export file, load it first
+safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
 
 # NOTE: Must be done before p10k setup (instant prompt and actual sourcing)
 if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
@@ -79,6 +73,15 @@ safe_source "${ZSH_CONFIG}/bindkeys.zsh"
 
 # Load aliases
 safe_source "${ZSH_CONFIG}/aliases.zsh"
+
+# Load local config files
+if [[ -d "${ZSH_LOCAL_CONFIG}" ]]
+then 
+  for conf in "${ZSH_LOCAL_CONFIG}/"*.zsh(.N); do
+    source "${conf}"
+  done
+  unset conf
+fi
 
 # Source theme 
 safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 

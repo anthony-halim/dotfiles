@@ -12,6 +12,9 @@ map("n", "gJ", [[<C-I>]], { desc = "Jump to next" })
 -- Copy to system clipboard
 map("v", "<C-c>", [["+Y]])
 
+-- On visual mode, paste without yanking
+map("v", "p", [["_dP"]], { desc = "Paste without yanking" })
+
 -- Local regex replace
 map("n", "<leader>cR", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Regex replace in file" })
 

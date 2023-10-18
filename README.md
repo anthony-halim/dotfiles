@@ -187,7 +187,9 @@ Refer to [Setup](#setup) for details.
 
 Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository. 
 
-You can use this to add additional aliases, environment variables, or functions.
+You can use this to add additional aliases or functions.
+
+For environment variables, please put them under `$HOME/.config/zsh/local_config/exports.zsh`. Environment variables must be loaded before the rest of shell configuration is done as it dictates the behaviour.
 
 #### (Optional) Set environment variables
 
