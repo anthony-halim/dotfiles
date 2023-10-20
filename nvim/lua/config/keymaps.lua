@@ -1,5 +1,3 @@
-local Util = require("util")
-
 local map = vim.keymap.set
 
 -- Safety
@@ -73,18 +71,8 @@ map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
 map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
 
--- lazygit
-map("n", "<leader>gg", function()
-  Util.float_term({ "lazygit" }, { cwd = Util.get_root(), esc_esc = false, ctrl_hjkl = false })
-end, { desc = "Lazygit (root dir)" })
-map("n", "<leader>gG", function()
-  Util.float_term({ "lazygit" }, { esc_esc = false, ctrl_hjkl = false })
-end, { desc = "Lazygit (cwd)" })
-
 -- highlights under cursor
-if vim.fn.has("nvim-0.9.0") == 1 then
-  map("n", "<leader>ci", vim.show_pos, { desc = "Inspect treesitter pos" })
-end
+map("n", "<leader>ci", vim.show_pos, { desc = "Inspect treesitter pos" })
 
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })

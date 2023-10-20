@@ -247,10 +247,20 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  { desc = "Resize window (left)" } },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  { desc = "Resize window (down)" } },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    { desc = "Resize window (up)" } },
-      { "<C-M-l>", "<cmd>SmartResizeRight<cr>", { desc = "Resize window (right)" } },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
+    },
+  },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = { "LazyGit" },
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
     },
   },
 }
