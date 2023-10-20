@@ -12,7 +12,7 @@
 # Flags/Options
 #       --remove-all    FLAG    clear all bookmarked directories. 
 bm () {
-  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/dirjump}"
+  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/.dirjump}"
   local purge_cache_mode=false
 
   while :; do
