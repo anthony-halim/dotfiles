@@ -114,6 +114,7 @@ return {
   -- Floating filename for each window
   {
     "b0o/incline.nvim",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       window = {
         margin = {
