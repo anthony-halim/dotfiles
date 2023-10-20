@@ -40,15 +40,14 @@ local keymaps = {
       end
     end),
   },
-  { key = "v",     mods = "CTRL",     action = act({ PasteFrom = "Clipboard" }) },
-  { key = "-",     mods = "CTRL|ALT", action = act.DecreaseFontSize },
-  { key = "=",     mods = "CTRL|ALT", action = act.IncreaseFontSize },
-  { key = "n",     mods = "CTRL|ALT", action = act.SpawnWindow },
-  { key = "Enter", mods = "CTRL|ALT", action = act.ToggleFullScreen },
-  { key = "r",     mods = "CTRL|ALT", action = act.ReloadConfiguration },
-  { key = "`",     mods = "CTRL|ALT", action = act.ShowDebugOverlay },
-  { key = "p",     mods = "CTRL|ALT", action = act.ActivateCommandPalette },
-  { key = "w",     mods = "CTRL|ALT", action = act.CloseCurrentTab({ confirm = false }) },
+  { key = "v",     mods = "CTRL",       action = act({ PasteFrom = "Clipboard" }) },
+  { key = "-",     mods = "CTRL",       action = act.DecreaseFontSize },
+  { key = "=",     mods = "CTRL",       action = act.IncreaseFontSize },
+  { key = "~",     mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
+  { key = "N",     mods = "CTRL|SHIFT", action = act.SpawnWindow },
+  { key = "Enter", mods = "CTRL|SHIFT", action = act.ToggleFullScreen },
+  { key = "R",     mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
+  { key = "Q",     mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = false }) },
 }
 
 -- This table will hold the configuration

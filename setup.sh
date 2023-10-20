@@ -224,6 +224,9 @@ safe_symlink() {
 		return 0
 	}
 
+	# Create parent directory if needed
+	mkdir -p "$(dirname ${target})"
+
 	ln -s "${real_file}" "${target}"
 	msg_success "  -> Symlink created!"
 }
@@ -735,7 +738,6 @@ separator
 msg_info "diatheke: installing diatheke (CLI for the SWORD project, OSS Bible Software). This is used for bible-verse.nvim."
 setup_diatheke && msg_success "diatheke: success!"
 
-# ZSH installation
 separator
 msg_info "zsh: installing Z-Shell"
 setup_zsh && msg_success "zsh: success!"
@@ -765,6 +767,7 @@ safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
 safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
 safe_symlink "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
+safe_symlink "${SCRIPT_DIR}/zellij/plugins" "${HOME}/.local/share/zellij/plugins"
 safe_symlink "${SCRIPT_DIR}/nvim" "${HOME}/.config/nvim"
 safe_symlink "${SCRIPT_DIR}/fzfconfig/fzf/bin/fzf" "${HOME}/.local/bin/fzf"
 msg_success "symlink: success!"

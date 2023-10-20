@@ -19,9 +19,9 @@ if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
   # From 'eval "$(zellij setup --generate-auto-start zsh)"'
   if [[ -z "$ZELLIJ" ]]; then
       if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
-          zellij --layout compact attach -c
+          zellij attach -c
       else
-          zellij --layout compact
+          zellij 
       fi
   fi
 fi
