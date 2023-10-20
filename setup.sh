@@ -192,7 +192,7 @@ safe_symlink() {
 	local real_file=$1
 	local target=$2
 
-	msg "  Creating ${target} -> ${real_file}"
+	msg "  Setting up ${target} -> ${real_file}"
 
 	if [[ -L "${target}" && $(readlink -n "${target}") == "${real_file}" ]]; then
 		msg_info "  -> Symlink already exist."
@@ -203,7 +203,7 @@ safe_symlink() {
 		# Create backup symlink
 		msg_warn "  ! ${target} is another symlink. We will create a symlink ${target}.bak to original target."
 		confirm || {
-			msg_warn " ! Skipping..."
+			msg_warn "  ! Skipping..."
 			return 0
 		}
 		ln -s "$(readlink -n "${target}")" "${target}.bak" && rm "${target}"
@@ -217,6 +217,12 @@ safe_symlink() {
 		}
 		mv "${target}" "${target}.bak"
 	fi
+
+	msg_warn "  ! Creating symlink."
+	confirm || {
+		msg_warn "  ! Skipping..."
+		return 0
+	}
 
 	ln -s "${real_file}" "${target}"
 	msg_success "  -> Symlink created!"
@@ -235,7 +241,7 @@ load_cargo() {
 
 setup_dependencies() {
 	install_dependencies() {
-		local dependencies=("wget" "fzf" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger" "tldr")
+		local dependencies=("wget" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger" "tldr")
 		for dependency in "${dependencies[@]}"; do
 			msg_info "  Installing '$dependency'"
 			if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -248,6 +254,24 @@ setup_dependencies() {
 	}
 
 	confirm && install_dependencies
+}
+
+setup_fzf() {
+	install_fzf() {
+		local fzf_install_script="${SCRIPT_DIR}/fzfconfig/fzf/install"
+		[[ ! -e "$fzf_install_script" ]] && {
+			msg_err "   fzf install script not found! Have you cloned the git submodules?"
+			return 0
+		}
+		bash -c "${fzf_install_script} --bin --no-key-bindings --no-completion --no-update-rc --no-bash --no-zsh --no-fish"
+	}
+
+	if [[ $(command -v fzf) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing fzf"
+		confirm && install_fzf
+	fi
 }
 
 setup_eza() {
@@ -615,7 +639,7 @@ setup_dir() {
 
 	if [[ ! -d "$dir_to_create" ]]; then
 		confirm || {
-			msg_warn " ! Skipping..."
+			msg_warn "  ! Skipping..."
 			return 0
 		}
 		mkdir -p "$dir_to_create"
@@ -655,6 +679,11 @@ fi
 separator
 msg_info "deps: installing dependencies"
 setup_dependencies && msg_success "deps: success!"
+
+# Dependencies installation
+separator
+msg_info "fzf: installing fzf (fuzzy file finder)"
+setup_fzf && msg_success "fzf: success!"
 
 # Git setup
 separator
@@ -737,6 +766,7 @@ safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
 safe_symlink "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
 safe_symlink "${SCRIPT_DIR}/nvim" "${HOME}/.config/nvim"
+safe_symlink "${SCRIPT_DIR}/fzfconfig/fzf/bin/fzf" "${HOME}/.local/bin/fzf"
 msg_success "symlink: success!"
 
 # Report git information at the very end to make it clear to user

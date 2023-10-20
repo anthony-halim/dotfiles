@@ -10,3 +10,6 @@
 [submodule "zsh/plugin/zsh-history-substring-search"]
 	path = zsh/plugin/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search
+[submodule "fzfconfig/fzf"]
+	path = fzfconfig/fzf
+	url = https://github.com/junegunn/fzf
