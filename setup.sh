@@ -261,7 +261,7 @@ setup_dependencies() {
 
 setup_fzf() {
 	install_fzf() {
-		local fzf_install_script="${SCRIPT_DIR}/fzfconfig/fzf/install"
+		local fzf_install_script="${SCRIPT_DIR}/modules/fzf/install"
 		[[ ! -e "$fzf_install_script" ]] && {
 			msg_err "   fzf install script not found! Have you cloned the git submodules?"
 			return 0
@@ -274,7 +274,10 @@ setup_fzf() {
 	else
 		msg "  Installing fzf"
 		confirm && install_fzf
+
+		safe_symlink "${SCRIPT_DIR}/modules/fzf/bin/fzf" "${HOME}/.local/bin/fzf"
 	fi
+
 }
 
 setup_eza() {
@@ -308,6 +311,9 @@ setup_zellij() {
 	else
 		msg "  Installing zellij"
 		confirm && install_zellij
+
+		safe_symlink "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
+		safe_symlink "${SCRIPT_DIR}/zellij/plugins" "${HOME}/.local/share/zellij/plugins"
 	fi
 }
 
@@ -412,6 +418,9 @@ setup_neovim() {
 
 		msg "  Installing Neovim"
 		confirm && install_nvim
+
+		# Link configuration
+		safe_symlink "${SCRIPT_DIR}/nvim" "${HOME}/.config/nvim"
 	fi
 }
 
@@ -432,6 +441,10 @@ setup_zsh() {
 		else
 			msg_info "  -> already set as default shell, skipping..."
 		fi
+
+		safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
+		safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
+		safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 	}
 
 	if [[ $(command -v zsh) ]]; then
@@ -443,6 +456,19 @@ setup_zsh() {
 
 	msg "  Configuring zsh"
 	configure_zsh
+}
+
+setup_zap() {
+	install_zap() {
+		zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 --keep
+	}
+
+	if [[ $(command -v zap) ]]; then
+		msg_info "  -> already installed, skipping..."
+	else
+		msg "  Installing zap"
+		confirm && install_zap
+	fi
 }
 
 setup_rust() {
@@ -579,6 +605,10 @@ setup_git() {
 
 	set_git_conf "$git_location_flag" "user.name" "$GIT_USER" 0
 	set_git_conf "$git_location_flag" "user.email" "$GIT_USER_EMAIL" 0
+
+	# Setup symlink
+	safe_symlink "${SCRIPT_DIR}/gitconfig/gitconfig-base" "${HOME}/.gitconfig-base"
+	safe_symlink "${SCRIPT_DIR}/gitconfig/gitconfig-themes" "${HOME}/.gitconfig-themes"
 }
 
 setup_diatheke() {
@@ -631,6 +661,10 @@ setup_diatheke() {
 	confirm && configure_diatheke
 }
 
+setup_wezterm() {
+	safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
+}
+
 setup_dir() {
 	local dir_to_create=$1
 	local description=${2:-}
@@ -673,19 +707,18 @@ fi
 
 # Detected that script is executed under root.
 # This will cause subsequent installation and configuration to be done for root user.
-# Prompt for confirmation.
 if [[ "${USER_EXECUTOR}" == "root" ]]; then
 	die "Script is executed as ${USER_EXECUTOR}. Installation and configuration is not meant for system-level."
 fi
 
-# Dependencies installation
+# Dependencies setup
 separator
-msg_info "deps: installing dependencies"
+msg_info "deps: setting up dependencies"
 setup_dependencies && msg_success "deps: success!"
 
-# Dependencies installation
+# fzf setup
 separator
-msg_info "fzf: installing fzf (fuzzy file finder)"
+msg_info "fzf: setting up fzf (fuzzy file finder)"
 setup_fzf && msg_success "fzf: success!"
 
 # Git setup
@@ -695,57 +728,68 @@ setup_git && msg_success "git_conf: success!"
 
 # git-delta installation
 separator
-msg_info "git-delta: installing git-delta (syntax highlighter for git, diff, and grep output)"
+msg_info "git-delta: setting up git-delta (syntax highlighter for git, diff, and grep output)"
 setup_gitdelta && msg_success "git-delta: success!"
 
 # Lazygit installation
 separator
-msg_info "lazygit: installing lazygit (simple terminal UI for git commands)"
+msg_info "lazygit: setting up lazygit (simple terminal UI for git commands)"
 setup_lazygit && msg_success "lazygit: success!"
 
 # Pyenv installation
 separator
-msg_info "pyenv: installing pyenv (Python version manager)"
+msg_info "pyenv: setting up pyenv (Python version manager)"
 setup_pyenv && msg_success "pyenv: success!"
 
 # Golang installation
 separator
-msg_info "Golang: installing Golang version ${GOLANG_TAG}"
+msg_info "Golang: setting up Golang version ${GOLANG_TAG}"
 setup_go && msg_success "Golang: success!"
 
 # Rust installation
 separator
-msg_info "Rust: installing Rust (programming language) with rustup"
+msg_info "Rust: setting up Rust (programming language) with rustup"
 setup_rust && msg_success "Rust: success!"
 
 # Exa installation
 separator
-msg_info "eza: installing eza (better ls). Require rust."
+msg_info "eza: setting up eza (better ls). Require rust."
 setup_eza && msg_success "eza: success!"
 
 # Bob installation
 separator
-msg_info "bob: installing Bob (Neovim version manager). Require rust."
+msg_info "bob: setting up Bob (Neovim version manager). Require rust."
 setup_bob && msg_success "Bob: success!"
 
 # Neovim installation
 separator
-msg_info "Neovim: installing Neovim version '${NEOVIM_TAG}'"
+msg_info "Neovim: seting up Neovim version '${NEOVIM_TAG}'"
 setup_neovim && msg_success "Neovim: success!"
 
 # diatheke installation
 separator
-msg_info "diatheke: installing diatheke (CLI for the SWORD project, OSS Bible Software). This is used for bible-verse.nvim."
+msg_info "diatheke: setting up diatheke (CLI for the SWORD project, OSS Bible Software). This is used for bible-verse.nvim."
 setup_diatheke && msg_success "diatheke: success!"
 
+# ZSH installation
 separator
-msg_info "zsh: installing Z-Shell"
+msg_info "zsh: setting up Z-Shell"
 setup_zsh && msg_success "zsh: success!"
+
+# Zap installation
+separator
+msg_info "zap: setting up Zap (ZSH plugin manager)"
+setup_zap && msg_success "zap: success!"
 
 # Zellij installation
 separator
-msg_info "zellij: installing Zellij (terminal session manager and terminal multiplexer)"
+msg_info "zellij: setting up Zellij (terminal session manager and terminal multiplexer)"
 setup_zellij && msg_success "zellij: success!"
+
+# Wezterm setup
+separator
+msg_info "wezterm: setting up Wezterm (cross-platform terminal emulator)"
+setup_wezterm && msg_success "wezterm: success!"
 
 # Create required directories
 separator
@@ -756,21 +800,6 @@ setup_dir "$REPO_WORK_DIR" "work repository directory."
 setup_dir "$NOTES_PERSONAL_DIR" "personal notes vault (note directory)."
 setup_dir "$NOTES_WORK_DIR" "work notes vault (note directory)."
 msg_success "directories: success!"
-
-# Create symbolic link configuration
-separator
-msg_info "symlink: setting up soft links to repository configuration"
-safe_symlink "${SCRIPT_DIR}/gitconfig/gitconfig-base" "${HOME}/.gitconfig-base"
-safe_symlink "${SCRIPT_DIR}/gitconfig/gitconfig-themes" "${HOME}/.gitconfig-themes"
-safe_symlink "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
-safe_symlink "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
-safe_symlink "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
-safe_symlink "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
-safe_symlink "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
-safe_symlink "${SCRIPT_DIR}/zellij/plugins" "${HOME}/.local/share/zellij/plugins"
-safe_symlink "${SCRIPT_DIR}/nvim" "${HOME}/.config/nvim"
-safe_symlink "${SCRIPT_DIR}/fzfconfig/fzf/bin/fzf" "${HOME}/.local/bin/fzf"
-msg_success "symlink: success!"
 
 # Report git information at the very end to make it clear to user
 if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then

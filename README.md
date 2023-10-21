@@ -69,14 +69,14 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
 ## 🧱 Components
 
-#### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
+#### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [Zap](https://www.zapzsh.org/) (ZSH plugin manager), [powerlevel10k](https://github.com/romkatv/powerlevel10k) (theme)
 
 <details>
   <br/>
 
   - Due to heavy TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
   - Zellij is used to provide terminal session management and multiplexer.
-  - ZSH is battle tested shell that is easily configurable and is widely supported. Note that I do not use an plugin manager (at least for now). *I am* the plugin manager.
+  - ZSH is battle tested shell that is easily configurable and is widely supported. [Zap](https://www.zapzsh.org/) as plugin manager.
   - powerlevel10k as performant shell theme. 
 </details>
 
