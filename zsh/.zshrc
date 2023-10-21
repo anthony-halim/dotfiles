@@ -7,7 +7,6 @@ ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
 
 # Load requirements, fail if files not found
-source "${ZSH_CONFIG}/functions/omz_functions.zsh"
 source "${ZSH_CONFIG}/functions/utils.zsh"
 source "${ZSH_CONFIG}/exports.zsh"
 
@@ -33,20 +32,14 @@ if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" 
   source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Enable zap
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+
 # Enable colors
 autoload -Uz colors && colors
 
 # Allow comments as suffix to commands e.g. echo test # test
 setopt interactive_comments
-
-# Auto completion with tab
-autoload -Uz compinit bashcompinit
-zstyle ':completion:*' menu select
-zmodload zsh/complist
-compinit
-bashcompinit
-# Include hidden files.
-_comp_options+=(globdots)
 
 # History setup
 setopt SHARE_HISTORY
@@ -62,11 +55,12 @@ safe_source "${ZSH_CONFIG}/functions/pw.zsh"
 safe_source "${ZSH_CONFIG}/functions/notes.zsh"
 
 # Load plugins
-zsh_load_local_plugin "zsh-autosuggestions" "zsh-autosuggestions.zsh"
-zsh_load_local_plugin "zsh-syntax-highlighting" "zsh-syntax-highlighting.zsh"
-zsh_load_local_plugin "zsh-history-substring-search" "zsh-history-substring-search.zsh"
-zsh_load_local_plugin "sudo" "sudo.plugin.zsh"
-zsh_load_local_plugin "web-search" "web-search.plugin.zsh"
+plug "zsh-users/zsh-autosuggestions"
+plug "zsh-users/zsh-syntax-highlighting"
+plug "zsh-users/zsh-history-substring-search"
+plug "zap-zsh/sudo"
+plug "zap-zsh/web-search"
+plug "romkatv/powerlevel10k"
 
 # Bindkeys includes plugin keymaps, so must be done after plugin load
 safe_source "${ZSH_CONFIG}/bindkeys.zsh"
@@ -82,9 +76,6 @@ then
   done
   unset conf
 fi
-
-# Source theme 
-safe_source "${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme" 
 
 # Settle tab title
 DISABLE_AUTO_TITLE="true"
