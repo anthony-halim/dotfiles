@@ -1,13 +1,12 @@
 theme "catppuccin-mocha"
-//theme "nord"
 
-simplified_ui true
+simplified_ui false
 
 pane_frames false
 
 mouse_mode true
 
-on_force_close "quit"
+on_force_close "detach"
 
 copy_on_select true
 
@@ -28,7 +27,7 @@ keybinds clear-defaults=true {
         bind "L" { Resize "Decrease Right"; }
     }
     pane {
-        bind "Alt p" { SwitchToMode "Normal"; }
+        bind "Enter" "Alt p" { SwitchToMode "Normal"; }
         bind "h" { MoveFocus "Left"; }
         bind "l" { MoveFocus "Right"; }
         bind "j" { MoveFocus "Down"; }
@@ -41,7 +40,7 @@ keybinds clear-defaults=true {
         bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
     }
     tab {
-        bind "Alt t" { SwitchToMode "Normal"; }
+        bind "Enter" "Alt t" { SwitchToMode "Normal"; }
         bind "h" "k" { GoToPreviousTab; }
         bind "l" "j" { GoToNextTab; }
         bind "n" { NewTab; SwitchToMode "Normal"; }

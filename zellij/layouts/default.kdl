@@ -1,9 +1,7 @@
 layout {
-    pane 
     pane size=1 borderless=true {
         plugin location="file:zjstatus.wasm" {
-            format_left  "{mode} #[fg=fg,bold]{session} {tabs}"
-            format_space ""
+            format_left  "{mode} #[fg=green,bold]{session} {tabs}"
 
             mode_normal       "#[bg=blue] "
             mode_locked       "#[bg=magenta] 󰌾  "
@@ -17,10 +15,11 @@ layout {
             mode_rename_tab   "#[bg=green] 󱂬 󰏫  {name} "
             mode_rename_pane  "#[bg=green] 󱏂 󰏫  {name} "
 
-            tab_normal   "#[fg=#6C7086] {index}:{name} "
-            tab_active   "#[fg=#9399B2,bold,italic] {name} "
+            tab_normal   "#[fg=#6C7086] {name} "
+            tab_active   "#[fg=#ffffff,bg=blue,bold,italic] {name} "
         }
     }
+    pane 
     pane size=1 borderless=true {
         plugin location="zellij:status-bar"
     }

@@ -1,7 +1,7 @@
 local M = {}
 
 M.options = {
-  colorscheme = "nordfox",
+  colorscheme = "catppuccin",
 
   -- icons used by other plugins
   icons = {

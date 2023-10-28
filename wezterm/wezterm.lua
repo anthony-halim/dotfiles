@@ -14,7 +14,7 @@ local font_with_fallback = wezterm.font_with_fallback({
   "Symbols Nerd Font Mono",
 })
 local font_size = 11
-local color_scheme_name = "nightfox"
+local color_scheme_name = "catppuccin-mocha"
 local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
 
 local keymaps = {

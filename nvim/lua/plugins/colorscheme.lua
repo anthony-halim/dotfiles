@@ -1,13 +1,26 @@
 return {
+  -- {
+  --   "EdenEast/nightfox.nvim",
+  --   lazy = true,
+  --   opts = {
+  --     groups = {
+  --       all = {
+  --         VertSplit = { fg = "bg3" },
+  --       },
+  --     },
+  --   },
+  -- },
   {
-    "EdenEast/nightfox.nvim",
-    lazy = true,
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
     opts = {
-      groups = {
-        all = {
-          VertSplit = { fg = "black" },
-        },
-      },
+      flavour = "frappe",
+      custom_highlights = function(colors)
+        return {
+          VertSplit = { fg = colors.surface2 },
+        }
+      end,
     },
   },
 }
