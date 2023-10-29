@@ -249,6 +249,30 @@ setup_eza() {
 }
 
 setup_zellij() {
+	local target_zellij_version="latest"
+	local zellij_repo="https://github.com/zellij-org/zellij"
+	local zellij_tag="latest"
+	local zellij_tag_pattern="v*.*.*"
+	local zellij_bin_pattern=""
+	local zellij_bin_name="zellij"
+
+	# Tag check
+	if [[ "$zellij_tag" == "latest" ]]; then
+		zellij_tag=$(git::fetch_latest_tag "$zellij_repo" "$zellij_tag_pattern")
+		log::info "Translated zellij: 'latest' to '$zellij_tag'"
+	fi
+	if ! [[ "$zellij_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		log::err "Invalid format for zellij tag, must be vx.x.x"
+		return 0
+	fi
+
+	# Binary target pattern
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		zellij_bin_pattern="zellij-x86_64-apple-darwin.tar.gz"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		zellij_bin_pattern="zellij-x86_64-unknown-linux-musl.tar.gz"
+	fi
+
 	# Installation
 	need_installation_predicate() {
 		if [[ ! $(command -v zellij) ]]; then
@@ -258,19 +282,21 @@ setup_zellij() {
 		fi
 	}
 	install_func() {
-		env::load_cmd_if_not_exist "cargo" "${HOME}/.cargo/env" || {
-			log::err "cargo command not found! zellij installation require cargo."
-			return 0
-		}
-		cargo install --locked zellij
+		pkg::fetch_git_tag_release "$zellij_repo" "$zellij_tag" "$zellij_bin_pattern" "$zellij_bin_name"
 	}
 
 	# Upgrade
 	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
+		local zellij_cur_version=$(zellij --version | cut -d' ' -f2)
+		if [[ "v$zellij_cur_version" != "${zellij_tag}" ]]; then
+			log::warn "Attempting to upgrade zellij version from 'v$zellij_cur_version' to '$zellij_tag'"
+			echo 0
+		else
+			echo 1
+		fi
 	}
 	upgrade_func() {
+		install_func
 		return
 	}
 
