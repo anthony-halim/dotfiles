@@ -423,7 +423,7 @@ setup_neovim() {
 			done
 		}
 
-		local truncated_version=$(input::remove_prefix_if_exist "$target_nvim_version" "v")
+		local truncated_version=$(parser::extract_semver "$target_nvim_version")
 		bob install "${truncated_version}"
 		bob use "${truncated_version}"
 	}

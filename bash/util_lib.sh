@@ -81,12 +81,6 @@ input::prompt_confirmation() {
 	done
 }
 
-input::remove_prefix_if_exist() {
-	local input="$1"
-	local prefix="$2"
-	echo "${input/#$prefix/}"
-}
-
 ###
 #
 # Parser

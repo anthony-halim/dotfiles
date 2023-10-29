@@ -70,37 +70,6 @@ pkg::softlink_local_bin() {
 	symlink::safe_create "$binary_final_dest" "$local_bin_dir/$binary_name"
 }
 
-pkg::fetch_git_tag_release() {
-	local git_repo="$1"
-	local git_tag="$2"
-	local bin_pattern="$3"
-	local bin_name="$4"
-	local timestamp=$(date '+%s')
-
-	# Parameter expansion
-	local sed_bin_pattern=$(echo "$bin_pattern" | sed "s/{{ git_tag }}/$git_tag/g")
-
-	# Download target binary
-	local temp_dir="./gittmp_$timestamp"
-	mkdir $temp_dir
-
-	# Perform in a temp dir to avoid possible name conflict
-	cd "$temp_dir" && {
-		log::info "Downloading $bin_name from: $git_repo/releases/download/$git_tag/$bin_pattern"
-
-		curl -Lo "$bin_pattern" "$git_repo/releases/download/$git_tag/$bin_pattern"
-		if [[ "${bin_pattern#*.}" == "tar.gz" ]]; then
-			tar xf "$bin_pattern" "$bin_name"
-		fi
-
-		pkg::softlink_local_bin "$bin_name" "$git_tag"
-		cd ..
-	}
-
-	# Clean up
-	[[ ! -d "$temp_dir" ]] || rm -rf "$temp_dir"
-}
-
 # Git package manager
 # Checks latest release tag upstream and update the package if required
 pkg::manage_by_git_release() {
