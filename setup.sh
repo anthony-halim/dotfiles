@@ -154,65 +154,38 @@ setup_dependencies() {
 }
 
 setup_fzf() {
-	local target_fzf_version="${1:-latest}"
+	local pkg_name="fzf"
+	local pkg_description="fuzzy file finder"
+	local git_repo="https://github.com/junegunn/fzf"
+	local git_tag="latest"
+	local git_tag_pattern="*.*.*"
+	local git_bin_name="fzf"
 
-	# Parameter checks
-	if [[ "$target_fzf_version" == "latest" ]]; then
-		target_fzf_version=$(git::fetch_latest_tag "https://github.com/junegunn/fzf" "*.*.*")
-		log::info "Translated fzf: 'latest' to '$target_fzf_version'"
-	fi
-	if ! [[ "$target_fzf_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-		log::err "Invalid format for fzf tag, must be x.x.x"
-		return 0
-	fi
-
-	local target_fzf_sys=""
+	# Binary target pattern
+	local git_bin_pattern
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		target_fzf_sys="darwin_amd64"
+		git_bin_pattern="fzf-{{ git_tag }}-darwin_amd64.tar.gz"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		target_fzf_sys="linux_amd64"
+		git_bin_pattern="fzf-{{ git_tag }}-linux_amd64.tar.gz"
 	fi
 
-	# Installation
-	need_installation_predicate() {
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v fzf) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		curl -Lo fzf.tar.gz "https://github.com/junegunn/fzf/releases/download/$target_fzf_version/fzf-$target_fzf_version-$target_fzf_sys.tar.gz"
-		tar xf fzf.tar.gz fzf
 
-		pkg::softlink_local_bin "${SCRIPT_DIR}/fzf" "$target_fzf_version"
-
-		# Clean up
-		[[ ! -f "fzf.tar.gz" ]] || rm fzf.tar.gz
-		[[ ! -f "fzf" ]] || rm fzf
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		local fzf_version=$(fzf --version | cut -d' ' -f1)
-		if [[ "$fzf_version" != "${target_fzf_version}" ]]; then
-			log::warn "Attempting to upgrade fzf version from '$fzf_version' to '$target_fzf_version'"
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	upgrade_func() {
-		install_func
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(fzf --version | cut -d' ' -f1)"
 	}
 
-	pkg::setup_wrapper "fzf" "fuzzy file finder" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
 }
 
 setup_eza() {
@@ -250,185 +223,106 @@ setup_eza() {
 }
 
 setup_zellij() {
-	local target_zellij_version="latest"
-	local zellij_repo="https://github.com/zellij-org/zellij"
-	local zellij_tag="latest"
-	local zellij_tag_pattern="v*.*.*"
-	local zellij_bin_pattern=""
-	local zellij_bin_name="zellij"
-
-	# Tag check
-	if [[ "$zellij_tag" == "latest" ]]; then
-		zellij_tag=$(git::fetch_latest_tag "$zellij_repo" "$zellij_tag_pattern")
-		log::info "Translated zellij: 'latest' to '$zellij_tag'"
-	fi
-	if ! [[ "$zellij_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-		log::err "Invalid format for zellij tag, must be vx.x.x"
-		return 0
-	fi
+	local pkg_name="zellij"
+	local pkg_description="terminal session manager and terminal multiplexer"
+	local git_repo="https://github.com/zellij-org/zellij"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_name="zellij"
 
 	# Binary target pattern
+	local git_bin_pattern
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		zellij_bin_pattern="zellij-x86_64-apple-darwin.tar.gz"
+		git_bin_pattern="zellij-x86_64-apple-darwin.tar.gz"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		zellij_bin_pattern="zellij-x86_64-unknown-linux-musl.tar.gz"
+		git_bin_pattern="zellij-x86_64-unknown-linux-musl.tar.gz"
 	fi
 
-	# Installation
-	need_installation_predicate() {
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v zellij) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		pkg::fetch_git_tag_release "$zellij_repo" "$zellij_tag" "$zellij_bin_pattern" "$zellij_bin_name"
-	}
 
-	# Upgrade
-	need_upgrade_predicate() {
-		local zellij_cur_version=$(zellij --version | cut -d' ' -f2)
-		if [[ "v$zellij_cur_version" != "${zellij_tag}" ]]; then
-			log::warn "Attempting to upgrade zellij version from 'v$zellij_cur_version' to '$zellij_tag'"
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	upgrade_func() {
-		install_func
-		return
-	}
-
-	# Configuration
-	configure_func() {
+	pkg_configure_func() {
 		symlink::safe_create "${SCRIPT_DIR}/zellij" "${HOME}/.config/zellij"
 	}
 
-	pkg::setup_wrapper "zellij" "terminal session manager and terminal multiplexer" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg_current_tag_func() {
+		echo "$(zellij --version | cut -d' ' -f2)"
+	}
+
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
 }
 
 setup_zjstatus() {
-	local target_zjstatus_version="${1:-latest}"
-	local zjstatus_bin="${2:-zjstatus.wasm}"
-	local zellij_plugin_dir="${3:-$HOME/.local/share/zellij/plugins}"
+	local zellij_plugin_dir="$HOME/.local/share/zellij/plugins"
 
-	# Parameter checks
-	if [[ "$target_zjstatus_version" == "latest" ]]; then
-		target_zjstatus_version=$(git::fetch_latest_tag "https://github.com/dj95/zjstatus" "v*.*.*")
-		log::info "Translated zjstatus: 'latest' to '$target_zjstatus_version'"
-	fi
-	if ! [[ "$target_zjstatus_version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-		log::err "Invalid format for zjstatus tag, must be vx.x.x"
-		return 0
-	fi
+	local pkg_name="zjstatus"
+	local pkg_description="statusbar for Zellij"
+	local git_repo="https://github.com/dj95/zjstatus"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_pattern="zjstatus.wasm"
+	local git_bin_name="zjstatus.wasm"
+	local git_bin_dest="$zellij_plugin_dir"
 
-	# Installation
-	need_installation_predicate() {
-		if [[ ! -e "$zellij_plugin_dir/$zjstatus_bin" ]]; then
+	pkg_install_predicate_func() {
+		if [[ ! -e "$zellij_plugin_dir/$git_bin_name" ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		curl -Lo "$zjstatus_bin" "https://github.com/dj95/zjstatus/releases/download/${target_zjstatus_version}/${zjstatus_bin}"
 
-		pkg::softlink_local_bin "${SCRIPT_DIR}/$zjstatus_bin" "$target_zjstatus_version" "$zjstatus_bin" "$zellij_plugin_dir"
-
-		# Clean up
-		[[ ! -f "$zjstatus_bin" ]] || rm "$zjstatus_bin"
+	pkg_configure_func() {
+		return
 	}
 
-	# Upgrade
-	need_upgrade_predicate() {
-		if ! [[ -L "$zellij_plugin_dir/$zjstatus_bin" ]]; then
-			log::warn "Unable to parse version of zjstatus."
-			echo 1
-			return
-		fi
-
-		local current_zjstatus_dir=$(readlink -n "$zellij_plugin_dir/$zjstatus_bin")
+	pkg_current_tag_func() {
+		local current_zjstatus_dir=$(readlink -n "$zellij_plugin_dir/$git_bin_name")
 		local zjstatus_version=$(dirname "$current_zjstatus_dir" | cut -d- -f2)
-		if [[ "$zjstatus_version" != "${target_zjstatus_version}" ]]; then
-			log::warn "Attempting to upgrade zjstatus version from '$zjstatus_version' to '$target_zjstatus_version'"
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	upgrade_func() {
-		install_func
-		return
+		echo "$zjstatus_version"
 	}
 
-	# Configuration
-	configure_func() {
-		return
-	}
-
-	pkg::setup_wrapper "zjstatus" "statusbar for Zellij" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name" "$git_bin_dest"
 }
 
 setup_lazygit() {
-	local target_lazygit_version="${1:-latest}"
+	local pkg_name="lazygit"
+	local pkg_description="simple terminal UI for git commands"
+	local git_repo="https://github.com/jesseduffield/lazygit"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_name="lazygit"
 
-	# Parameter checks
-	if [[ "$target_lazygit_version" == "latest" ]]; then
-		target_lazygit_version=$(git::fetch_latest_tag "https://github.com/jesseduffield/lazygit" "v*.*.*")
-		log::info "Translated lazygit: 'latest' to '$target_lazygit_version'"
-	fi
-	if ! [[ "$target_lazygit_version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-		log::err "Invalid format for lazygit tag, must be vx.x.x"
-		return 0
+	# Binary target pattern
+	local git_bin_pattern
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		git_bin_pattern="lazygit_{{ truncated_git_tag }}_Darwin_x86_64.tar.gz"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		git_bin_pattern="lazygit_{{ truncated_git_tag }}_Linux_x86_64.tar.gz"
 	fi
 
-	# Installation
-	need_installation_predicate() {
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v lazygit) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		if [[ "${OSTYPE}" =~ ^darwin ]]; then
-			brew install lazygit
-		elif [[ "${OSTYPE}" =~ ^linux ]]; then
-			local truncated_version=$(input::remove_prefix_if_exist "$target_lazygit_version" "v")
-			curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${truncated_version}_Linux_x86_64.tar.gz"
-			tar xf lazygit.tar.gz lazygit
 
-			pkg::softlink_local_bin "${SCRIPT_DIR}/lazygit" "v$truncated_version"
-
-			# Clean up
-			[[ ! -f "lazygit.tar.gz" ]] || rm lazygit.tar.gz
-			[[ ! -f "lazygit" ]] || rm lazygit.tar.gz
-		fi
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		local lazygit_version=$(lazygit --version | head -1 | grep -Eo ', version=([0-9]+\.[0-9]+\.[0-9]+)' | cut -d= -f2)
-		if [[ "v$lazygit_version" != "${target_lazygit_version}" ]]; then
-			log::warn "Attempting to upgrade lazygit version from 'v$lazygit_version' to '$target_lazygit_version'"
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	upgrade_func() {
-		install_func
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(lazygit --version | head -1 | grep -Eo ', version=([0-9]+\.[0-9]+\.[0-9]+)' | cut -d= -f2)"
 	}
 
-	pkg::setup_wrapper "lazygit" "simple terminal UI for git commands" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
 }
 
 setup_pyenv() {
