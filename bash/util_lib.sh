@@ -89,6 +89,17 @@ input::remove_prefix_if_exist() {
 
 ###
 #
+# Parser
+#
+###
+
+parser::extract_semver() {
+	local semver_input="$1"
+	echo "$(echo "$semver_input" | grep -oE '[0-9]\.[0-9]+\.[0-9]+')"
+}
+
+###
+#
 # Git
 #
 ###
