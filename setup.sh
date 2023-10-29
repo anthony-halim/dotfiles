@@ -189,37 +189,31 @@ setup_fzf() {
 }
 
 setup_eza() {
-	# Installation
-	need_installation_predicate() {
+	local pkg_name="eza"
+	local pkg_description="modern, maintained replacement for ls"
+	local git_repo="https://github.com/eza-community/eza"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_pattern="eza_x86_64-unknown-linux-gnu.tar.gz"
+	local git_bin_name="eza"
+
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v eza) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		env::load_cmd_if_not_exist "cargo" "${HOME}/.cargo/env" || {
-			log::err "cargo command not found! eza installation require cargo."
-			return 0
-		}
-		cargo install eza
-	}
 
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(eza --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 	}
 
-	pkg::setup_wrapper "eza" "better ls" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
 }
 
 setup_zellij() {

@@ -146,7 +146,7 @@ pkg::manage_by_git_release() {
 
 			# Only extract if extension is tar.gz
 			if [[ $git_bin_pattern == *.tar.gz ]]; then
-				tar xf "$git_bin_pattern" "$git_bin_name"
+				tar xf "$git_bin_pattern"
 			fi
 
 			# Link the binary to the destination
