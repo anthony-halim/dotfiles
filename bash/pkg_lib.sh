@@ -145,7 +145,7 @@ pkg::manage_by_git_release() {
 			curl -Lo "$git_bin_pattern" "$git_bin_url"
 
 			# Only extract if extension is tar.gz
-			if [[ "$git_bin_pattern" == *.tar.gz$ ]]; then
+			if [[ $git_bin_pattern == *.tar.gz ]]; then
 				tar xf "$git_bin_pattern" "$git_bin_name"
 			fi
 

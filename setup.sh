@@ -154,65 +154,38 @@ setup_dependencies() {
 }
 
 setup_fzf() {
-	local target_fzf_version="${1:-latest}"
+	local pkg_name="fzf"
+	local pkg_description="fuzzy file finder"
+	local git_repo="https://github.com/junegunn/fzf"
+	local git_tag="latest"
+	local git_tag_pattern="*.*.*"
+	local git_bin_name="fzf"
 
-	# Parameter checks
-	if [[ "$target_fzf_version" == "latest" ]]; then
-		target_fzf_version=$(git::fetch_latest_tag "https://github.com/junegunn/fzf" "*.*.*")
-		log::info "Translated fzf: 'latest' to '$target_fzf_version'"
-	fi
-	if ! [[ "$target_fzf_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-		log::err "Invalid format for fzf tag, must be x.x.x"
-		return 0
-	fi
-
-	local target_fzf_sys=""
+	# Binary target pattern
+	local git_bin_pattern
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		target_fzf_sys="darwin_amd64"
+		git_bin_pattern="fzf-{{ git_tag }}-darwin_amd64.tar.gz"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		target_fzf_sys="linux_amd64"
+		git_bin_pattern="fzf-{{ git_tag }}-linux_amd64.tar.gz"
 	fi
 
-	# Installation
-	need_installation_predicate() {
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v fzf) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		curl -Lo fzf.tar.gz "https://github.com/junegunn/fzf/releases/download/$target_fzf_version/fzf-$target_fzf_version-$target_fzf_sys.tar.gz"
-		tar xf fzf.tar.gz fzf
 
-		pkg::softlink_local_bin "${SCRIPT_DIR}/fzf" "$target_fzf_version"
-
-		# Clean up
-		[[ ! -f "fzf.tar.gz" ]] || rm fzf.tar.gz
-		[[ ! -f "fzf" ]] || rm fzf
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		local fzf_version=$(fzf --version | cut -d' ' -f1)
-		if [[ "$fzf_version" != "${target_fzf_version}" ]]; then
-			log::warn "Attempting to upgrade fzf version from '$fzf_version' to '$target_fzf_version'"
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	upgrade_func() {
-		install_func
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(fzf --version | cut -d' ' -f1)"
 	}
 
-	pkg::setup_wrapper "fzf" "fuzzy file finder" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
 }
 
 setup_eza() {
@@ -845,21 +818,21 @@ log::info "Beginning setup..."
 parse_params "$@"
 log_params
 
-# # Dependencies setup
-# log::separator
-# setup_dependencies
-#
-# # Git setup
-# log::separator
-# setup_git
-#
-# # ZSH installation
-# log::separator
-# setup_zsh
-#
-# # Zap installation
-# log::separator
-# setup_zap
+# Dependencies setup
+log::separator
+setup_dependencies
+
+# Git setup
+log::separator
+setup_git
+
+# ZSH installation
+log::separator
+setup_zsh
+
+# Zap installation
+log::separator
+setup_zap
 
 # Zellij installation
 log::separator
@@ -869,72 +842,72 @@ setup_zellij
 log::separator
 setup_zjstatus
 
-# # Wezterm setup
-# log::separator
-# setup_wezterm
-#
-# # git-delta installation
-# log::separator
-# setup_gitdelta
-#
-# # fzf setup
-# log::separator
-# setup_fzf
+# Wezterm setup
+log::separator
+setup_wezterm
+
+# git-delta installation
+log::separator
+setup_gitdelta
+
+# fzf setup
+log::separator
+setup_fzf
 
 # Lazygit installation
 log::separator
 setup_lazygit
 
-# # Exa installation
-# log::separator
-# setup_eza
-#
-# # Pyenv installation
-# log::separator
-# setup_pyenv
-#
-# # Golang installation
-# log::separator
-# setup_go "$GOLANG_TAG"
-#
-# # Rust installation
-# log::separator
-# setup_rust
-#
-# # Bob installation
-# log::separator
-# setup_bob
-#
-# # Neovim installation
-# log::separator
-# setup_neovim "$NEOVIM_TAG"
-#
-# # diatheke installation
-# log::separator
-# setup_diatheke
-#
-# # Create required directories
-# log::separator
-# log::log "directories: setting up directories"
-# dir::create_with_confirmation "$LOCAL_CONFIG_DIR" "directory to place uncommitted configurations (functions, aliases, env). Any *.zsh files in this directory will automatically be sourced."
-# dir::create_with_confirmation "$REPO_PERSONAL_DIR" "personal repository directory."
-# dir::create_with_confirmation "$REPO_WORK_DIR" "work repository directory."
-# dir::create_with_confirmation "$NOTES_PERSONAL_DIR" "personal notes vault (note directory)."
-# dir::create_with_confirmation "$NOTES_WORK_DIR" "work notes vault (note directory)."
-# log::success "directories: success!"
-#
-# # Report git information at the very end to make it clear to user
-# if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
-# 	log::separator
-# 	log::info "You have set local git user configuration file. To include local git file, you can add the following to your global .gitconfig:"
-#
-# 	log::log " "
-# 	log::log "# For global include"
-# 	log::log "[include]"
-# 	log::log "    path = $GIT_USER_LOCAL_FILE"
-# 	log::log " "
-# 	log::log "# Or, for conditional include"
-# 	log::log "[includeIf \"gitdir:/path/to/dir/\"] # Change this!"
-# 	log::log "    path = $GIT_USER_LOCAL_FILE"
-# 	log::log " "
-# fi
+# Exa installation
+log::separator
+setup_eza
+
+# Pyenv installation
+log::separator
+setup_pyenv
+
+# Golang installation
+log::separator
+setup_go "$GOLANG_TAG"
+
+# Rust installation
+log::separator
+setup_rust
+
+# Bob installation
+log::separator
+setup_bob
+
+# Neovim installation
+log::separator
+setup_neovim "$NEOVIM_TAG"
+
+# diatheke installation
+log::separator
+setup_diatheke
+
+# Create required directories
+log::separator
+log::log "directories: setting up directories"
+dir::create_with_confirmation "$LOCAL_CONFIG_DIR" "directory to place uncommitted configurations (functions, aliases, env). Any *.zsh files in this directory will automatically be sourced."
+dir::create_with_confirmation "$REPO_PERSONAL_DIR" "personal repository directory."
+dir::create_with_confirmation "$REPO_WORK_DIR" "work repository directory."
+dir::create_with_confirmation "$NOTES_PERSONAL_DIR" "personal notes vault (note directory)."
+dir::create_with_confirmation "$NOTES_WORK_DIR" "work notes vault (note directory)."
+log::success "directories: success!"
+
+# Report git information at the very end to make it clear to user
+if [[ -n "$GIT_USER_LOCAL_FILE" ]]; then
+	log::separator
+	log::info "You have set local git user configuration file. To include local git file, you can add the following to your global .gitconfig:"
+
+	log::log " "
+	log::log "# For global include"
+	log::log "[include]"
+	log::log "    path = $GIT_USER_LOCAL_FILE"
+	log::log " "
+	log::log "# Or, for conditional include"
+	log::log "[includeIf \"gitdir:/path/to/dir/\"] # Change this!"
+	log::log "    path = $GIT_USER_LOCAL_FILE"
+	log::log " "
+fi
