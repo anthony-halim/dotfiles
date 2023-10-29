@@ -1,0 +1,57 @@
+[alias]
+    # Show the diff between the latest commit and the current state.
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+
+    # `git di $number` shows the diff between the state `$number` revisions ago and the current state.
+    di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+
+    # Switch to a branch, creating it if necessary.
+    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+
+    # Amend the currently staged files to the latest commit.
+    amend = commit --amend --reuse-message=HEAD
+
+    # Pretty logs with tree views
+    lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+
+    # List aliases.
+    aliases = config --get-regexp alias
+
+    # Show the user email for the current repository.
+    whoami = config user.email
+
+    # Show git root dir
+    root = rev-parse --show-toplevel
+
+[core]
+    editor = vim
+    pager = delta
+
+[pull]
+    rebase = true
+
+[pager]
+    diff = delta
+    show = delta
+    log = delta
+    blame = delta
+    reflog = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    features = arctic-fox
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[init]
+    defaultBranch = main
+
+[url "ssh://git@github.com/anthony-halim"]
+    insteadOf = https://github.com/anthony-halim
+
