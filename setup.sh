@@ -10,6 +10,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 # Load required libs
 source "$SCRIPT_DIR/bash/util_lib.sh"
+source "$SCRIPT_DIR/bash/pkg_lib.sh"
 
 # Default arguments
 GIT_USER=""
