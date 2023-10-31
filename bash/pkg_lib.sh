@@ -23,7 +23,8 @@ pkg::setup_wrapper() {
 	log::log "Setting up $pkg_name ($pkg_description)."
 
 	# Installation
-	local need_install=$($need_installation_predicate)
+	local need_install
+	need_install=$($need_installation_predicate)
 	if [[ "$need_install" -eq 0 ]]; then
 		input::prompt_confirmation "Installing $pkg_name. Do you want to proceed?" || {
 			log::info "Skipping $pkg_name setup."
@@ -35,7 +36,8 @@ pkg::setup_wrapper() {
 	fi
 
 	# Upgrade
-	local need_upgrade=$($need_upgrade_predicate)
+	local need_upgrade
+	need_upgrade=$($need_upgrade_predicate)
 	if [[ "$need_upgrade" -eq 0 ]]; then
 		# Explicitly return 0, user skipping upgrade is not an error
 		input::prompt_confirmation "Upgrading $pkg_name. Do you want to proceed?" && {
@@ -54,7 +56,8 @@ pkg::softlink_local_bin() {
 	local binary_version="$2"
 	local local_bin_dir="${3:-$HOME/.local/bin}"
 
-	local binary_name="$(basename $binary_path)"
+	local binary_name
+	binary_name="$(basename "$binary_path")"
 	local local_opt_dir="$HOME/.local/opt"
 
 	# Move the binary to the path
@@ -73,39 +76,59 @@ pkg::softlink_local_bin() {
 # Git package manager
 # Checks latest release tag upstream and update the package if required
 pkg::manage_by_git_release() {
-	local pkg_name="$1"
-	local pkg_description="$2"
-	local pkg_install_predicate_func="$3"
-	local pkg_configure_func="$4"
-	local pkg_current_tag_func="$5"
-	local git_repo="$6"
-	local git_tag="$7"
-	local git_tag_pattern="$8"
-	local git_bin_pattern="$9"
-	local git_bin_name="${10}"
-	local git_bin_dest="${11:-$HOME/.local/bin}"
+	local pkg_name="$1"                   # Package name to be installed, used for logging
+	local pkg_description="$2"            # Description of the package, used for logging
+	local pkg_install_predicate_func="$3" # Function to dictate whether we should proceed with installation
+	local pkg_configure_func="$4"         # Post installation/update function for the package
+	local pkg_current_tag_func="$5"       # Function that outputs the current version of the package
+	local git_repo="$6"                   # URL of the git repository
+	local git_tag="$7"                    # Target git tag to be installed. If set to 'latest', we will fetch from git repo
+	local git_tag_pattern="$8"            # Tag pattern in the repository
+	local git_bin_pattern="$9"            # Binary/tar.gz to be downloaded from the tag release
+	local git_bin_path="${10}"            # Path to the binary in the downloaded binary/tar.gz
 
-	local fresh_install=false
-	local timestamp=$(date '+%s')
+	local local_bin_name
+	local_bin_name="$(basename "$git_bin_path")"
+	local local_bin="${11:-$HOME/.local/bin/$local_bin_name}" # Where the binary should be symlinked to
 
-	# Parameter expansion
+	local timestamp
+	timestamp=$(date '+%s')
+
+	# Handle git tag
 	if [[ "$git_tag" == "latest" ]]; then
 		git_tag=$(git::fetch_latest_tag "$git_repo" "$git_tag_pattern")
 		log::info "Translated $pkg_name: 'latest' to '$git_tag'"
 	fi
-	local truncated_git_tag=$(parser::extract_semver "$git_tag")
+
+	# Handle git binary pattern
+	local truncated_git_tag
+	truncated_git_tag=$(parser::extract_semver "$git_tag")
 	git_bin_pattern=$(echo "$git_bin_pattern" | sed "s/{{ git_tag }}/$git_tag/g")
 	git_bin_pattern=$(echo "$git_bin_pattern" | sed "s/{{ truncated_git_tag }}/$truncated_git_tag/g")
 
+	# Handle local paths
+	local local_bin_name
+	local_bin_name="$(basename "$git_bin_path")"
+	local local_opt_dir="$HOME/.local/opt"
+	local local_opt_bin_dir="$local_opt_dir/$local_bin_name-$git_tag"
+	local local_opt_bin="$local_opt_bin_dir/$git_bin_path"
+
 	# Installation
 	install_predicate_func() {
-		local need_install=$($pkg_install_predicate_func)
+		local need_install
+		need_install=$($pkg_install_predicate_func)
 		echo "$need_install"
 	}
 	install_func() {
+		# Fast return if it is already installed
+		if [[ -x "$local_opt_bin" ]]; then
+			log::info "$pkg_name $git_tag has already been installed!"
+			return
+		fi
+
 		local git_bin_url="$git_repo/releases/download/$git_tag/$git_bin_pattern"
 		local temp_dir="./gitrlsm_$timestamp"
-		mkdir $temp_dir
+		mkdir "$temp_dir"
 
 		# Perform in a temp dir to avoid name conflict
 		cd "$temp_dir" && {
@@ -118,29 +141,20 @@ pkg::manage_by_git_release() {
 				tar xf "$git_bin_pattern"
 			fi
 
-			# Link the binary to the destination
-			pkg::softlink_local_bin "$git_bin_name" "$git_tag" "$git_bin_dest"
+			mv ./* "$local_opt_bin_dir/"
 
 			cd ..
 		}
 
 		# Clean up
 		[[ ! -d "$temp_dir" ]] || rm -rf "$temp_dir"
-
-		# Mark that this is freshly installed
-		fresh_install=true
 	}
 
 	# Upgrade
 	need_upgrade_predicate() {
-		if [[ $fresh_install == true ]]; then
-			# Skip upgrade if we just installed
-			echo 1
-			return
-		fi
-
-		local pkg_current_tag=$($pkg_current_tag_func)
-		local truncated_pkg_current_tag=$(parser::extract_semver "$pkg_current_tag")
+		local pkg_current_tag, truncated_pkg_current_tag
+		pkg_current_tag=$($pkg_current_tag_func)
+		truncated_pkg_current_tag=$(parser::extract_semver "$pkg_current_tag")
 
 		# Upgrade if current version is different from target tag
 		if [[ "$truncated_pkg_current_tag" != "$truncated_git_tag" ]]; then
@@ -156,6 +170,10 @@ pkg::manage_by_git_release() {
 
 	# Configuration
 	configure_func() {
+		# Link the binary to the destination
+		symlink::safe_create "$local_opt_bin" "$local_bin"
+
+		# Configure as user input
 		$pkg_configure_func
 	}
 

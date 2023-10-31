@@ -125,11 +125,12 @@ git::set() {
 	local git_conf_execute_cmd="git config $git_location $flags $git_conf_name '$git_conf_cmd'"
 
 	# Check if already configured
-	local git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
-	if [[ "$git_conf_execute_cmd" =~ $git_conf_cmd ]]; then
+	local git_conf_existing_cmd
+	git_conf_existing_cmd=$(bash -c "git config $git_location --get $git_conf_name") || 0
+	if [[ "$git_conf_existing_cmd" =~ $git_conf_cmd ]]; then
 		# Already configured
 		log::info "Config already exist."
-	elif [[ -n "$git_conf_execute_cmd" && "$git_add_conf" -eq 0 ]]; then
+	elif [[ -n "$git_conf_existing_cmd" && "$git_add_conf" -eq 0 ]]; then
 		# Configured and we do not enable adding
 		log::warn "Config is already used. To overwrite it, you can execute:"
 		log::warn "$git_conf_execute_cmd"

@@ -69,7 +69,6 @@ parse_params() {
 		case "${1-}" in
 		-h | --help) usage ;;
 		-v | --verbose) set -x ;;
-		--no-color) NO_COLOR=1 ;;
 		--git_user)
 			GIT_USER="${2-}"
 			shift
@@ -95,8 +94,6 @@ parse_params() {
 		esac
 		shift
 	done
-
-	args=("$@")
 
 	# Expand path
 	GIT_USER_LOCAL_FILE="${GIT_USER_LOCAL_FILE/#\~/$HOME}"
@@ -276,8 +273,9 @@ setup_zjstatus() {
 	}
 
 	pkg_current_tag_func() {
-		local current_zjstatus_dir=$(readlink -n "$zellij_plugin_dir/$git_bin_name")
-		local zjstatus_version=$(dirname "$current_zjstatus_dir" | cut -d- -f2)
+		local current_zjstatus_dir, zjstatus_version
+		current_zjstatus_dir=$(readlink -n "$zellij_plugin_dir/$git_bin_name")
+		zjstatus_version=$(dirname "$current_zjstatus_dir" | cut -d- -f2)
 		echo "$zjstatus_version"
 	}
 
@@ -412,7 +410,8 @@ setup_neovim() {
 
 		# Remove caches if allowed
 		input::prompt_confirmation "Removing existing Neovim caches, if any. Existing caches may interfere with subsequent package installation. Do you want to proceed?" && {
-			local timestamp=$(date '+%s')
+			local timestamp
+			timestamp=$(date '+%s')
 			local cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
 
 			for cache_location in "${cache_locations[@]}"; do
@@ -423,14 +422,16 @@ setup_neovim() {
 			done
 		}
 
-		local truncated_version=$(parser::extract_semver "$target_nvim_version")
+		local truncated_version
+		truncated_version=$(parser::extract_semver "$target_nvim_version")
 		bob install "${truncated_version}"
 		bob use "${truncated_version}"
 	}
 
 	# Upgrade
 	need_upgrade_predicate() {
-		local nvim_version=$(nvim --version | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+		local nvim_version
+		nvim_version=$(nvim --version | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
 		if [[ "v$nvim_version" != "${target_nvim_version}" ]]; then
 			log::warn "Attempting to upgrade Neovim version from 'v$nvim_version' to '$target_nvim_version'"
 			echo 0
@@ -480,7 +481,8 @@ setup_zsh() {
 
 	# Configuration
 	configure_func() {
-		local user_default_shell=$(finger "${USER_EXECUTOR}" | grep -o "Shell: .*" | cut -d" " -f2 | xargs basename)
+		local user_default_shell
+		user_default_shell=$(finger "${USER_EXECUTOR}" | grep -o "Shell: .*" | cut -d" " -f2 | xargs basename)
 		if [[ "$user_default_shell" != "zsh" ]]; then
 			log::info "Setting zsh as default terminal"
 			sudo chsh -s "$(which zsh)" "${USER_EXECUTOR}"
@@ -611,7 +613,8 @@ setup_go() {
 
 	# Upgrade
 	need_upgrade_predicate() {
-		local go_version=$(go version | grep -oE '[0-9]\.[0-9]+\.[0-9]+')
+		local go_version
+		go_version=$(go version | grep -oE '[0-9]\.[0-9]+\.[0-9]+')
 		if [[ "go$go_version" != "${target_golang_tag}" ]]; then
 			log::warn "Attempting to upgrade Golang version from 'go$go_version' to '$target_golang_tag'"
 			echo 0
@@ -704,7 +707,7 @@ setup_git() {
 	symlink::safe_create "${SCRIPT_DIR}/gitconfig/gitconfig-base" "${HOME}/.gitconfig-base"
 	symlink::safe_create "${SCRIPT_DIR}/gitconfig/gitconfig-themes" "${HOME}/.gitconfig-themes"
 
-	log::success "Finished setting Git configurations."
+	log::success "Finished setup for Git configurations."
 }
 
 setup_diatheke() {
@@ -768,31 +771,12 @@ setup_diatheke() {
 }
 
 setup_wezterm() {
-	# Installation
-	need_installation_predicate() {
-		# Wezterm has manual installation
-		echo 1
-	}
-	install_func() {
-		return
-	}
+	log::log "Setting up Wezterm (cross-platform terminal emulator)."
 
-	# Upgrade
-	need_upgrade_predicate() {
-		# Wezterm has manual installation
-		echo 1
-	}
-	upgrade_func() {
-		return
-	}
+	# Wezterm is installed manually, we only ensure that the configuration is symlinked
+	symlink::safe_create "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
 
-	# Configuration
-	configure_func() {
-		symlink::safe_create "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
-		return
-	}
-
-	pkg::setup_wrapper "Wezterm" "cross-platform terminal emulator" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	log::success "Finished setup for Wezterm."
 }
 
 setup::colors
