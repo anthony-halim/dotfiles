@@ -123,7 +123,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   ![credit to source repository](https://tldr.sh/assets/img/screenshot.png) 
 </details>
 
-#### Editor: [Neovim](neovim.io) (Text editor), [Bob](https://github.com/MordechaiHadad/bob) (Neovim version manager)
+#### Editor: [Neovim](neovim.io) (Text editor) 
 
 <details>
   <br/>
