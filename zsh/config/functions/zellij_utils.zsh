@@ -4,7 +4,7 @@ zellij_tab_name_update_by_git_repo() {
     tab_name=''
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         tab_name+=$(basename -s .git "$(git config --get remote.origin.url)")/
-        tab_name=${tab_name%/}
+        tab_name="git - ${tab_name%/}"
     else
         tab_name=$PWD
         if [[ $tab_name == $HOME ]]; then
