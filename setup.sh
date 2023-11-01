@@ -261,7 +261,7 @@ setup_zjstatus() {
 	local git_bin_dest="$zellij_plugin_dir/zjstatus.wasm"
 
 	pkg_install_predicate_func() {
-		if [[ ! -e "$zellij_plugin_dir/$git_bin_path" ]]; then
+		if [[ ! -e "$git_bin_dest" ]]; then
 			echo 0
 		else
 			echo 1
@@ -275,7 +275,7 @@ setup_zjstatus() {
 	pkg_current_tag_func() {
 		local current_zjstatus_dir
 		local zjstatus_version
-		current_zjstatus_dir=$(readlink -n "$zellij_plugin_dir/$git_bin_path")
+		current_zjstatus_dir=$(readlink -n "$git_bin_dest")
 		zjstatus_version=$(dirname "$current_zjstatus_dir" | cut -d- -f2)
 		echo "$zjstatus_version"
 	}
@@ -308,6 +308,7 @@ setup_lazygit() {
 	}
 
 	pkg_configure_func() {
+		symlink::safe_create "${SCRIPT_DIR}/gitconfig/lazygit.yml" "${HOME}/.config/lazygit/config.yml"
 		return
 	}
 
@@ -466,36 +467,6 @@ setup_zap() {
 	pkg::setup_wrapper "Zap" "ZSH plugin manager" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
 }
 
-setup_rust() {
-	# Installation
-	need_installation_predicate() {
-		if [[ ! $(command -v rustup) ]]; then
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	install_func() {
-		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
-		return
-	}
-
-	# Configuration
-	configure_func() {
-		return
-	}
-
-	pkg::setup_wrapper "Rust" "programming language" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
-}
-
 setup_go() {
 	local target_golang_tag="${1:-latest}"
 
@@ -568,33 +539,40 @@ setup_go() {
 }
 
 setup_gitdelta() {
-	# Installation
-	need_installation_predicate() {
+	local pkg_name="git-delta"
+	local pkg_description="syntax highlighter for git, diff, and grep output"
+	local git_repo="https://github.com/dandavison/delta"
+	local git_tag="latest"
+	local git_tag_pattern="*.*.*"
+
+	# Binary pattern
+	local git_bin_pattern
+	local git_bin_path
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		git_bin_pattern="delta-{{ git_tag }}-x86_64-apple-darwin.tar.gz"
+		git_bin_path="delta-{{ git_tag }}-x86_64-apple-darwin/delta"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		git_bin_pattern="delta-{{ git_tag }}-x86_64-unknown-linux-musl.tar.gz"
+		git_bin_path="delta-{{ git_tag }}-x86_64-unknown-linux-musl/delta"
+	fi
+
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v delta) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		curl -sS https://webi.sh/delta | sh
-	}
 
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(delta --version | cut -d' ' -f2)"
 	}
 
-	pkg::setup_wrapper "git-delta" "syntax highlighter for git, diff, and grep output" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_git() {
@@ -779,10 +757,6 @@ setup_pyenv
 # Golang installation
 log::separator
 setup_go "$GOLANG_TAG"
-
-# Rust installation
-log::separator
-setup_rust
 
 # Neovim installation
 log::separator

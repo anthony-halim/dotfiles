@@ -84,6 +84,8 @@ pkg::manage_by_git_release() {
 	truncated_git_tag=$(parser::extract_semver "$git_tag")
 	git_bin_pattern=$(echo "$git_bin_pattern" | sed "s/{{ git_tag }}/$git_tag/g")
 	git_bin_pattern=$(echo "$git_bin_pattern" | sed "s/{{ truncated_git_tag }}/$truncated_git_tag/g")
+	git_bin_path=$(echo "$git_bin_path" | sed "s/{{ git_tag }}/$git_tag/g")
+	git_bin_path=$(echo "$git_bin_path" | sed "s/{{ truncated_git_tag }}/$truncated_git_tag/g")
 
 	# Handle local paths
 	local local_bin_name

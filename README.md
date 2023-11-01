@@ -140,7 +140,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/0f3d8a73-0d6b-4722-95e0-f4ccaf9450e6)
 </details>
 
-#### Programming languages and utilities: Golang, Python, Rust
+#### Programming languages and utilities: Golang, Python
 
 <details>
   <br/>
