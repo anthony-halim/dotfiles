@@ -4,11 +4,6 @@ export EDITOR="nvim"
 # Zellij
 export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
 
-# Rust
-[[ -e "${HOME}/.cargo/env" ]] && {
-  source "${HOME}/.cargo/env" 
-}
-
 # Pyenv 
 [[ -d "${HOME}/.pyenv" ]] && {
     export PYENV_ROOT="${HOME}/.pyenv"

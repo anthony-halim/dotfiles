@@ -156,7 +156,7 @@ setup_fzf() {
 	local git_repo="https://github.com/junegunn/fzf"
 	local git_tag="latest"
 	local git_tag_pattern="*.*.*"
-	local git_bin_name="fzf"
+	local git_bin_path="fzf"
 
 	# Binary target pattern
 	local git_bin_pattern
@@ -182,7 +182,7 @@ setup_fzf() {
 		echo "$(fzf --version | cut -d' ' -f1)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_eza() {
@@ -192,7 +192,7 @@ setup_eza() {
 	local git_tag="latest"
 	local git_tag_pattern="v*.*.*"
 	local git_bin_pattern="eza_x86_64-unknown-linux-gnu.tar.gz"
-	local git_bin_name="eza"
+	local git_bin_path="eza"
 
 	pkg_install_predicate_func() {
 		if [[ ! $(command -v eza) ]]; then
@@ -210,7 +210,7 @@ setup_eza() {
 		echo "$(eza --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_zellij() {
@@ -219,7 +219,7 @@ setup_zellij() {
 	local git_repo="https://github.com/zellij-org/zellij"
 	local git_tag="latest"
 	local git_tag_pattern="v*.*.*"
-	local git_bin_name="zellij"
+	local git_bin_path="zellij"
 
 	# Binary target pattern
 	local git_bin_pattern
@@ -245,7 +245,7 @@ setup_zellij() {
 		echo "$(zellij --version | cut -d' ' -f2)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_zjstatus() {
@@ -257,11 +257,11 @@ setup_zjstatus() {
 	local git_tag="latest"
 	local git_tag_pattern="v*.*.*"
 	local git_bin_pattern="zjstatus.wasm"
-	local git_bin_name="zjstatus.wasm"
-	local git_bin_dest="$zellij_plugin_dir"
+	local git_bin_path="zjstatus.wasm"
+	local git_bin_dest="$zellij_plugin_dir/zjstatus.wasm"
 
 	pkg_install_predicate_func() {
-		if [[ ! -e "$zellij_plugin_dir/$git_bin_name" ]]; then
+		if [[ ! -e "$git_bin_dest" ]]; then
 			echo 0
 		else
 			echo 1
@@ -273,13 +273,14 @@ setup_zjstatus() {
 	}
 
 	pkg_current_tag_func() {
-		local current_zjstatus_dir, zjstatus_version
-		current_zjstatus_dir=$(readlink -n "$zellij_plugin_dir/$git_bin_name")
+		local current_zjstatus_dir
+		local zjstatus_version
+		current_zjstatus_dir=$(readlink -n "$git_bin_dest")
 		zjstatus_version=$(dirname "$current_zjstatus_dir" | cut -d- -f2)
 		echo "$zjstatus_version"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name" "$git_bin_dest"
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path" "$git_bin_dest"
 }
 
 setup_lazygit() {
@@ -288,7 +289,7 @@ setup_lazygit() {
 	local git_repo="https://github.com/jesseduffield/lazygit"
 	local git_tag="latest"
 	local git_tag_pattern="v*.*.*"
-	local git_bin_name="lazygit"
+	local git_bin_path="lazygit"
 
 	# Binary target pattern
 	local git_bin_pattern
@@ -307,6 +308,7 @@ setup_lazygit() {
 	}
 
 	pkg_configure_func() {
+		symlink::safe_create "${SCRIPT_DIR}/gitconfig/lazygit.yml" "${HOME}/.config/lazygit/config.yml"
 		return
 	}
 
@@ -314,7 +316,7 @@ setup_lazygit() {
 		echo "$(lazygit --version | head -1 | grep -Eo ', version=([0-9]+\.[0-9]+\.[0-9]+)' | cut -d= -f2)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_name"
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_pyenv() {
@@ -347,110 +349,41 @@ setup_pyenv() {
 	pkg::setup_wrapper "pyenv" "Python version manager" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
 }
 
-setup_bob() {
-	# Installation
-	need_installation_predicate() {
-		if [[ ! $(command -v bob) ]]; then
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	install_func() {
-		env::load_cmd_if_not_exist "cargo" "${HOME}/.cargo/env" || {
-			log::err "cargo command not found! bob installation require cargo."
-			return 0
-		}
-		cargo install --git https://github.com/MordechaiHadad/bob.git
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
-		return
-	}
-
-	# Configuration
-	configure_func() {
-		return
-	}
-
-	pkg::setup_wrapper "bob" "Neovim version manager" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
-}
-
 setup_neovim() {
-	local target_nvim_version="${1:-latest}"
+	local pkg_name="Neovim"
+	local pkg_description="Vim-fork text editor"
+	local git_repo="https://github.com/neovim/neovim"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
 
-	# Parameter checks
-	if [[ "$target_nvim_version" == "latest" ]]; then
-		target_nvim_version=$(git::fetch_latest_tag "https://github.com/neovim/neovim" "v*.*.*")
-		log::info "Translated neovim_tag: 'latest' to '$target_nvim_version'"
-	fi
-	if ! [[ "$target_nvim_version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-		log::err "Invalid format for Neovim tag, must be vx.x.x"
-		return 0
+	# Binary pattern
+	local git_bin_pattern
+	local git_bin_path
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		git_bin_pattern="nvim-macos.tar.gz"
+		git_bin_path="nvim-macos/bin/nvim"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		git_bin_pattern="nvim-linux64.tar.gz"
+		git_bin_path="nvim-linux64/bin/nvim"
 	fi
 
-	# Installation
-	need_installation_predicate() {
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v nvim) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		if [[ ! $(command -v bob) ]]; then
-			log::err "bob command not found! Neovim installation require Bob."
-			return 0
-		fi
 
-		# Remove caches if allowed
-		input::prompt_confirmation "Removing existing Neovim caches, if any. Existing caches may interfere with subsequent package installation. Do you want to proceed?" && {
-			local timestamp
-			timestamp=$(date '+%s')
-			local cache_locations=("${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim")
-
-			for cache_location in "${cache_locations[@]}"; do
-				if [[ -e "${cache_location}" ]]; then
-					log::info "${cache_location} exists. We will back up to ${cache_location}.bak.${timestamp}"
-					mv "${cache_location}" "${cache_location}.bak.${timestamp}"
-				fi
-			done
-		}
-
-		local truncated_version
-		truncated_version=$(parser::extract_semver "$target_nvim_version")
-		bob install "${truncated_version}"
-		bob use "${truncated_version}"
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		local nvim_version
-		nvim_version=$(nvim --version | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-		if [[ "v$nvim_version" != "${target_nvim_version}" ]]; then
-			log::warn "Attempting to upgrade Neovim version from 'v$nvim_version' to '$target_nvim_version'"
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	upgrade_func() {
-		install_nvim
-		log::success "Changed Neovim version to '$target_nvim_version'"
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(nvim --version | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 	}
 
-	pkg::setup_wrapper "Neovim" "text editor" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_zsh() {
@@ -534,36 +467,6 @@ setup_zap() {
 	pkg::setup_wrapper "Zap" "ZSH plugin manager" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
 }
 
-setup_rust() {
-	# Installation
-	need_installation_predicate() {
-		if [[ ! $(command -v rustup) ]]; then
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	install_func() {
-		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
-		return
-	}
-
-	# Configuration
-	configure_func() {
-		return
-	}
-
-	pkg::setup_wrapper "Rust" "programming language" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
-}
-
 setup_go() {
 	local target_golang_tag="${1:-latest}"
 
@@ -636,33 +539,40 @@ setup_go() {
 }
 
 setup_gitdelta() {
-	# Installation
-	need_installation_predicate() {
+	local pkg_name="git-delta"
+	local pkg_description="syntax highlighter for git, diff, and grep output"
+	local git_repo="https://github.com/dandavison/delta"
+	local git_tag="latest"
+	local git_tag_pattern="*.*.*"
+
+	# Binary pattern
+	local git_bin_pattern
+	local git_bin_path
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		git_bin_pattern="delta-{{ git_tag }}-x86_64-apple-darwin.tar.gz"
+		git_bin_path="delta-{{ git_tag }}-x86_64-apple-darwin/delta"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		git_bin_pattern="delta-{{ git_tag }}-x86_64-unknown-linux-musl.tar.gz"
+		git_bin_path="delta-{{ git_tag }}-x86_64-unknown-linux-musl/delta"
+	fi
+
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v delta) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		curl -sS https://webi.sh/delta | sh
-	}
 
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(delta --version | cut -d' ' -f2)"
 	}
 
-	pkg::setup_wrapper "git-delta" "syntax highlighter for git, diff, and grep output" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_git() {
@@ -847,14 +757,6 @@ setup_pyenv
 # Golang installation
 log::separator
 setup_go "$GOLANG_TAG"
-
-# Rust installation
-log::separator
-setup_rust
-
-# Bob installation
-log::separator
-setup_bob
 
 # Neovim installation
 log::separator

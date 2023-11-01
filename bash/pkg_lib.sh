@@ -51,28 +51,6 @@ pkg::setup_wrapper() {
 	log::success "Finished setup for $pkg_name."
 }
 
-pkg::softlink_local_bin() {
-	local binary_path="$1"
-	local binary_version="$2"
-	local local_bin_dir="${3:-$HOME/.local/bin}"
-
-	local binary_name
-	binary_name="$(basename "$binary_path")"
-	local local_opt_dir="$HOME/.local/opt"
-
-	# Move the binary to the path
-	local binary_final_dest="$local_opt_dir/$binary_name-$binary_version/$binary_name"
-	mkdir -p "$(dirname "$binary_final_dest")"
-
-	if [[ -x "$binary_final_dest" ]]; then
-		log::warn "Target binary '$binary_name'-'$binary_version' already exist"
-	else
-		mv "$binary_path" "$binary_final_dest"
-	fi
-
-	symlink::safe_create "$binary_final_dest" "$local_bin_dir/$binary_name"
-}
-
 # Git package manager
 # Checks latest release tag upstream and update the package if required
 pkg::manage_by_git_release() {
@@ -91,6 +69,7 @@ pkg::manage_by_git_release() {
 	local_bin_name="$(basename "$git_bin_path")"
 	local local_bin="${11:-$HOME/.local/bin/$local_bin_name}" # Where the binary should be symlinked to
 
+	local fresh_install=false
 	local timestamp
 	timestamp=$(date '+%s')
 
@@ -105,6 +84,8 @@ pkg::manage_by_git_release() {
 	truncated_git_tag=$(parser::extract_semver "$git_tag")
 	git_bin_pattern=$(echo "$git_bin_pattern" | sed "s/{{ git_tag }}/$git_tag/g")
 	git_bin_pattern=$(echo "$git_bin_pattern" | sed "s/{{ truncated_git_tag }}/$truncated_git_tag/g")
+	git_bin_path=$(echo "$git_bin_path" | sed "s/{{ git_tag }}/$git_tag/g")
+	git_bin_path=$(echo "$git_bin_path" | sed "s/{{ truncated_git_tag }}/$truncated_git_tag/g")
 
 	# Handle local paths
 	local local_bin_name
@@ -139,8 +120,11 @@ pkg::manage_by_git_release() {
 			# Only extract if extension is tar.gz
 			if [[ $git_bin_pattern == *.tar.gz ]]; then
 				tar xf "$git_bin_pattern"
+				rm "$git_bin_pattern"
 			fi
 
+			# Move downloaded package to the local directory
+			mkdir -p "$local_opt_bin_dir"
 			mv ./* "$local_opt_bin_dir/"
 
 			cd ..
@@ -148,11 +132,21 @@ pkg::manage_by_git_release() {
 
 		# Clean up
 		[[ ! -d "$temp_dir" ]] || rm -rf "$temp_dir"
+
+		# Mark as fresh installation
+		fresh_install=true
 	}
 
 	# Upgrade
 	need_upgrade_predicate() {
-		local pkg_current_tag, truncated_pkg_current_tag
+		if [[ $fresh_install == true ]]; then
+			# On fresh install, package will not be discoverable yet until configuration step. Skip update checks.
+			echo 1
+			return
+		fi
+
+		local pkg_current_tag
+		local truncated_pkg_current_tag
 		pkg_current_tag=$($pkg_current_tag_func)
 		truncated_pkg_current_tag=$(parser::extract_semver "$pkg_current_tag")
 
