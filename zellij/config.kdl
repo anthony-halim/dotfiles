@@ -33,7 +33,6 @@ keybinds clear-defaults=true {
         bind "w" { CloseFocus; SwitchToMode "Normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
         bind "f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
-        bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
     }
     tab {
         bind "Enter" "Alt t" { SwitchToMode "Normal"; }
@@ -50,7 +49,6 @@ keybinds clear-defaults=true {
         bind "7" { GoToTab 7; SwitchToMode "Normal"; }
         bind "8" { GoToTab 8; SwitchToMode "Normal"; }
         bind "9" { GoToTab 9; SwitchToMode "Normal"; }
-        bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
     }
     scroll {
         bind "Alt s" { SwitchToMode "Normal"; }
@@ -75,14 +73,6 @@ keybinds clear-defaults=true {
     entersearch {
         bind "Enter" { SwitchToMode "Search"; }
         bind "Ctrl c" "Esc" { SwitchToMode "Scroll"; }
-    }
-    renametab {
-        bind "Enter" { SwitchToMode "Normal"; }
-        bind "Ctrl c" "Esc" { UndoRenameTab; SwitchToMode "Tab"; }
-    }
-    renamepane {
-        bind "Enter" { SwitchToMode "Normal"; }
-        bind "Ctrl c" "Esc" { UndoRenamePane; SwitchToMode "Pane"; }
     }
     session {
         bind "Alt o" { SwitchToMode "Normal"; }
