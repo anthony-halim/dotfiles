@@ -13,6 +13,7 @@ source "${ZSH_CONFIG}/exports.zsh"
 # If there is local export file, load it first
 safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
 
+# Auto start zellij
 # NOTE: Must be done before p10k setup (instant prompt and actual sourcing)
 if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
   # From 'eval "$(zellij setup --generate-auto-start zsh)"'
@@ -53,6 +54,7 @@ safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
 safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
 safe_source "${ZSH_CONFIG}/functions/pw.zsh"
 safe_source "${ZSH_CONFIG}/functions/notes.zsh"
+safe_source "${ZSH_CONFIG}/functions/zellij_utils.zsh"
 
 # Load plugins
 plug "zsh-users/zsh-autosuggestions"
@@ -77,11 +79,9 @@ then
   unset conf
 fi
 
-# Settle tab title
-DISABLE_AUTO_TITLE="true"
-precmd () {
-  print -Pn "\e]0;%~\a"
-}
+# Register tab name update for zellij
+zellij_tab_name_update_by_git_repo
+chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # NOTE: We leave p10k config in default location to allow p10k to modify it normally
