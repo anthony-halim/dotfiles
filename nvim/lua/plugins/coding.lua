@@ -52,7 +52,7 @@ return {
     opts = function()
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
-      local defaults = require("cmp.config.default")()
+      local compare = require("cmp.config.compare")
       return {
         completion = {
           completeopt = "menu,menuone,noinsert",
@@ -95,9 +95,19 @@ return {
             hl_group = "CmpGhostText",
           },
         },
-        sorting = defaults.sorting,
-        inlay_hints = {
-          enabled = true,
+        sorting = {
+          comparators = {
+            compare.recently_used,
+            compare.locality,
+            compare.offset,
+            -- compare.scopes,
+            compare.score,
+            compare.exact,
+            compare.kind,
+            -- compare.sort_text,
+            compare.length,
+            compare.order,
+          },
         },
       }
     end,

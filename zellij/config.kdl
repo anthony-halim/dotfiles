@@ -1,6 +1,6 @@
 theme "catppuccin-mocha"
 
-simplified_ui false
+simplified_ui true
 
 pane_frames false
 
@@ -52,7 +52,6 @@ keybinds clear-defaults=true {
     }
     scroll {
         bind "Alt s" { SwitchToMode "Normal"; }
-        bind "e" { EditScrollback; SwitchToMode "Normal"; }
         bind "s" { SwitchToMode "EnterSearch"; SearchInput 0; }
         bind "j" { ScrollDown; }
         bind "k" { ScrollUp; }
@@ -76,7 +75,6 @@ keybinds clear-defaults=true {
     }
     session {
         bind "Alt o" { SwitchToMode "Normal"; }
-        bind "Alt s" { SwitchToMode "Scroll"; }
         bind "d" { Detach; }
         bind "w" {
             LaunchOrFocusPlugin "zellij:session-manager" {
