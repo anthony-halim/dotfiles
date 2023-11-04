@@ -16,7 +16,6 @@ source "$SCRIPT_DIR/bash/pkg_lib.sh"
 GIT_USER=""
 GIT_USER_EMAIL=""
 GIT_USER_LOCAL_FILE=""
-NEOVIM_TAG="latest"
 GOLANG_TAG="latest"
 LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
 NOTES_PERSONAL_DIR="$HOME/notes/personal"
@@ -30,7 +29,6 @@ Usage: $(
 		basename "${BASH_SOURCE[0]}"
 	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] 
                 [--golang_tag golang_semver] 
-                [--neovim_tag neovim_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -45,8 +43,6 @@ Available options:
                                                        Suitable for users who uses multiple gitconfigs.
 
 --golang_tag              [Optional] [semver, gox.x.x] Indicate Golang version to be installed. Defaults to $GOLANG_TAG.
-
---neovim_tag              [Optional] [semver, vx.x.x]  Indicate Neovim tag to be installed. Defaults to $NEOVIM_TAG.
 
 -h, --help                                             Print this help and exit
 -v, --verbose             [FLAG]                       Print script debug info
@@ -85,10 +81,6 @@ parse_params() {
 			GOLANG_TAG="${2-}"
 			shift
 			;;
-		--neovim_tag)
-			NEOVIM_TAG="${2-}"
-			shift
-			;;
 		-?*) log::fatal "Unknown option: $1" ;;
 		*) break ;;
 		esac
@@ -106,7 +98,6 @@ log_params() {
 	local script_parameters=""
 	script_parameters+="user=${USER_EXECUTOR}"
 	script_parameters+=", golang_tag=${GOLANG_TAG}"
-	script_parameters+=", neovim_tag=${NEOVIM_TAG}"
 	script_parameters+=", git_user=${GIT_USER}"
 	script_parameters+=", git_user_email=${GIT_USER_EMAIL}"
 	script_parameters+=", git_user_local_file=${GIT_USER_LOCAL_FILE}"
@@ -760,7 +751,7 @@ setup_go "$GOLANG_TAG"
 
 # Neovim installation
 log::separator
-setup_neovim "$NEOVIM_TAG"
+setup_neovim
 
 # diatheke installation
 log::separator

@@ -257,7 +257,7 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 
 ```sh
 ./setup.sh [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] 
-                     [--golang_tag golang_semver] [--neovim_tag neovim_semver]
+                     [--golang_tag golang_semver]
 ```
 
 I have prepared a script that automates the rest of the configuration. The script has **tons** of user confirmation; (i) partly to ensure that the user knows what is happening and (ii) partly to allow the user to skip specific configurations.
