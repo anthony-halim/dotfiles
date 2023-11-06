@@ -63,6 +63,7 @@ plug "zsh-users/zsh-history-substring-search"
 plug "zap-zsh/sudo"
 plug "zap-zsh/web-search"
 plug "romkatv/powerlevel10k"
+plug "jeffreytse/zsh-vi-mode"
 
 # Bindkeys includes plugin keymaps, so must be done after plugin load
 safe_source "${ZSH_CONFIG}/bindkeys.zsh"
