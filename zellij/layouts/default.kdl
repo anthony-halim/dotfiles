@@ -18,8 +18,5 @@ layout {
             tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=bg,bold] {name} "
         }
     }
-    pane 
-    pane size=1 borderless=true {
-        plugin location="zellij:status-bar"
-    }
+    pane
 }

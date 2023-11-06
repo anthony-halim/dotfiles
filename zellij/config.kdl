@@ -52,7 +52,7 @@ keybinds clear-defaults=true {
     }
     scroll {
         bind "Alt s" { SwitchToMode "Normal"; }
-        bind "s" { SwitchToMode "EnterSearch"; SearchInput 0; }
+        bind "/" { SwitchToMode "EnterSearch"; SearchInput 0; }
         bind "j" { ScrollDown; }
         bind "k" { ScrollUp; }
         bind "d" { HalfPageScrollDown; }
@@ -76,7 +76,7 @@ keybinds clear-defaults=true {
     session {
         bind "Alt o" { SwitchToMode "Normal"; }
         bind "d" { Detach; }
-        bind "w" {
+        bind "m" {
             LaunchOrFocusPlugin "zellij:session-manager" {
                 floating true
                 move_to_focused_tab true
