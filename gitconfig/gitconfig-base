@@ -20,8 +20,8 @@
     # Show git root dir
     root = rev-parse --show-toplevel
 
-    # Pull --rebase current branch
-    update = !"git fetch && git rebase @{u}"
+    # Sync with upstream by doing pull --rebase on current branch
+    syncup = !"git fetch && git rebase @{u}"
 
 [core]
     editor = vim
