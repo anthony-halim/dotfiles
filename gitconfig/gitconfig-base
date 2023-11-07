@@ -5,9 +5,6 @@
     # `git di $number` shows the diff between the state `$number` revisions ago and the current state.
     di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
 
-    # Switch to a branch, creating it if necessary.
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-
     # Amend the currently staged files to the latest commit.
     amend = commit --amend --reuse-message=HEAD
 
@@ -22,6 +19,9 @@
 
     # Show git root dir
     root = rev-parse --show-toplevel
+
+    # Pull --rebase current branch
+    update = !"git fetch && git rebase @{u}"
 
 [core]
     editor = vim

@@ -2,7 +2,6 @@
   "LuaSnip": { "branch": "master", "commit": "a4de64570b9620875c8ea04175cd07ed8e32ac99" },
   "SchemaStore.nvim": { "branch": "main", "commit": "686687585c040529f7efa68aa433282068c9d78b" },
   "alpha-nvim": { "branch": "main", "commit": "234822140b265ec4ba3203e3e0be0e0bb826dff5" },
-  "bible-verse.nvim": { "branch": "main", "commit": "d7c9ad3930c05f044c2ea078a0db849a9ed0a36d" },
   "calendar-vim": { "branch": "master", "commit": "a7e73e02c92566bf427b2a1d6a61a8f23542cc21" },
   "catppuccin": { "branch": "main", "commit": "d7521f6050b94cb0e23067f63829d86886f870fe" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
@@ -42,6 +41,6 @@
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "6c921ca12321edaa773e324ef64ea301a1d0da62" },
   "telescope.nvim": { "branch": "master", "commit": "20bf20500c95208c3ac0ef07245065bf94dcab15" },
   "todo-comments.nvim": { "branch": "main", "commit": "4a6737a8d70fe1ac55c64dfa47fcb189ca431872" },
-  "venv-selector.nvim": { "branch": "main", "commit": "48c9cd0dbc0ce3cc02fd6164e4f665dba338a3ec" },
+  "venv-selector.nvim": { "branch": "main", "commit": "214df97a513e13fc3276b5265676386028f3cb5f" },
   "which-key.nvim": { "branch": "main", "commit": "4433e5ec9a507e5097571ed55c02ea9658fb268a" }
 }
