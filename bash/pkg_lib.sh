@@ -46,6 +46,7 @@ pkg::setup_wrapper() {
 	fi
 
 	# Configuration
+	log::info "Configuring $pkg_name."
 	$configure_func
 
 	log::success "Finished setup for $pkg_name."
@@ -69,7 +70,6 @@ pkg::manage_by_git_release() {
 	local_bin_name="$(basename "$git_bin_path")"
 	local local_bin="${11:-$HOME/.local/bin/$local_bin_name}" # Where the binary should be symlinked to
 
-	local fresh_install=false
 	local timestamp
 	timestamp=$(date '+%s')
 
@@ -91,7 +91,8 @@ pkg::manage_by_git_release() {
 	local local_bin_name
 	local_bin_name="$(basename "$git_bin_path")"
 	local local_opt_dir="$HOME/.local/opt"
-	local local_opt_bin_dir="$local_opt_dir/$local_bin_name-$git_tag"
+	local local_opt_bin_dir_non_ver="$local_opt_dir/$local_bin_name"
+	local local_opt_bin_dir="$local_opt_bin_dir_non_ver-$git_tag"
 	local local_opt_bin="$local_opt_bin_dir/$git_bin_path"
 
 	# Installation
@@ -133,18 +134,12 @@ pkg::manage_by_git_release() {
 		# Clean up
 		[[ ! -d "$temp_dir" ]] || rm -rf "$temp_dir"
 
-		# Mark as fresh installation
-		fresh_install=true
+		# Link the binary to the destination
+		symlink::safe_create "$local_opt_bin" "$local_bin"
 	}
 
 	# Upgrade
 	need_upgrade_predicate() {
-		if [[ $fresh_install == true ]]; then
-			# On fresh install, package will not be discoverable yet until configuration step. Skip update checks.
-			echo 1
-			return
-		fi
-
 		local pkg_current_tag
 		local truncated_pkg_current_tag
 		pkg_current_tag=$($pkg_current_tag_func)
@@ -159,15 +154,25 @@ pkg::manage_by_git_release() {
 		fi
 	}
 	upgrade_func() {
+		# If existing symlink is to another binary with the same folder pattern, that is
+		# managed by this function. Remove it first.
+		if [[ -L "${local_bin}" ]]; then
+			local actual_bin=$(readlink -n "${local_bin}")
+			local actual_bin_dir=$(dirname "${actual_bin}")
+
+			if [[ "${actual_bin_dir}" =~ $local_opt_bin_dir_non_ver ]]; then
+				log::info "Removing old link of $pkg_name the previous release"
+				rm "${local_bin}"
+			fi
+		fi
+
+		# Finally, perform re-installation
 		install_func
 	}
 
 	# Configuration
 	configure_func() {
-		# Link the binary to the destination
-		symlink::safe_create "$local_opt_bin" "$local_bin"
-
-		# Configure as user input
+		# Configure based on user func
 		$pkg_configure_func
 	}
 
