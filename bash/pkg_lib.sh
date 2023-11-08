@@ -178,9 +178,3 @@ pkg::manage_by_git_release_bin() {
 
 	pkg::setup_wrapper "$pkg_name" "$pkg_description" install_predicate_func install_func need_upgrade_predicate upgrade_func configure_func
 }
-
-# Git package manager that manages based on release binary
-# Checks latest release tag upstream and update the package if required
-pkg::manage_by_git_release_repo() {
-	return
-}
