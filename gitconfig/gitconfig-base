@@ -21,7 +21,7 @@
     root = rev-parse --show-toplevel
 
     # Sync with upstream by doing pull --rebase on current branch
-    syncup = !"git fetch && git rebase @{u}"
+    sync-up = !"git fetch && git rebase @{u}"
 
 [core]
     editor = vim
