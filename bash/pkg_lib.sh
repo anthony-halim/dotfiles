@@ -52,9 +52,9 @@ pkg::setup_wrapper() {
 	log::success "Finished setup for $pkg_name."
 }
 
-# Git package manager
+# Git package manager that manages based on release binary
 # Checks latest release tag upstream and update the package if required
-pkg::manage_by_git_release() {
+pkg::manage_by_git_release_bin() {
 	local pkg_name="$1"                   # Package name to be installed, used for logging
 	local pkg_description="$2"            # Description of the package, used for logging
 	local pkg_install_predicate_func="$3" # Function to dictate whether we should proceed with installation
@@ -177,4 +177,10 @@ pkg::manage_by_git_release() {
 	}
 
 	pkg::setup_wrapper "$pkg_name" "$pkg_description" install_predicate_func install_func need_upgrade_predicate upgrade_func configure_func
+}
+
+# Git package manager that manages based on release binary
+# Checks latest release tag upstream and update the package if required
+pkg::manage_by_git_release_repo() {
+	return
 }

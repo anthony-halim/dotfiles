@@ -173,7 +173,7 @@ setup_fzf() {
 		echo "$(fzf --version | cut -d' ' -f1)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_eza() {
@@ -201,7 +201,7 @@ setup_eza() {
 		echo "$(eza --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_zellij() {
@@ -236,7 +236,7 @@ setup_zellij() {
 		echo "$(zellij --version | cut -d' ' -f2)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_zjstatus() {
@@ -271,7 +271,7 @@ setup_zjstatus() {
 		echo "$zjstatus_version"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path" "$git_bin_dest"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path" "$git_bin_dest"
 }
 
 setup_lazygit() {
@@ -307,7 +307,7 @@ setup_lazygit() {
 		echo "$(lazygit --version | head -1 | grep -Eo ', version=([0-9]+\.[0-9]+\.[0-9]+)' | cut -d= -f2)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_pyenv() {
@@ -374,7 +374,7 @@ setup_neovim() {
 		echo "$(nvim --version | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_zsh() {
@@ -563,7 +563,7 @@ setup_gitdelta() {
 		echo "$(delta --version | cut -d' ' -f2)"
 	}
 
-	pkg::manage_by_git_release "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
 setup_git() {
