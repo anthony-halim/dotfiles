@@ -24,7 +24,8 @@
     sync-up = !"git fetch && git rebase @{u}"
 
 [core]
-    editor = vim
+    # Use the lightest editor possible
+    editor = vi
     pager = delta
 
 [pull]
