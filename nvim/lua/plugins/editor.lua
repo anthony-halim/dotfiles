@@ -241,14 +241,22 @@ return {
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
+
+  -- Floating window functionalities
   {
-    "kdheepak/lazygit.nvim",
-    cmd = { "LazyGit" },
+    "voldikss/vim-floaterm",
+    cmd = { "FloatermNew", "FloatermPrev", "FloatermNext", "FloatermFirst", "FloatermLast", "FloatermUpdate" },
     keys = {
-      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
+      {
+        "<leader>gg",
+        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --title=Lazygit --titleposition=center lazygit<cr>",
+        desc = "LazyGit",
+      },
+      {
+        "<leader>gb",
+        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --title=Blame --titleposition=center git blame '%:p'<cr>",
+        desc = "Git blame current buffer",
+      },
     },
   },
 }
