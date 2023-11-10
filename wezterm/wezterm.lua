@@ -18,14 +18,6 @@ local color_scheme_name = "catppuccin-mocha"
 local color_scheme = wezterm.color.get_builtin_schemes()[color_scheme_name]
 
 local keymaps = {
-  -- Make Ctrl-Left equivalent backward-word
-  { key = "LeftArrow",  mods = "CTRL", action = act({ SendString = "\x1bb" }) },
-  -- Make Ctrl-Right equivalent forward-word
-  { key = "RightArrow", mods = "CTRL", action = act({ SendString = "\x1bf" }) },
-  -- Make Alt-Left equivalent to backward-line
-  { key = "LeftArrow",  mods = "ALT",  action = act({ SendString = "\x01" }) },
-  -- Make Alt-Right equivalent to forward-line
-  { key = "RightArrow", mods = "ALT",  action = act({ SendString = "\x05" }) },
   -- Ctrl-C is to copy on text highlight, else do terminate action
   {
     key = "c",
