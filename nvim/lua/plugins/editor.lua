@@ -176,6 +176,19 @@ return {
     },
   },
 
+  -- Git blame
+  {
+    "FabijanZulj/blame.nvim",
+    cmd = { "ToggleBlame", "EnableBlame", "DisableBlame" },
+    keys = {
+      {
+        "<leader>gb",
+        "<cmd>ToggleBlame window<cr>",
+        desc = "Toggle Git blame",
+      },
+    },
+  },
+
   -- which-key helps you remember key bindings by showing a popup
   -- with the active keybindings of the command you started typing.
   {
@@ -256,11 +269,6 @@ return {
         "<leader>gg",
         "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --autoclose=2 --title=Lazygit --titleposition=center lazygit<cr>",
         desc = "LazyGit",
-      },
-      {
-        "<leader>gb",
-        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --autoclose=2 --title=Blame --titleposition=center git blame '%:p'<cr>",
-        desc = "Git blame current buffer",
       },
     },
   },
