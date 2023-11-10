@@ -126,6 +126,11 @@ return {
       { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "[S]earch [H]elp" },
       { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "[S]earch current [W]ord" },
       { "<leader>sg", "<cmd>Telescope live_grep<cr>",   desc = "[S]earch by [G]rep" },
+      {
+        "<leader>sG",
+        "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
+        desc = "[S]earch by [G]rep in file directory",
+      },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "[S]earch [D]iagnostics" },
       { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "[S]earch [R]esume" },
       { "<leader>sn", "<cmd>Telescope notify<cr>",      desc = "[S]earch [N]otification" },
