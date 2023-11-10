@@ -254,7 +254,7 @@ return {
     keys = {
       {
         "<leader>gg",
-        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --title=Lazygit --titleposition=center lazygit<cr>",
+        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --autoclose=2 --title=Lazygit --titleposition=center lazygit<cr>",
         desc = "LazyGit",
       },
       {
