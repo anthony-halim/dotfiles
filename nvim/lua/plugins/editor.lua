@@ -259,7 +259,7 @@ return {
       },
       {
         "<leader>gb",
-        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --title=Blame --titleposition=center git blame '%:p'<cr>",
+        "<cmd>FloatermNew --height=0.95 --width=0.95 --wintype=float --disposable --autoclose=2 --title=Blame --titleposition=center git blame '%:p'<cr>",
         desc = "Git blame current buffer",
       },
     },
