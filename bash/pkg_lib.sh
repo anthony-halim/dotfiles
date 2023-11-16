@@ -178,3 +178,104 @@ pkg::manage_by_git_release_bin() {
 
 	pkg::setup_wrapper "$pkg_name" "$pkg_description" install_predicate_func install_func need_upgrade_predicate upgrade_func configure_func
 }
+
+# Git package manager that manages based on repository
+# Checks latest release tag upstream and update the repository if required
+pkg::manage_by_git_release_repo() {
+	local pkg_name="$1"                   # Package name to be installed, used for logging
+	local pkg_description="$2"            # Description of the package, used for logging
+	local pkg_install_predicate_func="$3" # Function to dictate whether we should proceed with installation
+	local pkg_configure_func="$4"         # Post installation/update function for the package
+	local pkg_current_tag_func="$5"       # Function that outputs the current version of the package
+	local git_repo="$6"                   # URL of the git repository
+	local git_tag="$7"                    # Target git tag to be installed. If set to 'latest', we will fetch from git repo
+	local git_tag_pattern="$8"            # Tag pattern in the repository
+
+	# Strip .git for consistency
+	git_repo="${git_repo%.git}"
+
+	local local_repo_name
+	local_repo_name="$(basename "$git_repo")"
+	local local_repo="${9:-$HOME/.local/bin/$local_repo_name}" # Where the binary should be symlinked to
+
+	local timestamp
+	timestamp=$(date '+%s')
+
+	# Handle git tag
+	if [[ "$git_tag" == "latest" ]]; then
+		git_tag=$(git::fetch_latest_tag "$git_repo" "$git_tag_pattern")
+		log::info "Translated $pkg_name: 'latest' to '$git_tag'"
+	fi
+
+	# Handle tag pattern
+	local truncated_git_tag
+	truncated_git_tag=$(parser::extract_semver "$git_tag")
+
+	# Handle local paths
+	local local_opt_dir="$HOME/.local/opt"
+	local local_opt_repo_dir_non_ver="$local_opt_dir/$local_repo_name"
+	local local_opt_repo_dir="$local_opt_repo_dir_non_ver-$git_tag"
+
+	# Installation
+	install_predicate_func() {
+		local need_install
+		need_install=$($pkg_install_predicate_func)
+		echo "$need_install"
+	}
+	install_func() {
+		# Fast return if it is already installed
+		if [[ -d "$local_opt_repo_dir" ]]; then
+			log::info "$pkg_name $git_tag has already been cloned!"
+			return
+		fi
+
+		local temp_dir="./gitrlsm_$timestamp"
+		mkdir "$temp_dir"
+
+		log::info "Cloning $pkg_name from: $git_repo"
+
+		git clone --depth=1 --branch="$git_tag" "$git_repo.git" "$local_opt_repo_dir"
+
+		# Link the binary to the destination
+		symlink::safe_create "$local_opt_repo_dir" "$local_repo"
+	}
+
+	# Upgrade
+	need_upgrade_predicate() {
+		local pkg_current_tag
+		local truncated_pkg_current_tag
+		pkg_current_tag=$($pkg_current_tag_func)
+		truncated_pkg_current_tag=$(parser::extract_semver "$pkg_current_tag")
+
+		# Upgrade if current version is different from target tag
+		if [[ "$truncated_pkg_current_tag" != "$truncated_git_tag" ]]; then
+			log::warn "Attempting to upgrade $pkg_name version from '$truncated_pkg_current_tag' to '$truncated_git_tag'"
+			echo 0
+		else
+			echo 1
+		fi
+	}
+	upgrade_func() {
+		# If existing symlink is to another binary with the same folder pattern, that is
+		# managed by this function. Remove it first.
+		if [[ -L "${local_repo}" ]]; then
+			local actual_repo_dir=$(readlink -n "${local_repo}")
+
+			if [[ "${actual_repo_dir}" =~ $local_opt_repo_dir_non_ver ]]; then
+				log::info "Removing old link of $pkg_name the previous release"
+				rm "${local_repo}"
+			fi
+		fi
+
+		# Finally, perform re-installation
+		install_func
+	}
+
+	# Configuration
+	configure_func() {
+		# Configure based on user func
+		$pkg_configure_func
+	}
+
+	pkg::setup_wrapper "$pkg_name" "$pkg_description" install_predicate_func install_func need_upgrade_predicate upgrade_func configure_func
+}

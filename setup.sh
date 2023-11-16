@@ -311,33 +311,30 @@ setup_lazygit() {
 }
 
 setup_pyenv() {
-	# Installation
-	need_installation_predicate() {
+	local pkg_name="pyenv"
+	local pkg_description="Python version manager"
+	local git_repo="https://github.com/pyenv/pyenv"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local local_repo="$HOME/.pyenv"
+
+	pkg_install_predicate_func() {
 		if [[ ! $(command -v pyenv) ]]; then
 			echo 0
 		else
 			echo 1
 		fi
 	}
-	install_func() {
-		git clone https://github.com/pyenv/pyenv.git "${HOME}"/.pyenv
-	}
 
-	# Upgrade
-	need_upgrade_predicate() {
-		# TODO: Check version
-		echo 1
-	}
-	upgrade_func() {
+	pkg_configure_func() {
 		return
 	}
 
-	# Configuration
-	configure_func() {
-		return
+	pkg_current_tag_func() {
+		echo "$(pyenv --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 	}
 
-	pkg::setup_wrapper "pyenv" "Python version manager" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+	pkg::manage_by_git_release_repo "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$local_repo"
 }
 
 setup_neovim() {
