@@ -1,9 +1,11 @@
 layout {
     pane
     pane size=1 borderless=true {
+        // #1e1e2e - base of catppuccin-mocha colour scheme
         plugin location="file:zjstatus.wasm" {
-            format_left  "{mode} #[fg=green,bold]{session} {tabs}"
-            format_space "#[bg=bg]"
+            format_left  "{mode} #[bg=#1e1e2e,fg=green,bold]{session} {tabs}"
+            format_right "{datetime}"
+            format_space "#[bg=#1e1e2e]"
 
             mode_normal       "#[bg=cyan] "
             mode_locked       "#[fg=#000000,bg=magenta] 󰌾  {name} "
@@ -15,8 +17,12 @@ layout {
             mode_enter_search "#[fg=#000000,bg=green] 󱎸 󰏫  {name} "
             mode_search       "#[fg=#000000,bg=green] 󱎸  {name} "
 
-            tab_normal   "#[fg=white,bg=#6C7086,bold,italic] {index} #[fg=#6C7086,bg=bg,bold,italic] {name} "
-            tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=bg,bold] {name} "
+            datetime          "#[bg=#1e1e2e,fg=green] {format} "
+            datetime_format   "%A, %d %b %Y %H:%M"
+            datetime_timezone "Asia/Singapore"
+
+            tab_normal   "#[fg=white,bg=#6c7086,bold,italic] {index} #[fg=#6c7086,bg=#1e1e2e,bold,italic] {name} "
+            tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#1e1e2e,bold] {name} "
         }
     }
 }
