@@ -413,7 +413,6 @@ setup_zsh() {
 
 		symlink::safe_create "${SCRIPT_DIR}/zsh" "${HOME}/.config/zsh"
 		symlink::safe_create "${SCRIPT_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
-		symlink::safe_create "${SCRIPT_DIR}/zsh/.p10k.zsh" "${HOME}/.p10k.zsh"
 	}
 
 	pkg::setup_wrapper "ZSH" "shell" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
@@ -558,6 +557,44 @@ setup_gitdelta() {
 
 	pkg_current_tag_func() {
 		echo "$(delta --version | cut -d' ' -f2)"
+	}
+
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+}
+
+setup_starship() {
+	local pkg_name="starship"
+	local pkg_description="customisable shell prompt"
+	local git_repo="https://github.com/starship/starship"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+
+	# Binary pattern
+	local git_bin_pattern
+	local git_bin_path
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		git_bin_pattern="starship-x86_64-apple-darwin.tar.gz"
+		git_bin_path="starship"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		git_bin_pattern="starship-x86_64-unknown-linux-gnu.tar.gz"
+		git_bin_path="starship"
+	fi
+
+	pkg_install_predicate_func() {
+		if [[ ! $(command -v starship) ]]; then
+			echo 0
+		else
+			echo 1
+		fi
+	}
+
+	pkg_configure_func() {
+		symlink::safe_create "${SCRIPT_DIR}/starship/starship.toml" "${HOME}/.config/starship.toml"
+		return
+	}
+
+	pkg_current_tag_func() {
+		echo "$(starship --version | head -n 1 | cut -d' ' -f2)"
 	}
 
 	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
@@ -709,6 +746,10 @@ setup_zsh
 # Zap installation
 log::separator
 setup_zap
+
+# Starship installation
+log::separator
+setup_starship
 
 # Zellij installation
 log::separator
