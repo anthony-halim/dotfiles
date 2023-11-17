@@ -4,12 +4,8 @@ local function vault_options(base_dir)
     take_over_my_home = true,
     command_pallete_theme = "dropdown",
     show_tags_theme = "dropdown",
-    dailies = base_dir .. "/" .. "fleeting",
-    weeklies = base_dir .. "/" .. "fleeting",
     templates = base_dir .. "/" .. "templates",
     template_new_note = base_dir .. "/" .. "templates/new_note.md",
-    template_new_daily = base_dir .. "/" .. "templates/daily.md",
-    template_new_weekly = base_dir .. "/" .. "templates/weekly.md",
     auto_set_filetype = true,
     auto_set_syntax = true,
     journal_auto_open = true,
@@ -38,7 +34,6 @@ return {
     dependencies = {
       "nvim-telescope/telescope.nvim",
       "nvim-lua/plenary.nvim",
-      "renerocksai/calendar-vim",
     },
     opts = {
       vaults = {
@@ -46,13 +41,13 @@ return {
         work = work_vault_opt,
       },
       default_vault = default_vault,
+      plug_into_calendar = false,
     },
     keys = {
       -- Search
-      { "<leader>zsf", "<cmd>Telekasten find_notes<cr>",       desc = "Find notes" },
-      { "<leader>zsg", "<cmd>Telekasten search_notes<cr>",     desc = "Search notes (grep)" },
-      { "<leader>zst", "<cmd>Telekasten show_tags<cr>",        desc = "Search tags" },
-      { "<leader>zsd", "<cmd>Telekasten find_daily_notes<cr>", desc = "Find daily notes by title (date)" },
+      { "<leader>zsf", "<cmd>Telekasten find_notes<cr>",   desc = "Find notes" },
+      { "<leader>zsg", "<cmd>Telekasten search_notes<cr>", desc = "Search notes (grep)" },
+      { "<leader>zst", "<cmd>Telekasten show_tags<cr>",    desc = "Search tags" },
       {
         "<leader>zsw",
         "<cmd>Telekasten find_weekly_notes<cr>",
@@ -65,17 +60,12 @@ return {
       },
 
       -- Journal/Note
-      { "<leader>znd", "<cmd>Telekasten goto_today<cr>",         desc = "Open today's daily note" },
-      { "<leader>znw", "<cmd>Telekasten goto_thisweek<cr>",      desc = "Open this week's weekly note" },
       { "<leader>znn", "<cmd>Telekasten new_note<cr>",           desc = "New note" },
       { "<leader>znr", "<cmd>Telekasten rename_note<cr>",        desc = "Rename note" },
       { "<leader>znt", "<cmd>Telekasten new_templated_note<cr>", desc = "New templated note" },
 
       -- Vault
       { "<leader>zv",  "<cmd>Telekasten switch_vault<cr>",       desc = "Switch vault" },
-
-      -- Calendar
-      { "<leader>zc",  "<cmd>Telekasten show_calendar<cr>",      desc = "Show calendar" },
 
       -- Editing
       { "<leader>zt",  "<cmd>Telekasten toggle_todo<cr>",        desc = "Toggle todo status" },

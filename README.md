@@ -51,8 +51,6 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
     <summary>Shortcuts</summary>
     <br/>
 
-    - `ndaily` opens daily note (create if does not exist).
-    - `nweekly` opens weekly note (create if does not exist).
     - `nfind` find notes by title
     - `ngrep` find notes by content grep
     - `ntags` find notes by tags

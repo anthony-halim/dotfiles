@@ -61,7 +61,6 @@ return {
     cmd = "Telescope",
     version = false, -- telescope did only one release, so use HEAD for now
     dependencies = {
-      "rcarriga/nvim-notify",
       "nvim-lua/plenary.nvim",
       -- Fuzzy Finder Algorithm which requires local dependencies to be built.
       -- Only load if `make` is available. Make sure you have the system
@@ -120,20 +119,19 @@ return {
         "<cmd>Telescope current_buffer_fuzzy_find<cr>",
         desc = "[S]earch fuzzy current buffer",
       },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>",     desc = "[F]iles in [B]uffers" },
-      { "<leader>fg", "<cmd>Telescope git_files<cr>",   desc = "[F]iles included in [G]it" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>",  desc = "[S]earch [F]iles" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "[S]earch [H]elp" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "[F]iles in [B]uffers" },
+      { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "[F]iles included in [G]it" },
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "[S]earch [F]iles" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "[S]earch [H]elp" },
       { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "[S]earch current [W]ord" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>",   desc = "[S]earch by [G]rep" },
+      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "[S]earch by [G]rep" },
       {
         "<leader>sG",
         "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
         desc = "[S]earch by [G]rep in file directory",
       },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "[S]earch [D]iagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "[S]earch [R]esume" },
-      { "<leader>sn", "<cmd>Telescope notify<cr>",      desc = "[S]earch [N]otification" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "[S]earch [R]esume" },
     },
   },
 
@@ -253,9 +251,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },

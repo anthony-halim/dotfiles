@@ -56,7 +56,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
 
       -- Useful status updates for LSP
-      { "j-hui/fidget.nvim",    tag = "legacy", opts = {} },
+      "j-hui/fidget.nvim",
 
       -- Dependencies for a bunch of LSP that tinkers with JSONs
       { "b0o/SchemaStore.nvim", version = false },

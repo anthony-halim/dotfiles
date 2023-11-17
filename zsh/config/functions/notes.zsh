@@ -1,17 +1,5 @@
 ## Note taking related
 
-# Open daily notes in Neovim
-# Usage: ndaily
-ndaily() {
-  nvim +'Telekasten goto_today'
-}
-
-# Open weekly notes
-# Usage: nweekly
-nweekly() {
-  nvim +'Telekasten goto_thisweek'
-}
-
 # Find notes
 # Usage: nfind
 nfind() {
