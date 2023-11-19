@@ -54,7 +54,7 @@ show_always = true
 
 [hostname]
 ssh_only = true
-style = "fg:#c6d0f5 bg:#303446"
+style = "fg:#c6d0f5 bg:#414559"
 format = '[$ssh_symbol $hostname ]($style)'
 disabled = false
 
