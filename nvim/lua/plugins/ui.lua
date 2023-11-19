@@ -1,16 +1,40 @@
 return {
+  -- LSP progress
   {
     "j-hui/fidget.nvim",
     opts = {
       notification = {
-        override_vim_notify = true,
+        override_vim_notify = false,
         window = {
-          winblend = 0,
-          border = "rounded",
           y_padding = 1,
         },
       },
     },
+  },
+
+  -- Better `vim.notify()`
+  {
+    "rcarriga/nvim-notify",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+    },
+    opts = {
+      timeout = 3000,
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.75)
+      end,
+      stages = "fade_in_slide_out",
+    },
+    keys = {
+      { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "[S]earch [N]otification" },
+    },
+    config = function(_, opts)
+      require("notify").setup(opts)
+      vim.notify = require("notify")
+    end,
   },
 
   -- statusline
@@ -97,44 +121,6 @@ return {
     config = true,
   },
 
-  -- indent guides for Neovim
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      indent = {
-        char = "│",
-      },
-      whitespace = {
-        remove_blankline_trail = false,
-      },
-      exclude = {
-        filetypes = {
-          "help",
-          "alpha",
-          "dashboard",
-          "nvim-tree",
-          "Trouble",
-          "lazy",
-          "mason",
-          "notify",
-          "toggleterm",
-          "lazyterm",
-          "lspinfo",
-          "checkhealth",
-          "man",
-          "gitcommit",
-          "TelescopePrompt",
-          "TelescopeResults",
-        },
-      },
-      scope = {
-        enabled = false,
-      },
-    },
-  },
-
   -- Active indent guide and indent text objects. When you're browsing
   -- code, this highlights the current level of indentation, and animates
   -- the highlighting.
@@ -143,7 +129,6 @@ return {
     version = false, -- wait till new 0.7.0 release to put it back on semver
     event = { "BufReadPre", "BufNewFile" },
     opts = {
-      -- symbol = "▏",
       symbol = "│",
       options = { try_as_border = true },
     },

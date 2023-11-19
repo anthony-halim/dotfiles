@@ -73,7 +73,6 @@ return {
         end,
       },
     },
-
     opts = {
       pickers = {
         find_files = {
@@ -112,26 +111,25 @@ return {
         fzf = {},
       },
     },
-
     keys = {
       {
         "<leader>sb",
         "<cmd>Telescope current_buffer_fuzzy_find<cr>",
         desc = "[S]earch fuzzy current buffer",
       },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "[F]iles in [B]uffers" },
-      { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "[F]iles included in [G]it" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "[S]earch [F]iles" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "[S]earch [H]elp" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>",     desc = "[F]iles in [B]uffers" },
+      { "<leader>fg", "<cmd>Telescope git_files<cr>",   desc = "[F]iles included in [G]it" },
+      { "<leader>ff", "<cmd>Telescope find_files<cr>",  desc = "[S]earch [F]iles" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "[S]earch [H]elp" },
       { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "[S]earch current [W]ord" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "[S]earch by [G]rep" },
+      { "<leader>sg", "<cmd>Telescope live_grep<cr>",   desc = "[S]earch by [G]rep" },
       {
         "<leader>sG",
         "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
         desc = "[S]earch by [G]rep in file directory",
       },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "[S]earch [D]iagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "[S]earch [R]esume" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "[S]earch [R]esume" },
     },
   },
 
@@ -221,25 +219,50 @@ return {
     end,
   },
 
-  -- Finds and lists all of the TODO, HACK, BUG, etc comment
-  -- in your project and loads them into a browsable list.
+  -- Custom highlighting
   {
-    "folke/todo-comments.nvim",
-    cmd = { "TodoTrouble", "TodoTelescope" },
-    event = { "BufReadPost", "BufNewFile" },
-    config = true,
-    -- stylua: ignore
-    keys = {
-      { "]t",         function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
-      { "[t",         function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
-      { "<leader>st", "<cmd>TodoTelescope<cr>",                            desc = "[S]earch [T]odos" },
-      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>",    desc = "[S]earch only Todo/Fix/Fixme" },
-    },
+    "echasnovski/mini.hipatterns",
+    config = function(_, opts)
+      local hipatterns = require("mini.hipatterns")
+      hipatterns.setup({
+        highlighters = {
+          fixme = {
+            pattern = "%f[%w]()FIXME()%f[%W]",
+            group = "DiagnosticVirtualTextError",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignError" },
+          },
+          hack = {
+            pattern = "%f[%w]()HACK()%f[%W]",
+            group = "DiagnosticVirtualTextWarn",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
+          },
+          warn = {
+            pattern = "%f[%w]()WARNING()%f[%W]",
+            group = "DiagnosticVirtualTextWarn",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
+          },
+          todo = {
+            pattern = "%f[%w]()TODO()%f[%W]",
+            group = "DiagnosticVirtualTextInfo",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignInfo" },
+          },
+          note = {
+            pattern = "%f[%w]()NOTE()%f[%W]",
+            group = "DiagnosticVirtualTextHint",
+            extmark_opts = { sign_text = " ", sign_hl_group = "DiagnosticSignHint" },
+          },
+
+          -- Highlight hex color strings (`#rrggbb`) using that color
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      })
+    end,
   },
 
   -- buffer remove
   {
     "echasnovski/mini.bufremove",
+    event = "VeryLazy",
     -- stylua: ignore
     keys = {
       { "<leader>bd", function() require("mini.bufremove").delete(0, false) end, desc = "Delete Buffer" },
@@ -251,9 +274,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },

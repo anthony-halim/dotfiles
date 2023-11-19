@@ -14,7 +14,6 @@ source "${ZSH_CONFIG}/exports.zsh"
 safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
 
 # Auto start zellij
-# NOTE: Must be done before p10k setup (instant prompt and actual sourcing)
 if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
   # From 'eval "$(zellij setup --generate-auto-start zsh)"'
   if [[ -z "$ZELLIJ" ]]; then
@@ -24,13 +23,6 @@ if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
           zellij 
       fi
   fi
-fi
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # Enable zap
@@ -62,7 +54,6 @@ plug "zsh-users/zsh-syntax-highlighting"
 plug "zsh-users/zsh-history-substring-search"
 plug "zap-zsh/sudo"
 plug "zap-zsh/web-search"
-plug "romkatv/powerlevel10k"
 plug "jeffreytse/zsh-vi-mode"
 
 # Bindkeys includes plugin keymaps, so must be done after plugin load
@@ -84,6 +75,6 @@ fi
 zellij_tab_name_update_by_git_repo
 chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# NOTE: We leave p10k config in default location to allow p10k to modify it normally
-[[ ! -f "${HOME}/.p10k.zsh" ]] || source "${HOME}/.p10k.zsh" 
+# Enable starship
+[[ -f "${STARSHIP_CONFIG:-$HOME/.config/starship.toml}" ]] && eval "$(starship init zsh)"
+

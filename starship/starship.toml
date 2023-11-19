@@ -1,0 +1,105 @@
+# Catppuccin-frappe Wezterm colour
+# See: https://github.com/catppuccin/wezterm/blob/main/plugin/init.lua
+#	frappe = {
+# 	rosewater = "#f2d5cf",
+# 	flamingo = "#eebebe",
+# 	pink = "#f4b8e4",
+# 	mauve = "#ca9ee6",
+# 	red = "#e78284",
+# 	maroon = "#ea999c",
+# 	peach = "#ef9f76",
+# 	yellow = "#e5c890",
+# 	green = "#a6d189",
+# 	teal = "#81c8be",
+# 	sky = "#99d1db",
+# 	sapphire = "#85c1dc",
+# 	blue = "#8caaee",
+# 	lavender = "#babbf1",
+# 	text = "#c6d0f5",
+# 	subtext1 = "#b5bfe2",
+# 	subtext0 = "#a5adce",
+# 	overlay2 = "#949cbb",
+# 	overlay1 = "#838ba7",
+# 	overlay0 = "#737994",
+# 	surface2 = "#626880",
+# 	surface1 = "#51576d",
+# 	surface0 = "#414559",
+# 	base = "#303446",
+# 	mantle = "#292c3c",
+# 	crust = "#232634",
+# },
+
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$git_state\
+$kubenetes\
+$status\
+$character"""
+
+# Base prompt components
+
+[character]
+vimcmd_symbol = "[❮](bold purple)"
+
+[username]
+style_user = "fg:#c6d0f5 bg:#303446"
+style_root = "italic fg:#292c3c bg:#86c1dc"
+format = '[ $user ]($style)'
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = true
+style = "fg:#c6d0f5 bg:#303446"
+format = '[$ssh_symbol $hostname ]($style)'
+disabled = false
+
+[directory]
+read_only = "󰌾"
+style = "fg:#292c3c bg:blue"
+format = "[ $path ]($style) "
+truncation_length = 4
+truncation_symbol = ".../"
+truncate_to_repo = false
+
+[directory.substitutions]
+"~" = " "
+
+[status]
+symbol = ' '
+disabled = false
+
+# Git tags 
+
+[git_branch]
+symbol = " "
+style = "fg:#292c3c bg:#99d1db"
+format = '[ $symbol [$branch](italic $style) ]($style)'
+
+[git_status]
+ahead = '⇡${count}'
+diverged = '⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+untracked = '?${count}'
+modified = '!${count}'
+staged = '+${count}'
+deleted = '✘${count}'
+renamed = '»${count}'
+style = "bold fg:#292c3c bg:#99d1db"
+format = '[$all_status ]($style) '
+
+[git_state]
+disabled = false
+style = "fg:#292c3c bg:#ea999c"
+
+# Kubernetes tags 
+
+[kubernetes]
+disabled = false
+style = "fg:#b5bfe2 bg:#414559"
+format = "[$symbol$context]($style) "
+
