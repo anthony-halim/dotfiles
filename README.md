@@ -2,7 +2,7 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/anthony-halim/dotfiles)
 ![GitHub commit month activity](https://img.shields.io/github/commit-activity/m/anthony-halim/dotfiles)
-![image](https://github.com/anthony-halim/dotfiles/assets/50617144/776fdc04-b717-4ecb-9869-739a182eab05)
+![image](https://github.com/anthony-halim/dotfiles/assets/50617144/ec9016d6-9c54-4f8b-af49-8d1b0f74e727)
 
 This repository holds my local configurations. Feel free to take ideas from it to improve your own dotfiles.
 
@@ -81,7 +81,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   <summary>Showcase</summary>
   <br/>
 
-  ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/5cfaed15-9042-4c72-9ef0-5c99451f2032)
+  ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/ec9016d6-9c54-4f8b-af49-8d1b0f74e727)
 </details>
 
 #### Shell highlighter and utilities: [eza](https://github.com/eza-community/eza), [bat](https://github.com/sharkdp/bat), [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://github.com/dandavison/delta), [fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep), [tldr](https://tldr.sh/)
