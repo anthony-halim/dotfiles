@@ -61,7 +61,6 @@ return {
     cmd = "Telescope",
     version = false, -- telescope did only one release, so use HEAD for now
     dependencies = {
-      "rcarriga/nvim-notify",
       "nvim-lua/plenary.nvim",
       -- Fuzzy Finder Algorithm which requires local dependencies to be built.
       -- Only load if `make` is available. Make sure you have the system
@@ -74,7 +73,6 @@ return {
         end,
       },
     },
-
     opts = {
       pickers = {
         find_files = {
@@ -113,7 +111,6 @@ return {
         fzf = {},
       },
     },
-
     keys = {
       {
         "<leader>sb",
@@ -133,7 +130,6 @@ return {
       },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "[S]earch [D]iagnostics" },
       { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "[S]earch [R]esume" },
-      { "<leader>sn", "<cmd>Telescope notify<cr>",      desc = "[S]earch [N]otification" },
     },
   },
 

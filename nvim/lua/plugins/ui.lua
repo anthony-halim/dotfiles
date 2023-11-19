@@ -15,6 +15,9 @@ return {
   -- Better `vim.notify()`
   {
     "rcarriga/nvim-notify",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+    },
     opts = {
       timeout = 3000,
       max_height = function()
@@ -24,6 +27,9 @@ return {
         return math.floor(vim.o.columns * 0.75)
       end,
       stages = "fade_in_slide_out",
+    },
+    keys = {
+      { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "[S]earch [N]otification" },
     },
     config = function(_, opts)
       require("notify").setup(opts)
