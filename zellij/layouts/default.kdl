@@ -1,30 +1,58 @@
+// Catppuccin-frappe Wezterm colour
+// See: https://github.com/catppuccin/wezterm/blob/main/plugin/init.lua
+//	frappe = {
+// 	rosewater = "#f2d5cf",
+// 	flamingo = "#eebebe",
+// 	pink = "#f4b8e4",
+// 	mauve = "#ca9ee6",
+// 	red = "#e78284",
+// 	maroon = "#ea999c",
+// 	peach = "#ef9f76",
+// 	yellow = "#e5c890",
+// 	green = "#a6d189",
+// 	teal = "#81c8be",
+// 	sky = "#99d1db",
+// 	sapphire = "#85c1dc",
+// 	blue = "#8caaee",
+// 	lavender = "#babbf1",
+// 	text = "#c6d0f5",
+// 	subtext1 = "#b5bfe2",
+// 	subtext0 = "#a5adce",
+// 	overlay2 = "#949cbb",
+// 	overlay1 = "#838ba7",
+// 	overlay0 = "#737994",
+// 	surface2 = "#626880",
+// 	surface1 = "#51576d",
+// 	surface0 = "#414559",
+// 	base = "#303446",
+// 	mantle = "#292c3c",
+// 	crust = "#232634",
+// },
+
 layout {
     pane
     pane size=1 borderless=true {
-        // #1e1e2e - base of catppuccin-mocha colour scheme
-        // #11111b - crust of catppuccin-mocha colour scheme
-        // #181825 - mantle of catuppuccin-mocha colour scheme
         plugin location="file:zjstatus.wasm" {
-            format_left  "{mode} #[bg=#181825,fg=green,bold]{session} {tabs}"
+            format_left  "{mode} #[bg=#232634,fg=green,bold]{session} {tabs}"
             format_right "{datetime}"
-            format_space "#[bg=#181825]"
+            format_space "#[bg=#232634]"
 
             mode_normal       "#[bg=cyan] "
-            mode_locked       "#[fg=#1e1e2e,bg=magenta] 󰌾  {name} "
-            mode_pane         "#[fg=#1e1e2e,bg=red] 󱏂  {name} "
-            mode_tab          "#[fg=#1e1e2e,bg=red] 󱂬  {name} "
-            mode_session      "#[fg=#1e1e2e,bg=magenta] 󰨣  {name} "
-            mode_resize       "#[fg=#1e1e2e,bg=green] 󰩨  {name} "
-            mode_scroll       "#[fg=#1e1e2e,bg=green] 󰦨  {name} "
-            mode_enter_search "#[fg=#1e1e2e,bg=green] 󱎸 󰏫  {name} "
-            mode_search       "#[fg=#1e1e2e,bg=green] 󱎸  {name} "
+            mode_locked       "#[fg=#232634,bg=magenta] 󰌾  {name} "
+            mode_pane         "#[fg=#232634,bg=red] 󱏂  {name} "
+            mode_tab          "#[fg=#232634,bg=red] 󱂬  {name} "
+            mode_session      "#[fg=#232634,bg=magenta] 󰨣  {name} "
+            mode_resize       "#[fg=#232634,bg=green] 󰩨  {name} "
+            mode_scroll       "#[fg=#232634,bg=green] 󰦨  {name} "
+            mode_enter_search "#[fg=#232634,bg=green] 󱎸 󰏫  {name} "
+            mode_search       "#[fg=#232634,bg=green] 󱎸  {name} "
 
-            datetime          "#[bg=#181825,fg=green] {format} "
+            datetime          "#[bg=#232634,fg=green] {format} "
             datetime_format   "%A, %d %b %Y %H:%M"
             datetime_timezone "Asia/Singapore"
 
-            tab_normal   "#[fg=white,bg=#6c7086,bold,italic] {index} #[fg=#6c7086,bg=#181825,bold,italic] {name} "
-            tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#181825,bold] {name} "
+            tab_normal   "#[fg=#c6d0f5,bg=#414559,bold,italic] {index} #[fg=#414559,bg=#232634,bold,italic] {name} "
+            tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#232634,bold] {name} "
         }
     }
 }
