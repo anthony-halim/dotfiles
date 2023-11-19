@@ -2,7 +2,7 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/anthony-halim/dotfiles)
 ![GitHub commit month activity](https://img.shields.io/github/commit-activity/m/anthony-halim/dotfiles)
-![image](https://github.com/anthony-halim/dotfiles/assets/50617144/5cfaed15-9042-4c72-9ef0-5c99451f2032)
+![image](https://github.com/anthony-halim/dotfiles/assets/50617144/776fdc04-b717-4ecb-9869-739a182eab05)
 
 This repository holds my local configurations. Feel free to take ideas from it to improve your own dotfiles.
 
@@ -103,7 +103,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
   *eza* 
 
-  ![credit to source repository](https://github.com/eza-community/eza/blob/main/screenshots.png) 
+  ![credit to source repository](https://github.com/eza-community/eza/blob/main/docs/images/screenshots.png) 
 
   *bat* 
 
@@ -135,7 +135,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   <summary>Showcase</summary>
   <br/>
 
-  ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/0f3d8a73-0d6b-4722-95e0-f4ccaf9450e6)
+  ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/a56fb5c1-da8a-4b36-bde0-53dddc2d0540)
 </details>
 
 #### Programming languages and utilities: Golang, Python
