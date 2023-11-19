@@ -223,25 +223,50 @@ return {
     end,
   },
 
-  -- Finds and lists all of the TODO, HACK, BUG, etc comment
-  -- in your project and loads them into a browsable list.
+  -- Custom highlighting
   {
-    "folke/todo-comments.nvim",
-    cmd = { "TodoTrouble", "TodoTelescope" },
-    event = { "BufReadPost", "BufNewFile" },
-    config = true,
-    -- stylua: ignore
-    keys = {
-      { "]t",         function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
-      { "[t",         function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
-      { "<leader>st", "<cmd>TodoTelescope<cr>",                            desc = "[S]earch [T]odos" },
-      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>",    desc = "[S]earch only Todo/Fix/Fixme" },
-    },
+    "echasnovski/mini.hipatterns",
+    config = function(_, opts)
+      local hipatterns = require("mini.hipatterns")
+      hipatterns.setup({
+        highlighters = {
+          fixme = {
+            pattern = "%f[%w]()FIXME()%f[%W]",
+            group = "DiagnosticVirtualTextError",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignError" },
+          },
+          hack = {
+            pattern = "%f[%w]()HACK()%f[%W]",
+            group = "DiagnosticVirtualTextWarn",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
+          },
+          warn = {
+            pattern = "%f[%w]()WARNING()%f[%W]",
+            group = "DiagnosticVirtualTextWarn",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
+          },
+          todo = {
+            pattern = "%f[%w]()TODO()%f[%W]",
+            group = "DiagnosticVirtualTextInfo",
+            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignInfo" },
+          },
+          note = {
+            pattern = "%f[%w]()NOTE()%f[%W]",
+            group = "DiagnosticVirtualTextHint",
+            extmark_opts = { sign_text = " ", sign_hl_group = "DiagnosticSignHint" },
+          },
+
+          -- Highlight hex color strings (`#rrggbb`) using that color
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      })
+    end,
   },
 
   -- buffer remove
   {
     "echasnovski/mini.bufremove",
+    event = "VeryLazy",
     -- stylua: ignore
     keys = {
       { "<leader>bd", function() require("mini.bufremove").delete(0, false) end, desc = "Delete Buffer" },

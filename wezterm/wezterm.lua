@@ -5,7 +5,7 @@ local act = wezterm.action
 local is_macos = string.find(wezterm.target_triple, "darwin")
 
 -- Refactor frequently changed configurations
-local windows_window_background_opacity = 0.9
+local windows_window_background_opacity = 1.0
 local windows_win32_system_backdrop = "Disable"
 local macos_window_background_opacity = 0.6
 local macos_window_background_blur = 20
