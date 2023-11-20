@@ -36,6 +36,7 @@ $directory\
 $git_branch\
 $git_status\
 $git_state\
+$kubernetes\
 $status\
 $character"""
 
@@ -61,7 +62,7 @@ disabled = false
 read_only = "󰌾"
 style = "fg:#292c3c bg:blue"
 format = "[ $path ]($style) "
-truncation_length = 4
+truncation_length = 5
 truncation_symbol = ".../"
 truncate_to_repo = false
 
@@ -95,3 +96,9 @@ format = '[$all_status ]($style) '
 disabled = false
 style = "fg:#292c3c bg:#ea999c"
 
+# Kubernetes
+
+[kubernetes]
+style = "fg:white bg:#414559"
+format = '[ $symbol[$context( \($namespace\))](italic $style) ]($style) '
+disabled = false
