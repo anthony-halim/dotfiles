@@ -51,7 +51,7 @@ layout {
             datetime_format   "%A, %d %b %Y %H:%M"
             datetime_timezone "Asia/Singapore"
 
-            tab_normal   "#[fg=#c6d0f5,bg=#414559,bold,italic] {index} #[fg=#414559,bg=#232634,bold,italic] {name} "
+            tab_normal   "#[fg=#c6d0f5,bg=#414559,bold,italic] {index} #[fg=#b5bfe2,bg=#232634,bold,italic] {name} "
             tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#232634,bold] {name} "
         }
     }

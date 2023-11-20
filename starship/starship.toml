@@ -36,7 +36,6 @@ $directory\
 $git_branch\
 $git_status\
 $git_state\
-$kubenetes\
 $status\
 $character"""
 
@@ -46,7 +45,7 @@ $character"""
 vimcmd_symbol = "[❮](bold purple)"
 
 [username]
-style_user = "fg:#c6d0f5 bg:#303446"
+style_user = "fg:#c6d0f5 bg:#414559"
 style_root = "italic fg:#292c3c bg:#86c1dc"
 format = '[ $user ]($style)'
 disabled = false
@@ -95,11 +94,4 @@ format = '[$all_status ]($style) '
 [git_state]
 disabled = false
 style = "fg:#292c3c bg:#ea999c"
-
-# Kubernetes tags 
-
-[kubernetes]
-disabled = false
-style = "fg:#b5bfe2 bg:#414559"
-format = "[$symbol$context]($style) "
 
