@@ -47,7 +47,7 @@ layout {
             mode_enter_search "#[fg=#232634,bg=green] 󱎸 󰏫  {name} "
             mode_search       "#[fg=#232634,bg=green] 󱎸  {name} "
 
-            datetime          "#[bg=#414559,fg=#b5bfe2] {format}"
+            datetime          "#[bg=#414559,fg=#b5bfe2] {format} "
             datetime_format   "%A, %d %b %Y %H:%M"
             datetime_timezone "Asia/Singapore"
 
