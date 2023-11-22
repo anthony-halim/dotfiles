@@ -22,7 +22,11 @@ require("lazy").setup({
   },
   defaults = {
     lazy = false,
-    version = false, -- always use the latest git commit
+    version = false,
+  },
+  change_detection = {
+    enabled = true,
+    notify = true,
   },
   checker = {
     enabled = true,

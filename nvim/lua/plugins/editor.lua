@@ -50,7 +50,7 @@ return {
         width_preview = math.min(math.floor(vim.o.columns * 0.3), 80),
       },
       options = {
-        use_as_default_explorer = false,
+        use_as_default_explorer = true,
       },
     },
   },
@@ -117,19 +117,19 @@ return {
         "<cmd>Telescope current_buffer_fuzzy_find<cr>",
         desc = "[S]earch fuzzy current buffer",
       },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>",     desc = "[F]iles in [B]uffers" },
-      { "<leader>fg", "<cmd>Telescope git_files<cr>",   desc = "[F]iles included in [G]it" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>",  desc = "[S]earch [F]iles" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "[S]earch [H]elp" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "[F]iles in [B]uffers" },
+      { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "[F]iles included in [G]it" },
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "[S]earch [F]iles" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "[S]earch [H]elp" },
       { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "[S]earch current [W]ord" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>",   desc = "[S]earch by [G]rep" },
+      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "[S]earch by [G]rep" },
       {
         "<leader>sG",
         "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
         desc = "[S]earch by [G]rep in file directory",
       },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "[S]earch [D]iagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "[S]earch [R]esume" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "[S]earch [R]esume" },
     },
   },
 
@@ -222,7 +222,7 @@ return {
   -- Custom highlighting
   {
     "echasnovski/mini.hipatterns",
-    config = function(_, opts)
+    opts = function()
       local hipatterns = require("mini.hipatterns")
       hipatterns.setup({
         highlighters = {
@@ -253,7 +253,7 @@ return {
           },
 
           -- Highlight hex color strings (`#rrggbb`) using that color
-          hex_color = hipatterns.gen_highlighter.hex_color(),
+          hex_color = hipatterns.gen_highlighter.hex_color({ priority = 2000 }),
         },
       })
     end,
@@ -274,9 +274,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },

@@ -12,7 +12,12 @@ return {
     },
   },
 
-  -- Better `vim.notify()`
+  -- Better vim.ui
+  {
+    "stevearc/dressing.nvim",
+  },
+
+  -- Better vim.notify
   {
     "rcarriga/nvim-notify",
     dependencies = {
@@ -111,9 +116,9 @@ return {
         local buffer = {
           { diagnostic_labels },
           { git_labels },
-          { ft_icon,          guifg = ft_color },
+          { ft_icon, guifg = ft_color },
           { " " },
-          { filename,         gui = modified },
+          { filename, gui = modified },
         }
         return buffer
       end,
@@ -215,5 +220,5 @@ return {
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim",        lazy = true },
+  { "MunifTanjim/nui.nvim", lazy = true },
 }
