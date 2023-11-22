@@ -68,8 +68,12 @@ truncate_to_repo = false
 
 # NOTE: Order must be from most specific path to most general
 [directory.substitutions]
+"~/repos/personal" = " 󰳐 "
+"~/repos/work" = "󰃖 󰳐 "
+"~/notes/personal" = "  "
+"~/notes/work" = "󰃖  "
 "~/repos" = "󰳐 "
-"~/notes" = " "
+"~/notes" = " "
 "~" = " " 
 
 [status]
