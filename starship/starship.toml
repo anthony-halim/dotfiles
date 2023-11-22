@@ -65,11 +65,12 @@ format = "[ $path ]($style) "
 truncation_length = 5
 truncation_symbol = ".../"
 truncate_to_repo = false
-home_symbol = " "
 
+# NOTE: Order must be from most specific path to most general
 [directory.substitutions]
-"~/repos/" = "󰳐 "
-"~/notes/" = " "
+"~/repos" = "󰳐 "
+"~/notes" = " "
+"~" = " " 
 
 [status]
 symbol = ' '
