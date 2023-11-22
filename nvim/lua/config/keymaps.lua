@@ -82,6 +82,10 @@ map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic mes
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
 map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
+-- quickfix
+map("n", "[q", "<cmd>cprev<cr>", { desc = "Go to previous quickfix item" })
+map("n", "]q", "<cmd>cnext<cr>", { desc = "Go to next quickfix item" })
+
 -- buffer
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })

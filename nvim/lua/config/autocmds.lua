@@ -44,6 +44,19 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
+-- make quickfix list modifiable
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = augroup("quickfix"),
+  callback = function()
+    local exclude = { "gitcommit" }
+    local buf = vim.api.nvim_get_current_buf()
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+      return
+    end
+    vim.api.nvim_buf_set_option(buf, "modifiable", true)
+  end,
+})
+
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
