@@ -24,7 +24,10 @@ require("lazy").setup({
     lazy = false,
     version = false, -- always use the latest git commit
   },
-  checker = { enabled = true },
+  checker = {
+    enabled = true,
+    notify = true,
+  },
   performance = {
     rtp = {
       -- disable some rtp plugins
