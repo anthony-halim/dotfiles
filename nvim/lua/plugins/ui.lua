@@ -2,6 +2,7 @@ return {
   -- LSP progress
   {
     "j-hui/fidget.nvim",
+    event = "VeryLazy",
     opts = {
       notification = {
         override_vim_notify = false,
@@ -15,11 +16,13 @@ return {
   -- Better vim.ui
   {
     "stevearc/dressing.nvim",
+    event = "VeryLazy",
   },
 
   -- Better vim.notify
   {
     "rcarriga/nvim-notify",
+    event = "VeryLazy",
     dependencies = {
       "nvim-telescope/telescope.nvim",
     },
@@ -36,8 +39,7 @@ return {
     keys = {
       { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "[S]earch [N]otification" },
     },
-    config = function(_, opts)
-      require("notify").setup(opts)
+    init = function()
       vim.notify = require("notify")
     end,
   },
@@ -116,9 +118,9 @@ return {
         local buffer = {
           { diagnostic_labels },
           { git_labels },
-          { ft_icon, guifg = ft_color },
+          { ft_icon,          guifg = ft_color },
           { " " },
-          { filename, gui = modified },
+          { filename,         gui = modified },
         }
         return buffer
       end,
@@ -220,5 +222,5 @@ return {
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim", lazy = true },
+  { "MunifTanjim/nui.nvim",        lazy = true },
 }
