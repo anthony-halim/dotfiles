@@ -687,16 +687,17 @@ setup_diatheke() {
 			yes "yes" 2>/dev/null | installmgr -init # create a basic user config file
 		}
 
-		input::prompt_confirmation "Setting up installmgr with remote sources. Do you want to proceed?" && {
-			yes "yes" 2>/dev/null | installmgr -sc # sync config with list of known remote repos
-			log::success "Remote sources synced"
-		}
-
-		input::prompt_confirmation "Installing CrossWire's KJV Bible module. Do you want to proceed?" && {
-			yes "yes" 2>/dev/null | installmgr -r CrossWire      # refresh remote source
-			yes "yes" 2>/dev/null | installmgr -ri CrossWire KJV # install module from remote source
-			log::success "CrossWire's KJV Bible module installed"
-		}
+		local has_kjv=$(installmgr -l | grep KJV | wc -l)
+		if [[ "$has_kjv" -eq 0 ]]; then
+			input::prompt_confirmation "Installing CrossWire's KJV Bible module. Do you want to proceed?" && {
+				yes "yes" 2>/dev/null | installmgr -sc               # sync config with list of known remote repos
+				yes "yes" 2>/dev/null | installmgr -r CrossWire      # refresh remote source
+				yes "yes" 2>/dev/null | installmgr -ri CrossWire KJV # install module from remote source
+				log::success "CrossWire's KJV Bible module installed"
+			}
+		else
+			log::info "KJV Bible module is already installed."
+		fi
 
 		# Explicitly return 0, user skipping configuration is not an error
 		return 0
