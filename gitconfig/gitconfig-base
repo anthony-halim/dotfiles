@@ -23,6 +23,9 @@
     # Sync with upstream by doing pull --rebase on current branch
     sync-up = !"git fetch && git rebase @{u}"
 
+    # Revert local changes to tracked files, restores deleted track files, deletes local files/dirs listed in .gitgnore, deletes local untracked files/dirs
+    nuke-local = !"git clean --force -d -x && git reset --hard"
+
 [core]
     # Use the lightest editor possible
     editor = vi
