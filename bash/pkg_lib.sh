@@ -229,9 +229,6 @@ pkg::manage_by_git_release_repo() {
 			return
 		fi
 
-		local temp_dir="./gitrlsm_$timestamp"
-		mkdir "$temp_dir"
-
 		log::info "Cloning $pkg_name from: $git_repo"
 
 		git clone --depth=1 --branch="$git_tag" "$git_repo.git" "$local_opt_repo_dir"
