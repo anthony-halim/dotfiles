@@ -20,8 +20,8 @@
     # Show git root dir
     root = rev-parse --show-toplevel
 
-    # Sync with upstream by doing pull --rebase on current branch
-    sync-up = !"git fetch && git rebase @{u}"
+    # Sync with upstream by doing pull --rebase on current branch, followed with GC 
+    sync-up = !"git fetch && git rebase @{u} && git gc --auto --quiet"
 
     # Revert local changes to tracked files, restores deleted track files, deletes local files/dirs listed in .gitgnore, deletes local untracked files/dirs
     nuke-local = !"git clean --force -d -x && git reset --hard"
