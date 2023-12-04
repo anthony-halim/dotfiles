@@ -42,9 +42,6 @@ $character"""
 
 # Base prompt components
 
-[character]
-vimcmd_symbol = "[❮](bold purple)"
-
 [username]
 style_user = "fg:#c6d0f5 bg:#414559"
 style_root = "italic fg:#292c3c bg:#86c1dc"
