@@ -45,11 +45,11 @@ return {
   },
 
   -- Better cmdheight=0
-  {
-    "anthony-halim/cmdheight-zero.nvim",
-    dev = true,
-    dir = "~/repos/personal/cmdheight-zero.nvim",
-  },
+  -- {
+  --   "anthony-halim/cmdheight-zero.nvim",
+  --   dev = true,
+  --   dir = "~/repos/personal/cmdheight-zero.nvim",
+  -- },
 
   -- statusline
   {
