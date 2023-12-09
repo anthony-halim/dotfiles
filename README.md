@@ -209,11 +209,12 @@ The following environment variables affects the repository behaviour. You can se
 | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
 | ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
 
-**[bible-verse.nvim](https://github.com/anthony-halim/bible-verse.nvim)** 
+**Neovim**
 
-| Name                       | Type                   | Defaults                 | Description     |
-|--------------------------- | ---------------------- | ------------------------ | --------------- |
-| NVIM_DISABLE_BIBLE_VERSE   | boolean                | false                    | Disable `bible-verse.nvim`. |
+| Name                       | Type                   | Defaults                 | Description                             |
+|--------------------------- | ---------------------- | ------------------------ | --------------------------------------- |
+| NVIM_EXTRA_NOTES           | boolean                | true                     | Enable notes related plugins in Neovim. |
+| NVIM_EXTRA_BIBLE           | boolean                | false                    | Enable Bible related plugins in Neovim. |
 
 #### (Optional) Swap Keys 
 
