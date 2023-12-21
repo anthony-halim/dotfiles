@@ -18,17 +18,6 @@ local default_vault = os.getenv("NOTES_DEFAULT_VAULT") or "personal"
 
 return {
   {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreview", "MarkdownPreviewToggle", "MarkdownPreviewStop" },
-    ft = { "markdown", "telekasten" },
-    keys = {
-      { "<leader>mp", "<cmd>MarkdownPreview<cr>", desc = "Markdown preview" },
-    },
-    config = function()
-      vim.fn["mkdp#util#install"]()
-    end,
-  },
-  {
     "renerocksai/telekasten.nvim",
     cmd = "Telekasten",
     dependencies = {
