@@ -67,6 +67,11 @@ function M.setup()
     require("config.lazy")
     require("config.autocmds")
 
+    -- Optional requires based on local configurations
+    pcall(require, "local_config.options")
+    pcall(require, "local_config.keymaps")
+    pcall(require, "local_config.autocmds")
+
     vim.cmd.colorscheme(M.options.colorscheme)
   end
 end
