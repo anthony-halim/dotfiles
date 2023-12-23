@@ -128,6 +128,22 @@ return {
                 return
               end
 
+              -- Removes trailing space and new lines
+              -- Credit to echasnovski/mini.trailspace
+              --
+              -- Trim trailing whitespace
+              local curpos = vim.api.nvim_win_get_cursor(0)
+              vim.cmd([[keeppatterns %s/\s\+$//e]])
+              vim.api.nvim_win_set_cursor(0, curpos)
+
+              -- Trim last blank lines
+              local n_lines = vim.api.nvim_buf_line_count(0)
+              local last_nonblank = vim.fn.prevnonblank(n_lines)
+              if last_nonblank < n_lines then
+                vim.api.nvim_buf_set_lines(0, last_nonblank, n_lines, true, {})
+              end
+
+              -- LSP formatting
               vim.lsp.buf.format({
                 async = false,
                 filter = function(c)
