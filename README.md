@@ -21,16 +21,13 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 ## ✨ Features
 
-The features integrated within this repository stems from my workflows. 
+The features integrated within this repository stems from my workflows.
 
 #### Allows for machine specific configurations
 
 My workflows use different machines with slightly different configuration, tools, and usage. For example, my work machine has VPN shortcuts which I do not want to commit to this repository.
 
-There are 2 ways custom configuration can be made:
-
-- Adding [custom local configs](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
-- Set [environment variables](#optional-set-environment-variables).
+See adding [custom local configs](#optional-add-custom-local-configurations).
 
 #### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `goto`
 
@@ -74,7 +71,7 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   - Due to heavy TUI usage, terminal performance becomes one of the priority. Wezterm is a cross-platform, performant terminal emulator that is able to satisfy the performance requirements and be configured easily.
   - Zellij is used to provide terminal session management and multiplexer.
   - ZSH is battle tested shell that is easily configurable and is widely supported. [Zap](https://www.zapzsh.org/) as plugin manager.
-  - Starship as customisable shell prompt. 
+  - Starship as customisable shell prompt.
 </details>
 
 <details>
@@ -101,11 +98,11 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   <summary>Showcase</summary>
   <br/>
 
-  *eza* 
+  *eza*
 
-  ![credit to source repository](https://github.com/eza-community/eza/blob/main/docs/images/screenshots.png) 
+  ![credit to source repository](https://github.com/eza-community/eza/blob/main/docs/images/screenshots.png)
 
-  *bat* 
+  *bat*
 
   ![credit to source repository](https://camo.githubusercontent.com/7b7c397acc5b91b4c4cf7756015185fe3c5f700f70d256a212de51294a0cf673/68747470733a2f2f696d6775722e636f6d2f724773646e44652e706e67)
 
@@ -117,11 +114,11 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 
   ![credit to source repository](https://user-images.githubusercontent.com/50617144/266825290-21025bbd-89c4-4ff7-ba81-81a273604632.png)
 
-  *tldr* 
-  ![credit to source repository](https://tldr.sh/assets/img/screenshot.png) 
+  *tldr*
+  ![credit to source repository](https://tldr.sh/assets/img/screenshot.png)
 </details>
 
-#### Editor: [Neovim](neovim.io) (Text editor) 
+#### Editor: [Neovim](neovim.io) (Text editor)
 
 <details>
   <br/>
@@ -155,10 +152,10 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
 Git clone to the machine.
 
 ```sh
-git clone --depth=1 https://github.com/anthony-halim/dotfiles.git 
+git clone --depth=1 https://github.com/anthony-halim/dotfiles.git
 ```
 
-#### Windows: WSL Installation 
+#### Windows: WSL Installation
 
 Run Powershell as administrator & install Ubuntu distribution.
 
@@ -174,51 +171,81 @@ Visit [Wezterm's Download](https://wezfurlong.org/wezterm/installation.html) pag
 
 Refer to [Setup](#setup) for details.
 
-#### (Optional) Add custom local configurations at `$HOME/.config/zsh/local_config` directory
+#### (Optional) Add custom local configurations
 
-Any `*.zsh` file at `$HOME/.config/zsh/local_config` will be automaticaly loaded during ZSH initialisation. These files **will not** be committed to the repository. 
+The followings **will not** be committed to the repository and are suitable to add a local/machine specific configuration.
 
-You can use this to add additional aliases or functions.
+##### `zsh/local_config/exports.zsh`
 
-For environment variables, please put them under `$HOME/.config/zsh/local_config/exports.zsh`. Environment variables must be loaded before the rest of shell configuration is done as it dictates the behaviour.
+This file is to load local environment variables.
+Environment variables must be loaded before the rest of shell configuration is done as it dictates the behaviour.
 
-#### (Optional) Set environment variables
+The following environment variables are supported.
 
-The following environment variables affects the repository behaviour. You can set it by exporting the variable in a custom `.zsh` file. See [adding custom configuration](#optional-add-custom-local-configurations-at-homeconfigzshlocal_config-directory).
+<details>
+  <summary>Notes</summary>
 
-**Notes** 
 
-| Name                       | Type                   | Defaults                 | Description     |
-|--------------------------- | ---------------------- | ------------------------ | --------------- |
-| NOTES_DEFAULT_VAULT        | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
-| NOTES_WORK_VAULT           | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
-| NOTES_PERSONAL_VAULT       | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
-| NOTES_DEFAULT_GIT_UPSTREAM | string                 | "origin"                 | Default git upstream to commit notes to.            |
-| NOTES_DEFAULT_GIT_BRANCH   | string                 | "main"                   | Default git branch to commit notes to.              |
+  | Name                       | Type                   | Defaults                 | Description     |
+  |--------------------------- | ---------------------- | ------------------------ | --------------- |
+  | NOTES_DEFAULT_VAULT        | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
+  | NOTES_WORK_VAULT           | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
+  | NOTES_PERSONAL_VAULT       | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
+  | NOTES_DEFAULT_GIT_UPSTREAM | string                 | "origin"                 | Default git upstream to commit notes to.            |
+  | NOTES_DEFAULT_GIT_BRANCH   | string                 | "main"                   | Default git branch to commit notes to.              |
+</details>
 
-**ZSH** 
+<details>
+  <summary>ZSH</summary>
 
-| Name                   | Type                   | Defaults                       | Description     |
-|----------------------- | ---------------------- | ------------------------------ | --------------- |
-| ZSH_DIRJUMP            | string                 | "$HOME/.cache/.dirjump"        | Path to file to store bookmarked directories. |
 
-**Zellij** 
+  | Name                   | Type                   | Defaults                       | Description     |
+  |----------------------- | ---------------------- | ------------------------------ | --------------- |
+  | ZSH_DIRJUMP            | string                 | "$HOME/.cache/.dirjump"        | Path to file to store bookmarked directories. |
+</details>
 
-| Name                   | Type                   | Defaults                       | Description     |
-|----------------------- | ---------------------- | ------------------------------ | --------------- |
-| ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
-| ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
+<details>
+  <summary>Zellij</summary>
 
-**Neovim**
 
-| Name                       | Type                   | Defaults                 | Description                             |
-|--------------------------- | ---------------------- | ------------------------ | --------------------------------------- |
-| NVIM_EXTRA_NOTES           | boolean                | true                     | Enable notes related plugins in Neovim. |
-| NVIM_EXTRA_BIBLE           | boolean                | false                    | Enable Bible related plugins in Neovim. |
+  | Name                   | Type                   | Defaults                       | Description     |
+  |----------------------- | ---------------------- | ------------------------------ | --------------- |
+  | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
+  | ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
+</details>
 
-#### (Optional) Swap Keys 
+<details>
+  <summary>Neovim</summary>
 
-The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you! 
+  | Name                       | Type                   | Defaults                 | Description                             |
+  |--------------------------- | ---------------------- | ------------------------ | --------------------------------------- |
+  | NVIM_EXTRA_NOTES           | boolean                | true                     | Enable notes related plugins in Neovim. |
+  | NVIM_EXTRA_BIBLE           | boolean                | false                    | Enable Bible related plugins in Neovim. |
+</details>
+
+##### `zsh/local_config/*.zsh`
+
+Any `*.zsh` file in this directory will be automatically loaded during ZSH initialisation. You can use this to add additional aliases or functions.
+
+##### `nvim/lua/local_config/(options|keymaps|autocmds).lua`
+
+***options.lua***
+
+Load local Neovim options.
+
+***keymaps.lua***
+
+Load local Neovim keymaps.
+
+***autocmds.lua***
+
+Load local Neovim autocmds.
+
+
+
+#### (Optional) Swap Keys
+
+The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you!
 
 <details>
   <summary>Windows</summary>
@@ -232,7 +259,7 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 
   Perform the swap between `Esc` and `Caps Lock` by adding two entries:
   - `Esc` to `Caps Lock`
-  - `Caps Lock` to `Esc`  
+  - `Caps Lock` to `Esc`
 
 </details>
 
@@ -246,7 +273,7 @@ The default key bindings are not the most ergonomic for programmers, and we can 
   - `Caps Lock` to `Esc`
   - `fn` to `Control`
 
-  > NOTE: Yes, we are losing the `Caps Lock` and `fn` buttons with this mapping. If you use these keys often, this is not for you. 
+  > NOTE: Yes, we are losing the `Caps Lock` and `fn` buttons with this mapping. If you use these keys often, this is not for you.
 
 </details>
 
@@ -255,7 +282,7 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 ## ⚙️ Setup
 
 ```sh
-./setup.sh [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] 
+./setup.sh [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file]
                      [--golang_tag golang_semver]
 ```
 
@@ -277,21 +304,21 @@ I have done my best to ensure that the script is:
 > ```
 
 Below is a screenshot of a snippet of the script run:
-  
+
 ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/80ae74d0-fc35-4ae2-96ba-e394df959f93)
 
 ---
 
 ## 🤔 FAQ
 
-**Q: Why not use third-party keyboard managers?** 
+**Q: Why not use third-party keyboard managers?**
 
-> There are lots of third-party softwares that aid key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or be allowed) to install third-party software that customises close to the firmware level. 
+> There are lots of third-party softwares that aid key swapping to an extensive degree of customisation (for example, [Karabiner](https://github.com/pqrs-org/Karabiner-Elements) for MacOS, [xcape](https://github.com/alols/xcape) for Linux). However, you may not want (or be allowed) to install third-party software that customises close to the firmware level.
 >
 > Due to this, I opt to use built-in or officially supported by the OS, albeit it supports less extensive customisation.
 >
 > If you are using third-party software, an idea for customisation is:
-> - On `Caps Lock` tap, map it as `Esc`. 
+> - On `Caps Lock` tap, map it as `Esc`.
 > - On `Caps Lock` hold, map it as `Ctrl`.
 
 
