@@ -49,7 +49,7 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "folke/neodev.nvim",    config = true },
+      { "folke/neodev.nvim", config = true },
 
       -- Automatically install LSPs to stdpath for neovim
       "williamboman/mason.nvim",
@@ -76,12 +76,12 @@ return {
     config = function(_, opts)
       -- [[ Configure Autoformat ]]
 
-      -- Switch for controlling whether you want autoformatting.
-      --  Use :FormatToggle to toggle autoformatting on or off
-      local format_is_enabled = true
-      vim.api.nvim_create_user_command("AutoFormatToggle", function()
-        format_is_enabled = not format_is_enabled
-      end, {})
+      -- -- Switch for controlling whether you want autoformatting.
+      -- --  Use :FormatToggle to toggle autoformatting on or off
+      -- local format_is_enabled = true
+      -- vim.api.nvim_create_user_command("AutoFormatToggle", function()
+      --   format_is_enabled = not format_is_enabled
+      -- end, {})
 
       -- Create an augroup that is used for managing our formatting autocmds.
       --      We need one augroup per client to make sure that multiple clients
@@ -124,7 +124,7 @@ return {
             group = get_augroup(client),
             buffer = bufnr,
             callback = function()
-              if not format_is_enabled then
+              if not require("config").options.autofmt then
                 return
               end
 
@@ -181,7 +181,7 @@ return {
             filetypes = (opts.servers[server_name] or {}).filetypes,
             handlers = {
               ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-                virtual_text = false,     -- disable virtual text from LSP since we are using diagnostic floating window
+                virtual_text = false, -- disable virtual text from LSP since we are using diagnostic floating window
                 update_in_insert = false, -- disable diagnose on insert mode
                 severity_sort = true,
               }),
