@@ -156,9 +156,11 @@ pkg::manage_by_git_release_bin() {
 	upgrade_func() {
 		# If existing symlink is to another binary with the same folder pattern, that is
 		# managed by this function. Remove it first.
+		local actual_bin=""
+		local actual_bin_dir=""
 		if [[ -L "${local_bin}" ]]; then
-			local actual_bin=$(readlink -n "${local_bin}")
-			local actual_bin_dir=$(dirname "${actual_bin}")
+			actual_bin=$(readlink -n "${local_bin}")
+			actual_bin_dir=$(dirname "${actual_bin}")
 
 			if [[ "${actual_bin_dir}" =~ $local_opt_bin_dir_non_ver ]]; then
 				log::info "Removing old link of $pkg_name the previous release"
@@ -166,8 +168,11 @@ pkg::manage_by_git_release_bin() {
 			fi
 		fi
 
-		# Finally, perform re-installation
+		# Perform re-installation
 		install_func
+
+		# Clean up previous installation after successful re-installation
+		[[ ! -d "$actual_bin_dir" ]] || rm -rf "$actual_bin_dir"
 	}
 
 	# Configuration
@@ -255,8 +260,9 @@ pkg::manage_by_git_release_repo() {
 	upgrade_func() {
 		# If existing symlink is to another binary with the same folder pattern, that is
 		# managed by this function. Remove it first.
+		local actual_repo_dir=""
 		if [[ -L "${local_repo}" ]]; then
-			local actual_repo_dir=$(readlink -n "${local_repo}")
+			actual_repo_dir=$(readlink -n "${local_repo}")
 
 			if [[ "${actual_repo_dir}" =~ $local_opt_repo_dir_non_ver ]]; then
 				log::info "Removing old link of $pkg_name the previous release"
@@ -264,8 +270,11 @@ pkg::manage_by_git_release_repo() {
 			fi
 		fi
 
-		# Finally, perform re-installation
+		# Perform re-installation
 		install_func
+
+		# Clean up previous installation after successful re-installation
+		[[ ! -d "$actual_repo_dir" ]] || rm -rf "$actual_repo_dir"
 	}
 
 	# Configuration
