@@ -16,9 +16,9 @@ export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
     command -v go >/dev/null || export PATH="/usr/local/go/bin:$PATH"
 }
 
-# Bob / Neovim
-[[ -d "${HOME}/.local/share/bob/nvim-bin" ]] && {
-    command -v nvim >/dev/null || export PATH="${HOME}/.local/share/bob/nvim-bin:$PATH"
+# Rust
+[[ -f "${HOME}/.cargo/env" ]] && {
+    source "${HOME}/.cargo/env"
 }
 
 # Fzf

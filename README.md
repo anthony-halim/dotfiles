@@ -135,12 +135,12 @@ This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/a56fb5c1-da8a-4b36-bde0-53dddc2d0540)
 </details>
 
-#### Programming languages and utilities: Golang, Python
+#### Programming languages and utilities: Golang, Python, Rust
 
 <details>
   <br/>
 
-  - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
+  - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [Rust](https://www.rust-lang.org/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
 </details>
 
 ---

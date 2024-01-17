@@ -27,8 +27,8 @@ usage() {
 	cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
 Usage: $(
 		basename "${BASH_SOURCE[0]}"
-	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file] 
-                [--golang_tag golang_semver] 
+	) [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file]
+                [--golang_tag golang_semver]
 
 Setup dependencies and setup local configuration for the user.
 
@@ -38,8 +38,8 @@ Available options:
 
 --git_user                [Optional] [string]          Indicate git user. If empty, will be prompted later.
 --git_user_email          [Optional] [string]          Indicate git user email. If empty, will be prompted later.
---git_user_local_file     [Optional] [string]          Configure git user and git email to a local file instead of the user's global .gitconfig. 
-                                                       If empty, will default to global .gitconfig. 
+--git_user_local_file     [Optional] [string]          Configure git user and git email to a local file instead of the user's global .gitconfig.
+                                                       If empty, will default to global .gitconfig.
                                                        Suitable for users who uses multiple gitconfigs.
 
 --golang_tag              [Optional] [semver, gox.x.x] Indicate Golang version to be installed. Defaults to $GOLANG_TAG.
@@ -525,6 +525,35 @@ setup_go() {
 	pkg::setup_wrapper "Golang" "programming language" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
 }
 
+setup_rust() {
+	# Installation
+	need_installation_predicate() {
+		if [[ ! $(command -v cargo) ]]; then
+			echo 0
+		else
+			echo 1
+		fi
+	}
+	install_func() {
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	}
+
+	# Upgrade
+	need_upgrade_predicate() {
+		return
+	}
+	upgrade_func() {
+		return
+	}
+
+	# Configuration
+	configure_func() {
+		return
+	}
+
+	pkg::setup_wrapper "Rust" "programming language" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
+}
+
 setup_gitdelta() {
 	local pkg_name="git-delta"
 	local pkg_description="syntax highlighter for git, diff, and grep output"
@@ -787,6 +816,10 @@ setup_pyenv
 # Golang installation
 log::separator
 setup_go "$GOLANG_TAG"
+
+# Rust installation
+log::separator
+setup_rust
 
 # Neovim installation
 log::separator
