@@ -73,6 +73,9 @@ return {
   {
     "b0o/incline.nvim",
     event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      "lewis6991/gitsigns.nvim",
+    },
     opts = {
       window = {
         margin = {
@@ -106,14 +109,16 @@ return {
 
         -- Git changes
         local git_labels = {}
-        local signs = vim.api.nvim_buf_get_var(props.buf, "gitsigns_status_dict")
-        for name, icon in pairs(icons.git) do
-          if tonumber(signs[name]) and signs[name] > 0 then
-            table.insert(git_labels, { icon .. " " .. signs[name] .. " ", group = "Diff" .. name })
+        local ok, gitsign_status = pcall(vim.api.nvim_buf_get_var, props.buf, "gitsigns_status_dict")
+        if ok then
+          for name, icon in pairs(icons.git) do
+            if tonumber(gitsign_status[name]) and gitsign_status[name] > 0 then
+              table.insert(git_labels, { icon .. " " .. gitsign_status[name] .. " ", group = "Diff" .. name })
+            end
           end
-        end
-        if #git_labels > 0 then
-          table.insert(git_labels, { "| " })
+          if #git_labels > 0 then
+            table.insert(git_labels, { "| " })
+          end
         end
 
         local buffer = {
