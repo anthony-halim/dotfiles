@@ -540,7 +540,8 @@ setup_rust() {
 
 	# Upgrade
 	need_upgrade_predicate() {
-		return
+		# No upgrade for this
+		echo 1
 	}
 	upgrade_func() {
 		return
