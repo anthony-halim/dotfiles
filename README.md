@@ -241,8 +241,6 @@ Load local Neovim keymaps.
 
 Load local Neovim autocmds.
 
-
-
 #### (Optional) Swap Keys
 
 The default key bindings are not the most ergonomic for programmers, and we can perform some key swaps to help make it better. Your hands will thank you!
