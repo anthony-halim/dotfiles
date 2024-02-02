@@ -18,3 +18,15 @@ zellij_tab_name_update_by_git_repo() {
   fi
 }
 
+zellij_autostart() {
+  if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
+    # From 'eval "$(zellij setup --generate-auto-start zsh)"'
+    if [[ -z "$ZELLIJ" ]]; then
+        if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
+            zellij attach -c
+        else
+            zellij 
+        fi
+    fi
+  fi
+}

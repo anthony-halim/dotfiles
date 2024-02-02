@@ -8,25 +8,19 @@ ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
 
 # Load requirements, fail if files not found
 source "${ZSH_CONFIG}/functions/utils.zsh"
-source "${ZSH_CONFIG}/exports.zsh"
+source "${ZSH_CONFIG}/functions/zellij_utils.zsh"
 
-# If there is local export file, load it first
+# If there are global and local export file, load it first. 
+# This affects subsequent behaviours of function effects.
+safe_source "${ZSH_CONFIG}/exports.zsh"
 safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
 
 # Auto start zellij
-if [[ $(command -v zellij) && "$ZELLIJ_AUTO_START" = true ]]; then
-  # From 'eval "$(zellij setup --generate-auto-start zsh)"'
-  if [[ -z "$ZELLIJ" ]]; then
-      if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
-          zellij attach -c
-      else
-          zellij 
-      fi
-  fi
-fi
+zellij_autostart
 
-# Enable zap
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+# Register tab name update for zellij
+zellij_tab_name_update_by_git_repo
+chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 
 # Enable colors
 autoload -Uz colors && colors
@@ -41,25 +35,21 @@ SAVEHIST=10000
 HISTSIZE=9999
 setopt HIST_EXPIRE_DUPS_FIRST
 
-# Load add on functions
-safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
-safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
-safe_source "${ZSH_CONFIG}/functions/pw.zsh"
-safe_source "${ZSH_CONFIG}/functions/notes.zsh"
-safe_source "${ZSH_CONFIG}/functions/zellij_utils.zsh"
+# Enable zap
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 
-# Load plugins
+# Load zap plugins
 plug "zsh-users/zsh-autosuggestions"
 plug "zsh-users/zsh-syntax-highlighting"
-plug "zsh-users/zsh-history-substring-search"
 plug "zap-zsh/sudo"
-plug "zap-zsh/web-search"
 plug "jeffreytse/zsh-vi-mode"
 
-# Bindkeys includes plugin keymaps, so must be done after plugin load
+# Load add on settings and behaviours
+safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
+safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
+safe_source "${ZSH_CONFIG}/functions/notes.zsh"
+safe_source "${ZSH_CONFIG}/functions/cmd_utils.zsh"
 safe_source "${ZSH_CONFIG}/bindkeys.zsh"
-
-# Load aliases
 safe_source "${ZSH_CONFIG}/aliases.zsh"
 
 # Load local config files
@@ -70,10 +60,6 @@ then
   done
   unset conf
 fi
-
-# Register tab name update for zellij
-zellij_tab_name_update_by_git_repo
-chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 
 # Enable starship
 [[ -f "${STARSHIP_CONFIG:-$HOME/.config/starship.toml}" ]] && eval "$(starship init zsh)"
