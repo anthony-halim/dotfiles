@@ -112,29 +112,49 @@ return {
       },
     },
     keys = {
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Files in buffers" },
+      {
+        "<leader>ff",
+        function()
+          -- Check for git repo to use as cwd, then fallback to current directory
+          local function is_git_repo()
+            vim.fn.system("git rev-parse --is-inside-work-tree")
+            return vim.v.shell_error == 0
+          end
+          local function get_git_root()
+            local dot_git_path = vim.fn.finddir(".git", ".;")
+            return vim.fn.fnamemodify(dot_git_path, ":h")
+          end
+          local opts = {}
+          if is_git_repo() then
+            opts = {
+              cwd = get_git_root(),
+            }
+          end
+          require("telescope.builtin").find_files(opts)
+        end,
+        desc = "Find files",
+      },
+      {
+        "<leader>fd",
+        "<cmd>Telescope find_files search_dirs={'%:p:h'}<cr>",
+        desc = "[F]iles in [D]irectory",
+      },
       {
         "<leader>sb",
         "<cmd>Telescope current_buffer_fuzzy_find<cr>",
-        desc = "[S]earch fuzzy current buffer",
+        desc = "Search fuzzy current buffer",
       },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>",    desc = "[F]iles in [B]uffers" },
-      { "<leader>fg", "<cmd>Telescope git_files<cr>",  desc = "[F]iles included in [G]it" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "[F]ind [F]iles" },
-      {
-        "<leader>fF",
-        "<cmd>Telescope find_files search_dirs={'%:p:h'}<cr>",
-        desc = "[S]earch by [F]iles in file directory",
-      },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "[S]earch [H]elp" },
-      { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "[S]earch current [W]ord" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>",   desc = "[S]earch by [G]rep" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
+      { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "Search current word" },
+      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Search grep" },
       {
         "<leader>sG",
         "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
         desc = "[S]earch by [G]rep in file directory",
       },
-      { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "[S]earch [D]iagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "[S]earch [R]esume" },
+      { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
     },
   },
 
@@ -279,9 +299,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
