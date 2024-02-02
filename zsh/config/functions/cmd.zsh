@@ -69,7 +69,17 @@ genpw() {
   fi
 }
 
-# fh - repeat history
+# Fuzzy search and select on shell command history.
+#
+# On selection, the command will be pushed to the editing buffer stack, which allows edit
+# on the command before running it. This will also allow the selected command to appear on the history 
+# rather than just the 'fh'.
+#
+# Usage: 
+#   fh
+#
+# Example:
+#   fh
 fh() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf --height=40% --layout=reverse --info=inline --border --margin=1 --padding=1 +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
 }
