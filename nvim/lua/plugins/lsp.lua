@@ -49,7 +49,7 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "folke/neodev.nvim", config = true },
+      { "folke/neodev.nvim",    config = true },
 
       -- Automatically install LSPs to stdpath for neovim
       "williamboman/mason.nvim",
@@ -118,6 +118,23 @@ return {
             return
           end
 
+          -- gopls
+          -- workaround for gopls not supporting semanticTokensProvider
+          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+          if client.name == "gopls" then
+            if not client.server_capabilities.semanticTokensProvider then
+              local semantic = client.config.capabilities.textDocument.semanticTokens
+              client.server_capabilities.semanticTokensProvider = {
+                full = true,
+                legend = {
+                  tokenTypes = semantic.tokenTypes,
+                  tokenModifiers = semantic.tokenModifiers,
+                },
+                range = true,
+              }
+            end
+          end
+
           -- Create an autocmd that will run *before* we save the buffer.
           --  Run the formatting command for the LSP that has just attached.
           vim.api.nvim_create_autocmd("BufWritePre", {
@@ -181,7 +198,7 @@ return {
             filetypes = (opts.servers[server_name] or {}).filetypes,
             handlers = {
               ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-                virtual_text = false, -- disable virtual text from LSP since we are using diagnostic floating window
+                virtual_text = false,     -- disable virtual text from LSP since we are using diagnostic floating window
                 update_in_insert = false, -- disable diagnose on insert mode
                 severity_sort = true,
               }),
