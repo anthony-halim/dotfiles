@@ -17,7 +17,8 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     { import = "plugins" },
-    { import = "plugins.lang" },
+    { import = "plugins.lsp" },
+    -- { import = "plugins.lang" },
     { import = "plugins.extra.notes", enabled = os.getenv("NVIM_EXTRA_NOTES") or true },
     { import = "plugins.extra.bible", enabled = os.getenv("NVIM_EXTRA_BIBLE") or false },
   },
