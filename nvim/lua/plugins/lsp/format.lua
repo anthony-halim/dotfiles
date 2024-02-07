@@ -14,7 +14,11 @@ function M._get_augroup(client)
   return M._augroups[client.id]
 end
 
-function M.lsp_autoformat(client, buffer)
+function M.formatexpr()
+  return vim.lsp.formatexpr({ timeout_ms = 3000 })
+end
+
+function M.autoformat(client, buffer)
   -- Only attach to clients that support document formatting
   if not client.server_capabilities.documentFormattingProvider then
     return

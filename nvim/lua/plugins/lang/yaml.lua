@@ -1,24 +1,16 @@
 return {
-
-  -- add yaml specific modules to treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "yaml" })
-      end
+      vim.list_extend(opts.ensure_installed or {}, {
+        "yaml",
+      })
     end,
   },
-
   {
-    "williamboman/mason.nvim",
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "yaml-language-server" })
-    end,
+    "b0o/SchemaStore.nvim",
+    lazy = true,
   },
-
-  -- correctly setup lspconfig
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -33,6 +25,14 @@ return {
               },
             },
           },
+          -- lazy-load schemastore when needed
+          on_new_config = function(new_config)
+            new_config.settings.yaml.schemas = vim.tbl_deep_extend(
+              "force",
+              new_config.settings.yaml.schemas or {},
+              require("schemastore").yaml.schemas()
+            )
+          end,
           settings = {
             redhat = { telemetry = { enabled = false } },
             yaml = {
@@ -48,7 +48,6 @@ return {
                 -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
                 url = "",
               },
-              schemas = require("schemastore").yaml.schemas(),
             },
           },
         },
@@ -56,3 +55,4 @@ return {
     },
   },
 }
+

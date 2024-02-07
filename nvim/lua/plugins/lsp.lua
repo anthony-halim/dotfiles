@@ -45,17 +45,16 @@ local function lsp_on_attach_bufnr(_, bufnr)
 end
 
 return {
-  -- lspconfig
   {
     "neovim/nvim-lspconfig",
-    event = "LazyFile",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       { "folke/neodev.nvim", opts = {} },
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
 
       -- LSP progress
-      "rcarriga/nvim-notify",
+      "j-hui/fidget.nvim",
 
       -- LSP search functionalities
       "nvim-telescope/telescope.nvim",
@@ -64,7 +63,7 @@ return {
       -- options for vim.diagnostic.config()
       diagnostics = {
         update_in_insert = false,
-        virtual_text = false,
+        virtual_text = false, -- We use floating window
         severity_sort = true,
         signs = {
           text = {
@@ -85,58 +84,46 @@ return {
           },
         },
       },
-
-      config = function(_, opts)
-        -- [[ Setup autoformat ]]
-
-        augroup_on_lsp_attach(require("plugins.lsp.autoformat").lsp_autoformat)
-
-        -- [[ Setup LSP ]]
-
-        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
-        -- Ensure the servers above are installed
-        local mason_lspconfig = require("mason-lspconfig")
-        mason_lspconfig.setup({
-          ensure_installed = vim.tbl_keys(opts.servers),
-        })
-
-        -- Setup handlers
-        mason_lspconfig.setup_handlers({
-          function(server_name)
-            require("lspconfig")[server_name].setup({
-              -- on_init = function(client)
-              --   --- Limit debounce rate per 5 seconds
-              --   client.config.flags.debounce_text_changes = 5000
-              -- end,
-              capabilities = capabilities,
-              on_attach = lsp_on_attach_bufnr,
-              settings = opts.servers[server_name],
-              filetypes = (opts.servers[server_name] or {}).filetypes,
-              -- handlers = {
-              --   ["textDocument/publishDiagnostics"] = vim.lsp.with(
-              --     vim.lsp.diagnostic.on_publish_diagnostics,
-              --     opts.diagnostics
-              --   ),
-              -- },
-            })
-          end,
-        })
-
-        -- [[ Setup diagnostics ]]
-
-        for name, icon in pairs(require("config").options.icons.diagnostics) do
-          name = "DiagnosticSign" .. name
-          vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
-        end
-
-        vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
-
-        -- [[ Setup LSP progress ]]
-      end,
     },
+
+    config = function(_, opts)
+      -- [[ Setup autoformat ]]
+
+      augroup_on_lsp_attach(require("plugins.lsp.format").autoformat)
+
+      -- [[ Setup LSP ]]
+
+      -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+      -- Ensure the servers above are installed
+      local mason_lspconfig = require("mason-lspconfig")
+      mason_lspconfig.setup({
+        ensure_installed = vim.tbl_keys(opts.servers),
+      })
+
+      -- Setup handlers
+      mason_lspconfig.setup_handlers({
+        function(server_name)
+          require("lspconfig")[server_name].setup({
+            capabilities = capabilities,
+            on_attach = lsp_on_attach_bufnr,
+            settings = opts.servers[server_name],
+            filetypes = (opts.servers[server_name] or {}).filetypes,
+          })
+        end,
+      })
+
+      -- [[ Setup diagnostics ]]
+
+      for name, icon in pairs(require("config").options.icons.diagnostics) do
+        name = "DiagnosticSign" .. name
+        vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+      end
+
+      vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
+    end,
   },
 
   {
@@ -148,8 +135,6 @@ return {
     build = ":MasonUpdate",
     opts = {
       ensure_installed = {
-        "stylua",
-        "shfmt",
         "lua-language-server",
       },
     },

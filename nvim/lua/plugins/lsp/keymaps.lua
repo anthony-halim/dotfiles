@@ -26,6 +26,11 @@ M.keys = {
     desc = "Code signature",
   },
   {
+    key = "K",
+    func = vim.lsp.buf.hover,
+    desc = "Hover documentation",
+  },
+  {
     key = "gd",
     func = require("telescope.builtin").lsp_definitions,
     desc = "Goto definition",
