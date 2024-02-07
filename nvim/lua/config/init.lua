@@ -2,7 +2,6 @@ local M = {}
 
 M.options = {
   colorscheme = "catppuccin",
-  autofmt = true,
 
   -- icons used by other plugins
   icons = {

@@ -101,10 +101,8 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 -- Switch for controlling whether you want autoformatting.
 --  Use :AutoFormatToggle to toggle autoformatting on or off
 vim.api.nvim_create_user_command("AutoFormatToggle", function()
-  local new_toggle_state = not require("config").options.autofmt
-  require("config").options.autofmt = new_toggle_state
-
-  vim.notify("Autoformat is toggled to " .. (new_toggle_state and "on" or "off") .. ".", vim.log.levels.INFO, {
-    title = "Autoformat",
+  vim.g.autoformat = not vim.g.autoformat
+  vim.notify("Autoformat is toggled to " .. (vim.g.autoformat and "on" or "off") .. ".", vim.log.levels.INFO, {
+    title = "Toggle autoformat on save",
   })
 end, {})

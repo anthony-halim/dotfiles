@@ -87,12 +87,6 @@ return {
     },
 
     config = function(_, opts)
-      -- [[ Setup autoformat ]]
-
-      augroup_on_lsp_attach(require("plugins.lsp.format").autoformat)
-
-      -- [[ Setup LSP ]]
-
       -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -115,13 +109,11 @@ return {
         end,
       })
 
-      -- [[ Setup diagnostics ]]
-
+      -- Setup diagnostics
       for name, icon in pairs(require("config").options.icons.diagnostics) do
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
       end
-
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
     end,
   },
@@ -136,6 +128,8 @@ return {
     opts = {
       ensure_installed = {
         "lua-language-server",
+        "stylua",
+        "codespell",
       },
     },
     config = function(_, opts)
@@ -155,6 +149,41 @@ return {
       else
         ensure_installed()
       end
+    end,
+  },
+
+  -- Formatter
+  {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    opts = {
+      -- Formatters are run sequentially
+      formatters_by_ft = {
+        lua = { "stylua" },
+        -- Use the "*" filetype to run formatters on all filetypes.
+        ["*"] = { "codespell" },
+        -- Use the "_" filetype to run formatters on filetypes that don't
+        -- have other formatters configured.
+        ["_"] = { "trim_whitespace", "trim_newlines" },
+      },
+      format_on_save = function(bufnr)
+        -- Check global toggle
+        if not vim.g.autoformat then
+          return
+        end
+
+        -- Disable autoformat for files in a certain path
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if bufname:match("/node_modules/") then
+          return
+        end
+
+        return { timeout_ms = 3000, lsp_fallback = true }
+      end,
+    },
+    init = function()
+      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
   },
 }
