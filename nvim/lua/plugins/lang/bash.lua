@@ -2,7 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
+      vim.list_extend(opts.ensure_installed or {}, {
         "bash",
       })
     end,
@@ -10,15 +10,27 @@ return {
   {
     "williamboman/mason.nvim",
     opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "bash-language-server" })
+      vim.list_extend(opts.ensure_installed or {}, {
+        "shfmt",
+      })
     end,
   },
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        bashls = {},
+        bashls = {
+          filetypes = { "sh", "zsh" },
+        },
+      },
+    },
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        sh = { "shfmt" },
+        zsh = { "shfmt" },
       },
     },
   },

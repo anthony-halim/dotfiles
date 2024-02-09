@@ -1,4 +1,5 @@
 return {
+  -- Extend autocompletion with crates
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -12,6 +13,7 @@ return {
         },
       },
     },
+    ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       opts.sources = opts.sources or {}
       table.insert(opts.sources, { name = "crates" })
@@ -20,18 +22,11 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "ron", "rust", "toml" })
-      end
-    end,
-  },
-  {
-    "williamboman/mason.nvim",
-    optional = true,
-    opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "rust-analyzer", "taplo" })
-      end
+      vim.list_extend(opts.ensure_installed or {}, {
+        "ron",
+        "rust",
+        "toml",
+      })
     end,
   },
   {

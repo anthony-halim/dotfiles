@@ -4,3 +4,5 @@
 # Local configs that for machine specific configurations
 zsh/local_config
 nvim/lua/local_config
+nvim/lua/local_plugins/*.lua
+!nvim/lua/local_plugins/init.lua

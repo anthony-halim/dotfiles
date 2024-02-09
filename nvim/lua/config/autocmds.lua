@@ -44,19 +44,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
--- make quickfix list modifiable
-vim.api.nvim_create_autocmd("BufReadPost", {
-  group = augroup("quickfix"),
-  callback = function()
-    local exclude = { "gitcommit" }
-    local buf = vim.api.nvim_get_current_buf()
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
-      return
-    end
-    vim.api.nvim_buf_set_option(buf, "modifiable", true)
-  end,
-})
-
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
@@ -101,10 +88,19 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 -- Switch for controlling whether you want autoformatting.
 --  Use :AutoFormatToggle to toggle autoformatting on or off
 vim.api.nvim_create_user_command("AutoFormatToggle", function()
-  local new_toggle_state = not require("config").options.autofmt
-  require("config").options.autofmt = new_toggle_state
-
-  vim.notify("Autoformat is toggled to " .. (new_toggle_state and "on" or "off") .. ".", vim.log.levels.INFO, {
-    title = "Autoformat",
+  vim.g.autoformat = not vim.g.autoformat
+  vim.notify("Autoformat is toggled to " .. (vim.g.autoformat and "on" or "off") .. ".", vim.log.levels.INFO, {
+    title = "Toggle autoformat on save",
   })
 end, {})
+
+-- Link .zshrc into zsh filetype
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = ".zshrc",
+  callback = function()
+    -- if vim.fn.search("{{.\\+}}", "nw") ~= 0 then
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "filetype", "zsh")
+    -- end
+  end,
+})

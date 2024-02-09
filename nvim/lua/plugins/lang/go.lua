@@ -2,7 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
+      vim.list_extend(opts.ensure_installed or {}, {
         "go",
         "gomod",
         "gowork",
@@ -13,8 +13,10 @@ return {
   {
     "williamboman/mason.nvim",
     opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "gopls", "goimports", "gofumpt" })
+      vim.list_extend(opts.ensure_installed or {}, {
+        "goimports",
+        "gofumpt",
+      })
     end,
   },
   {
@@ -62,29 +64,12 @@ return {
       },
     },
   },
-
-  -- Ensure Go tools are installed
   {
-    "nvimtools/none-ls.nvim",
-    dependencies = {
-      {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-          opts.ensure_installed = opts.ensure_installed or {}
-          vim.list_extend(opts.ensure_installed, { "gomodifytags", "impl" })
-        end,
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        go = { "goimports", "gofumpt" },
       },
     },
-    opts = function(_, opts)
-      if type(opts.sources) == "table" then
-        local nls = require("null-ls")
-        vim.list_extend(opts.sources, {
-          nls.builtins.code_actions.gomodifytags,
-          nls.builtins.code_actions.impl,
-          nls.builtins.formatting.gofumpt,
-          nls.builtins.formatting.goimports,
-        })
-      end
-    end,
   },
 }

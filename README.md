@@ -229,17 +229,27 @@ Any `*.zsh` file in this directory will be automatically loaded during ZSH initi
 
 ##### `nvim/lua/local_config/(options|keymaps|autocmds).lua`
 
-***options.lua***
+<details>
+  <summary>options.lua</summary>
 
-Load local Neovim options.
+  Load local Neovim options.
+</details>
 
-***keymaps.lua***
+<details>
+  <summary>keymaps.lua</summary>
 
-Load local Neovim keymaps.
+  Load local Neovim keymaps.
+</details>
 
-***autocmds.lua***
+<details>
+  <summary>autocmds.lua</summary>
 
-Load local Neovim autocmds.
+  Load local Neovim autocmds.
+</details>
+
+##### `nvim/lua/local_plugins/(^init).lua`
+
+Any `*.lua`, except `init.lua`, will be loaded into Neovim. You can use this to overwrite/extend existing plugins, as well as adding new plugins.
 
 #### (Optional) Swap Keys
 

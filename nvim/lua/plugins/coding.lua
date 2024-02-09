@@ -2,9 +2,6 @@ return {
   -- snippets
   {
     "L3MON4D3/LuaSnip",
-    build = (not jit.os:find("Windows"))
-        and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
-        or nil,
     dependencies = {
       "rafamadriz/friendly-snippets",
       config = function()
@@ -14,20 +11,6 @@ return {
     opts = {
       history = true,
       delete_check_events = "TextChanged",
-    },
-    -- stylua: ignore
-    keys = {
-      {
-        "<tab>",
-        function()
-          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = "i",
-      },
-      { "<tab>",   function() require("luasnip").jump(1) end,  mode = "s" },
-      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
     },
   },
 
@@ -50,16 +33,16 @@ return {
       "saadparwaiz1/cmp_luasnip",
     },
     opts = function()
-      vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
-      local compare = require("cmp.config.compare")
+      local luasnip = require("luasnip")
+
       return {
         completion = {
           completeopt = "menu,menuone,noinsert",
         },
         snippet = {
           expand = function(args)
-            require("luasnip").lsp_expand(args.body)
+            luasnip.lsp_expand(args.body)
           end,
         },
         mapping = cmp.mapping.preset.insert({
@@ -69,11 +52,28 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-          ["<S-CR>"] = cmp.mapping.confirm({
+          ["<CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
-          }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          }),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
@@ -89,25 +89,6 @@ return {
             end
             return item
           end,
-        },
-        experimental = {
-          ghost_text = {
-            hl_group = "CmpGhostText",
-          },
-        },
-        sorting = {
-          comparators = {
-            compare.recently_used,
-            compare.locality,
-            compare.offset,
-            -- compare.scopes,
-            compare.score,
-            compare.exact,
-            compare.kind,
-            -- compare.sort_text,
-            compare.length,
-            compare.order,
-          },
         },
       }
     end,

@@ -247,6 +247,7 @@ return {
   -- Custom highlighting
   {
     "echasnovski/mini.hipatterns",
+    event = { "BufReadPost" },
     opts = function()
       local hipatterns = require("mini.hipatterns")
       return {
