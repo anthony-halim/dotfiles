@@ -1,18 +1,4 @@
 return {
-  -- LSP progress
-  {
-    "j-hui/fidget.nvim",
-    event = "VeryLazy",
-    opts = {
-      notification = {
-        override_vim_notify = false,
-        window = {
-          y_padding = 1,
-        },
-      },
-    },
-  },
-
   -- Better vim.ui
   {
     "stevearc/dressing.nvim",
@@ -47,7 +33,9 @@ return {
   -- statusline
   {
     "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
+    dependencies = {
+      { "linrongbin16/lsp-progress.nvim", opts = {} },
+    },
     opts = {
       options = {
         theme = "auto",
@@ -58,15 +46,32 @@ return {
       },
       sections = {
         lualine_a = { "mode" },
-        lualine_b = { "branch" },
+        lualine_b = { { "b:gitsigns_head", icon = "" } },
         lualine_c = {
           { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
           { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
+          {
+            function()
+              local ok, lsp_progress = pcall(require, "lsp-progress")
+              if ok then
+                return lsp_progress.progress()
+              end
+            end,
+          },
         },
         lualine_x = { "searchcount", "encoding", "fileformat", "filetype" },
       },
       extensions = { "nvim-tree", "lazy" },
     },
+    init = function()
+      -- listen lsp-progress event and refresh lualine
+      vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+      vim.api.nvim_create_autocmd("User", {
+        group = "lualine_augroup",
+        pattern = "LspProgressStatusUpdated",
+        callback = require("lualine").refresh,
+      })
+    end,
   },
 
   -- Floating filename for each window
@@ -124,9 +129,9 @@ return {
         local buffer = {
           { diagnostic_labels },
           { git_labels },
-          { ft_icon,          guifg = ft_color },
+          { ft_icon, guifg = ft_color },
           { " " },
-          { filename,         gui = modified },
+          { filename, gui = modified },
         }
         return buffer
       end,
@@ -228,5 +233,5 @@ return {
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim",        lazy = true },
+  { "MunifTanjim/nui.nvim", lazy = true },
 }

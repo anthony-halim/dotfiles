@@ -1,25 +1,91 @@
-local LspKeyMaps = require("plugins.lsp.keymaps")
+---@class KeyMapOpts
+---@field modes? string[]
+---@field key string
+---@field func string|function
+---@field desc string
 
--- Create an autocmd that executes on LspAttach event
----@param on_attach fun(client, buffer)
-local function augroup_on_lsp_attach(on_attach)
-  -- Whenever an LSP attaches to a buffer, we will run this function.
-  -- See `:help LspAttach` for more information about this autocmd event.
-  vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-      local buffer = args.buf
-      local client = vim.lsp.get_client_by_id(args.data.client_id)
-      on_attach(client, buffer)
+-- lsp_keymaps are the set of keymaps to be set on LSP attach.
+---@type KeyMapOpts[]
+local lsp_keymaps = {
+  {
+    key = "<leader>cr",
+    func = vim.lsp.buf.rename,
+    desc = "Code rename",
+  },
+  {
+    key = "<leader>ca",
+    func = function()
+      vim.lsp.buf.code_action({ context = { only = { "quickfix", "refactor", "source" } } })
     end,
-  })
+    desc = "Code action",
+  },
+  {
+    key = "<leader>ck",
+    func = vim.lsp.buf.signature_help,
+    desc = "Code signature",
+  },
+  {
+    key = "K",
+    func = vim.lsp.buf.hover,
+    desc = "Hover documentation",
+  },
+  {
+    key = "gd",
+    func = require("telescope.builtin").lsp_definitions,
+    desc = "Goto definition",
+  },
+  {
+    key = "gD",
+    func = vim.lsp.buf.declaration,
+    desc = "Goto declaration",
+  },
+  {
+    key = "gr",
+    func = require("telescope.builtin").lsp_references,
+    desc = "Goto references",
+  },
+  {
+    key = "gI",
+    func = require("telescope.builtin").lsp_implementations,
+    desc = "Goto implementation",
+  },
+  {
+    key = "<leader>cd",
+    func = require("telescope.builtin").lsp_type_definitions,
+    desc = "Type definition",
+  },
+  {
+    key = "<leader>csd",
+    func = require("telescope.builtin").lsp_document_symbols,
+    desc = "Document symbols",
+  },
+  {
+    key = "<leader>csw",
+    func = require("telescope.builtin").lsp_dynamic_workspace_symbols,
+    desc = "Workspace symbols",
+  },
+}
+
+-- lsp_set_keymap sets LSP keymaps.
+---@param key_opt KeyMapOpts
+local function lsp_set_keymap(bufnr, key_opt)
+  local desc
+  local modes = key_opt.modes or { "n" }
+
+  if key_opt.desc then
+    desc = "LSP: " .. key_opt.desc
+  end
+
+  for _, mode in ipairs(modes) do
+    vim.keymap.set(mode, key_opt.key, key_opt.func, { buffer = bufnr, desc = desc })
+  end
 end
 
 -- Configs and setups when a LSP attaches to a buffer.
 local function lsp_on_attach_bufnr(_, bufnr)
   -- Setup keymaps
-  local keysOpt = LspKeyMaps.keys
-  for _, keyOpt in ipairs(keysOpt) do
-    LspKeyMaps.keymap(bufnr, keyOpt)
+  for _, key_opt in ipairs(lsp_keymaps) do
+    lsp_set_keymap(bufnr, key_opt)
   end
 
   -- Create a command `:Format` local to the LSP buffer
@@ -52,9 +118,6 @@ return {
       { "folke/neodev.nvim", opts = {} },
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-
-      -- LSP progress
-      "j-hui/fidget.nvim",
 
       -- LSP search functionalities
       "nvim-telescope/telescope.nvim",
