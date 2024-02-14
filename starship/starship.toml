@@ -71,13 +71,13 @@ truncate_to_repo = false
 "~/notes/work" = "󰃖  "
 "~/repos" = "󰳐 "
 "~/notes" = " "
-"~" = " " 
+"~" = " "
 
 [status]
 symbol = ' '
 disabled = false
 
-# Git tags 
+# Git tags
 
 [git_branch]
 symbol = " "
@@ -100,7 +100,7 @@ ignore_submodules = true
 [git_state]
 disabled = false
 style = "fg:#292c3c bg:#ea999c"
-format = '[ $state [$progress_current/$progress_total](italic $style) ]($style)'
+format = '[ $state [$progress_current/$progress_total](italic $style) ]($style) '
 
 # Kubernetes
 
