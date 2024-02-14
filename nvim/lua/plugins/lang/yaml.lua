@@ -8,11 +8,10 @@ return {
     end,
   },
   {
-    "b0o/SchemaStore.nvim",
-    lazy = true,
-  },
-  {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "b0o/SchemaStore.nvim",
+    },
     opts = {
       servers = {
         yamlls = {
@@ -25,14 +24,14 @@ return {
               },
             },
           },
-          -- lazy-load schemastore when needed
-          on_new_config = function(new_config)
-            new_config.settings.yaml.schemas = vim.tbl_deep_extend(
-              "force",
-              new_config.settings.yaml.schemas or {},
-              require("schemastore").yaml.schemas()
-            )
-          end,
+          -- -- lazy-load schemastore when needed
+          -- on_new_config = function(new_config)
+          --   new_config.settings.yaml.schemas = vim.tbl_deep_extend(
+          --     "force",
+          --     new_config.settings.yaml.schemas or {},
+          --     require("schemastore").yaml.schemas()
+          --   )
+          -- end,
           settings = {
             redhat = { telemetry = { enabled = false } },
             yaml = {
@@ -55,4 +54,3 @@ return {
     },
   },
 }
-
