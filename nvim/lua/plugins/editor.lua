@@ -138,7 +138,7 @@ return {
       {
         "<leader>fd",
         "<cmd>Telescope find_files search_dirs={'%:p:h'}<cr>",
-        desc = "[F]iles in [D]irectory",
+        desc = "Files in directory",
       },
       {
         "<leader>sb",
@@ -151,7 +151,7 @@ return {
       {
         "<leader>sG",
         "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
-        desc = "[S]earch by [G]rep in file directory",
+        desc = "Search by grep in file directory",
       },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
       { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
@@ -181,32 +181,20 @@ return {
         end
 
         -- stylua: ignore start
-        map("n", "]h", gs.next_hunk, "Next Hunk")
-        map("n", "[h", gs.prev_hunk, "Prev Hunk")
-        map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
-        map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-        map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
-        map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
-        map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
-        map("n", "<leader>ghp", gs.preview_hunk, "Preview Hunk")
-        map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame Line")
-        map("n", "<leader>ghd", gs.diffthis, "Diff This")
-        map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
+        map("n", "]h", gs.next_hunk, "Next hunk")
+        map("n", "[h", gs.prev_hunk, "Prev hunk")
+        map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage hunk")
+        map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset hunk")
+        map("n", "<leader>ghS", gs.stage_buffer, "Stage buffer")
+        map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo stage hunk")
+        map("n", "<leader>ghR", gs.reset_buffer, "Reset buffer")
+        map("n", "<leader>ghp", gs.preview_hunk, "Preview hunk")
+        map("n", "<leader>gbb", function() gs.blame_line({ full = false }) end, "Blame line")
+        map("n", "<leader>gbB", function() gs.blame_line({ full = true }) end, "Blame line (full)")
+        map("n", "<leader>gbt", gs.toggle_current_line_blame, "Toggle blame line")
+        map("n", "<leader>gdd", gs.diffthis, "Diff this")
+        map("n", "<leader>gdD", function() gs.diffthis("~") end, "Diff this ~")
       end,
-    },
-  },
-
-  -- Git blame
-  {
-    "FabijanZulj/blame.nvim",
-    cmd = { "ToggleBlame", "EnableBlame", "DisableBlame" },
-    keys = {
-      {
-        "<leader>gb",
-        "<cmd>ToggleBlame window<cr>",
-        desc = "Toggle Git blame",
-      },
     },
   },
 
@@ -229,8 +217,9 @@ return {
         ["<leader>f"] = { name = "+file" },
         ["<leader>g"] = { name = "+git" },
         ["<leader>gh"] = { name = "+hunks" },
+        ["<leader>gb"] = { name = "+blame" },
+        ["<leader>gd"] = { name = "+diff" },
         ["<leader>s"] = { name = "+search" },
-        ["<leader>sn"] = { name = "+Noice" },
         ["<leader>u"] = { name = "+ui" },
         ["<leader>z"] = { name = "+zettelkasten" },
         ["<leader>zs"] = { name = "+search" },

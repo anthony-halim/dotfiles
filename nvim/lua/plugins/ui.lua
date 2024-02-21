@@ -74,7 +74,7 @@ return {
       stages = "fade_in_slide_out",
     },
     keys = {
-      { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "Search Notification" },
+      { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "Search notification" },
     },
     init = function()
       vim.notify = require("notify")
