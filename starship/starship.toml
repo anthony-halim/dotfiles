@@ -82,7 +82,7 @@ disabled = false
 [git_branch]
 symbol = " "
 style = "fg:#292c3c bg:#99d1db"
-format = '[ $symbol [$branch](italic $style) ]($style)'
+format = '[ $symbol [$branch](italic $style)]($style)'
 
 [git_status]
 ahead = '⇡${count}'
@@ -94,7 +94,7 @@ staged = '+${count}'
 deleted = '✘${count}'
 renamed = '»${count}'
 style = "bold fg:#292c3c bg:#99d1db"
-format = '[$all_status$ahead_behind ]($style) '
+format = '[ $all_status$ahead_behind ]($style) '
 ignore_submodules = true
 
 [git_state]
