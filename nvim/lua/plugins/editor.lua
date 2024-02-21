@@ -173,6 +173,14 @@ return {
         changedelete = { text = "▎" },
         untracked = { text = "▎" },
       },
+      current_line_blame_opts = {
+        delay = 200,
+        ignore_whitespace = true,
+        virt_text_priority = 100,
+      },
+      preview_config = {
+        border = "rounded",
+      },
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
 
