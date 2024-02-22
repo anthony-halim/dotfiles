@@ -14,15 +14,14 @@
     # Show git root dir
     root = rev-parse --show-toplevel
 
-    # Sync with upstream by doing pull --rebase on current branch, followed with GC 
+    # Sync with upstream by doing pull --rebase on current branch, followed with GC
     sync-up = !"git fetch && git rebase @{u} && git gc --auto --quiet"
 
     # Revert local changes to tracked files, restores deleted track files, deletes local files/dirs listed in .gitgnore, deletes local untracked files/dirs
     nuke-local = !"git clean --force -d -x && git reset --hard"
 
 [core]
-    # Use the lightest editor possible
-    editor = vi
+    editor = vim
     pager = delta
 
 [pull]
@@ -52,4 +51,3 @@
 
 [url "ssh://git@github.com/anthony-halim"]
     insteadOf = https://github.com/anthony-halim
-
