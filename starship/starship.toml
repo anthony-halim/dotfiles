@@ -40,7 +40,12 @@ $kubernetes\
 $status\
 $character"""
 
+right_format = """$time"""
+
 # Base prompt components
+
+[time]
+disabled = false
 
 [username]
 style_user = "fg:#c6d0f5 bg:#414559"
