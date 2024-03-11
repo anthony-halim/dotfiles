@@ -225,7 +225,7 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         -- Use the "*" filetype to run formatters on all filetypes.
-        ["*"] = { "codespell" },
+        -- ["*"] = { "codespell" },
         -- Use the "_" filetype to run formatters on filetypes that don't
         -- have other formatters configured.
         ["_"] = { "trim_whitespace", "trim_newlines" },
