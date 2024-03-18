@@ -32,7 +32,7 @@
 layout {
     pane
     pane size=1 borderless=true {
-        plugin location="file:zjstatus.wasm" {
+        plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
             format_left  "{mode} #[bg=#232634,fg=green,bold]{session} {tabs}"
             format_right "{datetime}"
             format_space "#[bg=#232634]"
