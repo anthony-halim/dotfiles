@@ -95,11 +95,13 @@ fhist() {
 fkubectllogs() {
   local opts="--follow --tail=10000 $@"
   local cmd="kubectl logs $opts"
+  local preview_cmd="echo {} | logfilter"
   fzf \
     --height=60% --info=inline --layout=reverse \
-    --border-label="Fuzzy Search Kubernetes Logs - Opts: $opts" \
+    --border-label="Fuzzy Search Kubernetes Logs - Opts: $opts / Enter (Output to terminal)" \
     --bind="start:reload:($cmd)" \
-    --preview="echo {} | logfilter" --preview-window=right,wrap
+    --bind "enter:become($preview_cmd)" \
+    --preview="$preview_cmd" --preview-window=right,wrap
 }
 
 # Fuzzy search on k8s resource and show pods status
@@ -115,11 +117,13 @@ fkubectlpods() {
   local resource_type="$1"
   local kubectl_opts=("${all_args[@]:1}")
   local cmd="kubectl get $resource_type -L app --no-headers $kubectl_opts"
+  local preview_cmd="kubectl get pods $kubectl_opts --selector=app={6}"
   fzf \
     --height=60% --info=inline --layout=reverse \
-    --border-label="Fuzzy Search Kubernetes Live Pods - Opts: $all_args" \
+    --border-label="Fuzzy Search Kubernetes Live Pods - Opts: $all_args / Enter (Output to terminal)" \
     --bind "start:reload:($cmd)" \
-    --preview="kubectl get pods $kubectl_opts --selector=app={6} --watch=true" --preview-window=right,follow
+    --bind "enter:become($preview_cmd)" \
+    --preview="$preview_cmd --watch=true" --preview-window=right,follow
 }
 
 # Fuzzy search on k8s resource and execute describe on selected resource
@@ -135,10 +139,12 @@ fkubectldescribe() {
   local resource_type="$1"
   local kubectl_opts=("${all_args[@]:1}")
   local cmd="kubectl get $resource_type --no-headers $kubectl_opts"
+  local preview_cmd="kubectl describe $resource_type {1} $kubectl_opts"
   fzf \
     --height=60% --info=inline --layout=reverse \
-    --border-label="Fuzzy Search Kubernetes Describe - Opts: $all_args / Ctrl-U (Up) / Ctrl-D (Down)" \
+    --border-label="Fuzzy Search Kubernetes Describe - Opts: $all_args / Ctrl-U (Up) / Ctrl-D (Down) / Enter (Output to terminal)" \
     --bind "start:reload:($cmd)" \
-    --bind "ctrl-u:preview-up+preview-up,ctrl-d:preview-down+preview-down" \
-    --preview="kubectl describe $resource_type {1} $kubectl_opts" --preview-window=right
+    --bind "ctrl-u:preview-up+preview-up+preview-up,ctrl-d:preview-down+preview-down+preview-down" \
+    --bind "enter:become($preview_cmd)" \
+    --preview="$preview_cmd" --preview-window=right
 }
