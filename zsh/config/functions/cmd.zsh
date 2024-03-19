@@ -101,7 +101,7 @@ fkubectllogs() {
     --border-label="Fuzzy Search Kubernetes Logs - Opts: $opts / Enter (Output to terminal)" \
     --bind="start:reload:($cmd)" \
     --bind "enter:become($preview_cmd)" \
-    --preview="$preview_cmd" --preview-window=right,wrap
+    --preview="$preview_cmd" --preview-window=bottom,wrap
 }
 
 # Fuzzy search on Kubernetes events
