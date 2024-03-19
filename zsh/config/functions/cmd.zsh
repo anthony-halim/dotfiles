@@ -107,11 +107,11 @@ fkubectllogs() {
 # Fuzzy search on Kubernetes events
 # 
 # Usage:
-#   fkubectllogs [k8s_options...] k8s_logs_target
+#   fkubectlevents [k8s_options...]
 #
 # Example:
-#   fkubectllogs --context target_context --namespace target_namespace deployment/target_deployment
-#   fkubectllogs --context target_context --namespace target_namespace target_pod
+#   fkubectlevents --context target_context --namespace target_namespace
+#   fkubectlevents --context target_context --namespace target_namespace x
 fkubectlevents() {
   local opts="$@"
   local cmd="kubectl events $opts --watch=true --no-headers"
@@ -168,5 +168,4 @@ fkubectldescribe() {
     --bind "enter:become($preview_cmd)" \
     --preview="$preview_cmd" --preview-window=right
 }
-
 
