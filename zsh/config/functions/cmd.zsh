@@ -73,13 +73,52 @@ genpw() {
 #
 # On selection, the command will be pushed to the editing buffer stack, which allows edit
 # on the command before running it. This will also allow the selected command to appear on the history 
-# rather than just the 'fh'.
+# rather than just the 'fhist'.
 #
 # Usage: 
-#   fh
+#   fhist
 #
 # Example:
-#   fh
-fh() {
+#   fhist
+fhist() {
   print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sed -E 's/ *[0-9]*\*? *//' | fzf --height=40% --layout=reverse --border-label="Command History" +s --tac | sed -E 's/\\/\\\\/g')
 }
+
+# Fuzzy search on Kubernetes logs
+# 
+# Usage:
+#   fkubectllogs [k8s_options...] k8s_logs_target
+#
+# Example:
+#   fkubectllogs --context target_context --namespace target_namespace deployment/target_deployment
+#   fkubectllogs --context target_context --namespace target_namespace target_pod
+fkubectllogs() {
+  local opts="--follow --tail=10000 $@"
+  local cmd="kubectl logs $opts"
+  fzf \
+    --height=60% --info=inline --layout=reverse \
+    --border-label="Fuzzy Search Kubernetes Logs - Opts: $opts" \
+    --bind="start:reload:($cmd)" \
+    --preview="echo {} | logfilter" --preview-window=right,wrap
+}
+
+# Fuzzy search on Kubernetes pods status
+#
+# Usage:
+#   fkubectlpods k8s_resource [k8s_options...]
+#
+# Example:
+#   fkubectlpods deployment --context target_context --namespace target_namespace
+#   fkubectlpods statefulsets --context target_context --namespace target_namespace
+fkubectlpods() {
+  local all_args=("$@")
+  local resource_type="$1"
+  local kubectl_opts=("${all_args[@]:1}")
+  local cmd="kubectl get $resource_type -L app --no-headers $kubectl_opts"
+  fzf \
+    --height=60% --info=inline --layout=reverse \
+    --border-label="Fuzzy Search Kubernetes Live Pods - Opts: $all_args" \
+    --bind "start:reload:($cmd)" \
+    --preview="kubectl get pods $kubectl_opts --selector=app={6} --watch=true" --preview-window=right,follow
+}
+
