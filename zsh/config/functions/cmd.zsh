@@ -81,7 +81,7 @@ genpw() {
 # Example:
 #   fhist
 fhist() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sed -E 's/ *[0-9]*\*? *//' | fzf --height=40% --layout=reverse --border-label="Command History" +s --tac | sed -E 's/\\/\\\\/g')
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sed -E 's/ *[0-9]*\*? *//' | fzf --height=40% --layout=reverse --border-label="Command History" --tac | sed -E 's/\\/\\\\/g')
 }
 
 # Fuzzy search on Kubernetes logs
