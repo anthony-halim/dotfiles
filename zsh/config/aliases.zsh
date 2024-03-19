@@ -43,8 +43,12 @@ alias gitconf="git config --list --show-origin"
 
 alias dateunixnow="date '+%s'"
 
+# Fuzzy search
+
 alias fh="fhist"
 
 alias fkl="fkubectllogs"
 
 alias fkp="fkubectlpods"
+
+alias fkd="fkubectldescribe"

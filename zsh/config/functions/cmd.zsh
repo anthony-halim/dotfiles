@@ -102,7 +102,7 @@ fkubectllogs() {
     --preview="echo {} | logfilter" --preview-window=right,wrap
 }
 
-# Fuzzy search on Kubernetes pods status
+# Fuzzy search on k8s resource and show pods status
 #
 # Usage:
 #   fkubectlpods k8s_resource [k8s_options...]
@@ -122,3 +122,23 @@ fkubectlpods() {
     --preview="kubectl get pods $kubectl_opts --selector=app={6} --watch=true" --preview-window=right,follow
 }
 
+# Fuzzy search on k8s resource and execute describe on selected resource
+#
+# Usage:
+#   fkubectldescribe k8s_resource [k8s_options...]
+#
+# Example:
+#   fkubectldescribe deployment --context target_context --namespace target_namespace
+#   fkubectldescribe pods --context target_context --namespace target_namespace
+fkubectldescribe() {
+  local all_args=("$@")
+  local resource_type="$1"
+  local kubectl_opts=("${all_args[@]:1}")
+  local cmd="kubectl get $resource_type --no-headers $kubectl_opts"
+  fzf \
+    --height=60% --info=inline --layout=reverse \
+    --border-label="Fuzzy Search Kubernetes Describe - Opts: $all_args / Ctrl-U (Up) / Ctrl-D (Down)" \
+    --bind "start:reload:($cmd)" \
+    --bind "ctrl-u:preview-up+preview-up,ctrl-d:preview-down+preview-down" \
+    --preview="kubectl describe $resource_type {1} $kubectl_opts" --preview-window=right
+}
