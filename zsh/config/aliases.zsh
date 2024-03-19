@@ -49,6 +49,8 @@ alias fh="fhist"
 
 alias fkl="fkubectllogs"
 
+alias fke="fkubectlevents"
+
 alias fkp="fkubectlpods"
 
 alias fkd="fkubectldescribe"

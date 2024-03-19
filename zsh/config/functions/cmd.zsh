@@ -104,6 +104,26 @@ fkubectllogs() {
     --preview="$preview_cmd" --preview-window=right,wrap
 }
 
+# Fuzzy search on Kubernetes events
+# 
+# Usage:
+#   fkubectllogs [k8s_options...] k8s_logs_target
+#
+# Example:
+#   fkubectllogs --context target_context --namespace target_namespace deployment/target_deployment
+#   fkubectllogs --context target_context --namespace target_namespace target_pod
+fkubectlevents() {
+  local opts="$@"
+  local cmd="kubectl events $opts --watch=true --no-headers"
+  local preview_cmd="echo {}"
+  fzf \
+    --height=60% --info=inline --layout=reverse \
+    --border-label="Fuzzy Search Kubernetes Events - Opts: $opts / Enter (Output to terminal)" \
+    --bind="start:reload:($cmd)" \
+    --bind="enter:become($preview_cmd)" \
+    --preview="$preview_cmd" --preview-window=bottom,wrap
+}
+
 # Fuzzy search on k8s resource and show pods status
 #
 # Usage:
@@ -148,3 +168,5 @@ fkubectldescribe() {
     --bind "enter:become($preview_cmd)" \
     --preview="$preview_cmd" --preview-window=right
 }
+
+
