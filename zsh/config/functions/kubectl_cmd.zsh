@@ -60,6 +60,32 @@ fkubectlevents() {
     --preview="$preview_cmd" --preview-window=bottom,wrap
 }
 
+# Fuzzy search on Kubernetes resource and do deletion
+# Usage:
+#   fkubectldelete k8s_resource [k8s_resource]
+#
+# Example:
+#   fkubectldelete deployment --context target_context --namespace target_namespace
+#   fkubectldelete pods --context target_context --namespace target_namespace
+fkubectldelete() {
+  local all_args=("$@")
+  local resource_type="$1"
+  local kubectl_opts=("${all_args[@]:1}")
+
+  local start_cmd="kubectl get $resource_type --no-headers $kubectl_opts \
+    -o=custom-columns=NAME:.metadata.name,NAMESPACE:.metadata.namespace"
+  local delete_cmd="kubectl delete $resource_type {1} --namespace={2}"
+  local delete_cmd_force="$select_cmd --force"
+  local header="Kubernetes Delete - Opts: $all_args / Ctrl-Space (delete resource) / Ctrl-/ (force delete)"
+
+  fzf \
+    --height=80% --info=inline --layout=reverse \
+    --border-label="$header" \
+    --bind "start:reload:($start_cmd)" \
+    --bind "ctrl-space:execute($delete_cmd)" \
+    --bind "ctrl-/:execute($delete_cmd_force)"
+}
+
 # Fuzzy search on k8s resource and show pods logs
 #
 # Usage:
