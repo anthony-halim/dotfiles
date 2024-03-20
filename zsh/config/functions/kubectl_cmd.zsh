@@ -54,13 +54,14 @@ fkubectlevents() {
   local cmd="kubectl events $opts --watch=true --no-headers"
 
   fzf \
-    --height=60% --info=inline --layout=reverse \
+    --min-height=15 --height=90% --info=inline --layout=reverse \
     --border-label="Fuzzy Search Kubernetes Events - Opts: $opts / Enter (Select)" \
     --bind="start:reload:($cmd)" \
     --preview="$preview_cmd" --preview-window=bottom,wrap
 }
 
 # Fuzzy search on Kubernetes resource and do deletion
+#
 # Usage:
 #   fkubectldelete k8s_resource [k8s_resource]
 #
@@ -79,7 +80,7 @@ fkubectldelete() {
   local header="Kubernetes Delete - Opts: $all_args / Ctrl-Space (delete resource) / Ctrl-/ (force delete)"
 
   fzf \
-    --height=80% --info=inline --layout=reverse \
+    --min-height=15 --height=90% --info=inline --layout=reverse \
     --border-label="$header" \
     --bind "start:reload:($start_cmd)" \
     --bind "ctrl-space:execute($delete_cmd)" \
