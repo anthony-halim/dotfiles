@@ -41,6 +41,24 @@ _fkubectlpreview() {
     --preview="$preview_cmd | tee $temp_file" --preview-window=right
 }
 
+# Fuzzy search on Kubernetes context
+# 
+# Usage:
+#   fkubectlcontext
+#
+# Example:
+#   fkubectlcontext
+fkubectlcontext() {
+  local cmd="kubectl config get-contexts --no-headers -o name"
+  local accept_cmd="kubectl config use-context +{1}"
+
+  fzf \
+    --height=25% --info=inline --layout=reverse \
+    --border-label="Kubernetes Config - Enter (Select)" \
+    --bind "start:reload:($cmd)" \
+    --bind "enter:become($on_select)" --bind "double-click:become("$on_select")" \
+}
+
 # Fuzzy search on Kubernetes events
 # 
 # Usage:
@@ -55,7 +73,7 @@ fkubectlevents() {
 
   fzf \
     --min-height=15 --height=90% --info=inline --layout=reverse \
-    --border-label="Fuzzy Search Kubernetes Events - Opts: $opts / Enter (Select)" \
+    --border-label="Kubernetes Events - Opts: $opts / Enter (Select)" \
     --bind="start:reload:($cmd)" \
     --preview="$preview_cmd" --preview-window=bottom,wrap
 }

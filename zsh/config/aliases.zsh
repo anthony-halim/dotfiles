@@ -47,6 +47,8 @@ alias dateunixnow="date '+%s'"
 
 alias fh="fhist"
 
+alias fkc="fkubectlcontext"
+
 alias fkl="fkubectllogs"
 
 alias fke="fkubectlevents"
