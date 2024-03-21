@@ -240,6 +240,41 @@ setup_zellij() {
 	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
+setup_zjstatus() {
+	local zellij_plugin_dir="$HOME/.local/share/zellij/plugins"
+
+	local pkg_name="zjstatus"
+	local pkg_description="statusbar for Zellij"
+	local git_repo="https://github.com/dj95/zjstatus"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_pattern="zjstatus.wasm"
+	local git_bin_path="zjstatus.wasm"
+	local git_bin_dest="$zellij_plugin_dir/zjstatus.wasm"
+
+	pkg_install_predicate_func() {
+		if [[ ! -e "$git_bin_dest" ]]; then
+			echo 0
+		else
+			echo 1
+		fi
+	}
+
+	pkg_configure_func() {
+		return
+	}
+
+	pkg_current_tag_func() {
+		local current_zjstatus_dir
+		local zjstatus_version
+		current_zjstatus_dir=$(readlink -n "$git_bin_dest")
+		zjstatus_version=$(dirname "$current_zjstatus_dir" | cut -d- -f2)
+		echo "$zjstatus_version"
+	}
+
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path" "$git_bin_dest"
+}
+
 setup_lazygit() {
 	local pkg_name="lazygit"
 	local pkg_description="simple terminal UI for git commands"
@@ -751,6 +786,10 @@ setup_starship
 # Zellij installation
 log::separator
 setup_zellij
+
+# Zjstatus installation
+log::separator
+setup_zjstatus
 
 # Wezterm setup
 log::separator
