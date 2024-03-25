@@ -55,6 +55,8 @@ alias fke="fkubectlevents"
 
 alias fkp="fkubectlpods"
 
-alias fkdesc="fkubectldescribe"
+alias fkd="fkubectldescribe"
 
 alias fkdel="fkubectldelete"
+
+alias fkedit="fkubectledit"
