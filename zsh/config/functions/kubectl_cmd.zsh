@@ -148,43 +148,6 @@ _fkubectlresourceinfo() {
 #   echo "${input//[A-Z]:/}"
 # }
 
-# Fuzzy search on Kubernetes context
-# 
-# Usage:
-#   fkubectlcontext
-#
-# Example:
-#   fkubectlcontext
-fkubectlcontext() {
-  local cmd="kubectl config get-contexts --no-headers -o name"
-  local accept_cmd="kubectl config use-context {}"
-
-  fzf \
-    --height=25% --info=inline --layout=reverse \
-    --border-label="Kubernetes Config - Enter (Select)" \
-    --bind "start:reload:($cmd)" \
-    --bind "enter:become($accept_cmd)" --bind "double-click:become($accept_cmd)" \
-}
-
-# Fuzzy search on Kubernetes events
-# 
-# Usage:
-#   fkubectlevents [k8s_options...]
-#
-# Example:
-#   fkubectlevents --context target_context --namespace target_namespace
-#   fkubectlevents --context target_context --namespace target_namespace
-fkubectlevents() {
-  local opts="$@"
-  local cmd="kubectl events $opts --watch=true --no-headers"
-
-  fzf \
-    --min-height=15 --height=90% --info=inline --layout=reverse \
-    --border-label="Kubernetes Events - Opts: $opts / Enter (Select)" \
-    --bind="start:reload:($cmd)" \
-    --preview="$preview_cmd" --preview-window=bottom,wrap
-}
-
 # Fuzzy search on Kubernetes resource and do edit
 #
 # Usage:
@@ -266,30 +229,6 @@ fkubectllogs() {
   local yank_desc="Fuzzy search on logs"
 
   _fkubectlpreview "$start_cmd" "$preview_cmd" "$header" "$yank_cmd" "$yank_desc"
-}
-
-# Fuzzy search on k8s resource and show pods status.
-# Assumes that the resource selector uses matchLabels.app = pod.app
-#
-# Usage:
-#   fkubectlpods k8s_resource [k8s_options...]
-#
-# Example:
-#   fkubectlpods deployment --context target_context --namespace target_namespace
-#   fkubectlpods statefulsets --context target_context --namespace target_namespace
-fkubectlpods() {
-  local all_args=("$@")
-  local resource_type="$1"
-  local kubectl_opts=("${all_args[@]:1}")
-
-  _fkubectlresourceinfo "$resource_type"
-
-  local start_cmd="kubectl get $resource_type -L app --no-headers \
-    -o \"custom-columns=$_fkubectlinfo_columns,APP:.metadata.labels.app\" $kubectl_opts"
-  local preview_cmd="kubectl get pods --namespace={2} --selector=app={3}"
-  local header="Kubernetes Pods - Opts: $all_args"
-
-  _fkubectlpreview "$start_cmd" "$preview_cmd" "$header"
 }
 
 # Fuzzy search on k8s resource and execute describe on selected resource

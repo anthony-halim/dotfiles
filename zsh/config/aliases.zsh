@@ -47,16 +47,12 @@ alias dateunixnow="date '+%s'"
 
 alias fh="fhist"
 
-alias fkc="fkubectlcontext"
+alias kcc="kubectl config use-context"
 
 alias fkl="fkubectllogs"
 
-alias fke="fkubectlevents"
-
-alias fkp="fkubectlpods"
-
 alias fkd="fkubectldescribe"
 
-alias fkdel="fkubectldelete"
-
 alias fkedit="fkubectledit"
+
+alias fkdel="fkubectldelete"
