@@ -1,19 +1,16 @@
-if command -v "batcat" &> /dev/null
-then
-    alias cat="batcat --paging=never"
-elif command -v "bat" &> /dev/null
-then
-    alias cat="bat --paging=never"
+if command -v "batcat" &>/dev/null; then
+	alias cat="batcat --paging=never"
+elif command -v "bat" &>/dev/null; then
+	alias cat="bat --paging=never"
 fi
 
 [[ ! $(command -v "explorer.exe") ]] || alias open="explorer.exe"
 
-if command -v "eza" &> /dev/null
-then
-    alias ls="eza"
-    alias ll="eza -alrg --icons"
+if command -v "eza" &>/dev/null; then
+	alias ls="eza"
+	alias ll="eza -alrg --icons"
 else
-    alias ll="ls -alrt"
+	alias ll="ls -alrt"
 fi
 
 [[ ! $(command -v "kubectl") ]] || alias k="kubectl"
@@ -21,8 +18,8 @@ fi
 [[ ! $(command -v "terraform") ]] || alias tf="terraform"
 
 [[ ! $(command -v "zellij") ]] || {
-  alias ze="zellij"
-  alias zea="zellij attach -c"
+	alias ze="zellij"
+	alias zea="zellij attach -c"
 }
 
 alias sush="sudo su -"
@@ -49,10 +46,10 @@ alias fh="fhist"
 
 alias kcc="kubectl config use-context"
 
+alias fks="fkubectlsearch"
+
 alias fkl="fkubectllogs"
 
-alias fkd="fkubectldescribe"
+alias fke="fkubectledit"
 
-alias fkedit="fkubectledit"
-
-alias fkdel="fkubectldelete"
+alias fkd="fkubectldelete"
