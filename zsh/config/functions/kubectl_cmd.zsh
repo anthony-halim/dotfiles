@@ -99,6 +99,12 @@ _fkubectlresourceinfo() {
 	fi
 }
 
+# Utility to extract column headers from given custom columns 
+_fkubectlcolumnsheader() {
+  local headers=$(sed -E "s/:[^,]+//g" <<< "$1")
+  echo "$headers"
+}
+
 # Utility to spawn a fzf with a preview window with sane keybindings.
 #
 # The initial fzf will execute $start_cmd, with preview_window
@@ -112,7 +118,7 @@ _fkubectlpreview() {
     local resource_type=""
     local action_cmd="echo {}"
     local action_desc="Select"
-    local action_mode="execute"
+    local action_mode="become"
     local select_cmd="cat $temp_file"
     local select_desc="Output preview to terminal"
     local select_mode="become"
@@ -133,10 +139,15 @@ _fkubectlpreview() {
         --select_mode)      shift; select_mode=$1                  ;;
         -g|--grep)          shift; grep_opts=$1                    ;;
         -*)                 echo "Unknown option: $1" && return    ;;
-        *)                  positional+=("$1"); shift              ;;
+        *)                  positional+=("$1");                    ;;
       esac
       shift
     done
+
+    [[ -z "$resource_type" ]] && {
+      echo "Resource type cannot be empty"
+      return
+    }
 
     _fkubectlresourceinfo "$resource_type"
 
@@ -144,6 +155,7 @@ _fkubectlpreview() {
     -o \"custom-columns=$_fkubectlinfo_columns\" $positional"
 	local preview_cmd="kubectl describe $resource_type {1} --namespace={2}"
 	local exit_cmd="[[ -e $temp_file ]] && rm $temp_file"
+    local column_headers=$(_fkubectlcolumnsheader $_fkubectlinfo_columns)
 
 	local on_action="$action_cmd; $exit_cmd"
 	local on_select="$select_cmd; $exit_cmd"
@@ -152,8 +164,8 @@ _fkubectlpreview() {
 	# Action is purposefully tied to uncommon key binding to prevent accidental commit
 	fzf \
 		--min-height=10 --height=60% --info=inline --layout=reverse \
-        --border-label="Fuzzy Kubernetes: Ctrl-Space ($action_desc)" \
-        --header-lines 2 --header "Enter ($select_desc) / Ctrl-u (Up preview) / Ctrl-d (Down preview) / Ctrl-r (Reload)\n\n" \
+        --border-label="Fuzzy Kubernetes / Ctrl-Space ($action_desc) / Enter ($select_desc) / Ctrl-u (Up preview) / Ctrl-d (Down preview) / Ctrl-r (Reload)" \
+        --header "Columns: $column_headers" \
         --bind "start:reload($start_cmd)" --bind "ctrl-r:reload($start_cmd)" \
 		--bind "ctrl-c:become($exit_cmd)" --bind "esc:become($exit_cmd)" --bind "ctrl-q:become($exit_cmd)" \
 		--bind "ctrl-u:preview-up+preview-up+preview-up,ctrl-d:preview-down+preview-down+preview-down" \
@@ -161,7 +173,6 @@ _fkubectlpreview() {
 		--bind "ctrl-space:$action_mode($on_action)" \
 		--preview="$preview_cmd | tee $temp_file" --preview-window=bottom,wrap
 }
-
 
 # Search selected k8s resource
 #
@@ -171,9 +182,9 @@ _fkubectlpreview() {
 # Example:
 #   fkubectlsearch pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectlsearch() {
-  local resource_type="$1"
+  local resource_type="$1"; shift
   _fkubectlpreview --type "$resource_type" \
-    "${@[@]:1}"
+    "${@[@]}"
 }
 
 # Edit selected k8s resource
@@ -184,11 +195,11 @@ fkubectlsearch() {
 # Example:
 #   fkubectledit pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectledit() {
-  local resource_type="$1"
+  local resource_type="$1"; shift
   _fkubectlpreview --type "$resource_type" \
     --action "kubectl edit $resource_type {1} --namespace={2}" \
-    --action_desc "Edit $resource_type" --action_mode "execute" \
-    "${@[@]:1}"
+    --action_desc "Edit $resource_type" --action_mode "become" \
+    "${@[@]}"
 }
 
 # Delete selected k8s resource
@@ -199,11 +210,11 @@ fkubectledit() {
 # Example:
 #   fkubectldelete pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectldelete() {
-  local resource_type="$1"
+  local resource_type="$1"; shift
   _fkubectlpreview --type "$resource_type" \
     --action "kubectl delete $resource_type {1} --namespace={2}" \
     --action_desc "Delete $resource_type" --action_mod "execute" \
-    "${@[@]:1}"
+    "${@[@]}"
 }
 
 # Fuzzy search on logs of selected k8s resource
@@ -214,7 +225,7 @@ fkubectldelete() {
 # Example:
 #   fkubectllogs pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectllogs() {
-  local resource_type="$1"
+  local resource_type="$1"; shift
   _fkubectlpreview --type "$resource_type" \
     --action "kubectl logs $resource_type/{1} --namespace={2} --tail=10000 | sort --reverse | fzf --height=80% --info=inline --layout=reverse" \
     --action_desc "Fuzzy search on logs" --action_mode "become" \
