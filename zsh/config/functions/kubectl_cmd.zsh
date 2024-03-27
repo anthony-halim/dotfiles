@@ -142,7 +142,6 @@ _fkubectlpreview() {
       esac
       shift
     done
-    # -*)                 echo "Unknown option: $1" && return    ;;
 
     [[ -z "$resource_type" ]] && {
       echo "Resource type cannot be empty"
@@ -177,10 +176,10 @@ _fkubectlpreview() {
 # Search selected k8s resource
 #
 # Usage:
-#   fkubectlsearch k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
+#   fkubectlsearch k8s_resource [--fk_grep grep_pattern] [k8s_options...]
 #
 # Example:
-#   fkubectlsearch pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
+#   fkubectlsearch pods --fk_grep "-ive 'running'" --context target_context --namespace target_namespace
 fkubectlsearch() {
   local resource_type="$1"; shift
   _fkubectlpreview --fk_type "$resource_type" \
@@ -190,10 +189,10 @@ fkubectlsearch() {
 # Edit selected k8s resource
 #
 # Usage:
-#   fkubectledit k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
+#   fkubectledit k8s_resource [--fk_grep grep_pattern] [k8s_options...]
 #
 # Example:
-#   fkubectledit pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
+#   fkubectledit pods --fk_grep "-ive 'running'" --context target_context --namespace target_namespace
 fkubectledit() {
   local resource_type="$1"; shift
   _fkubectlpreview --fk_type "$resource_type" \
@@ -205,10 +204,10 @@ fkubectledit() {
 # Delete selected k8s resource
 #
 # Usage:
-#   fkubectldelete k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
+#   fkubectldelete k8s_resource [--fk_grep grep_pattern] [k8s_options...]
 #
 # Example:
-#   fkubectldelete pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
+#   fkubectldelete pods --fk_grep "-ive 'running'" --context target_context --namespace target_namespace
 fkubectldelete() {
   local resource_type="$1"; shift
   _fkubectlpreview --fk_type "$resource_type" \
@@ -220,10 +219,10 @@ fkubectldelete() {
 # Fuzzy search on logs of selected k8s resource
 #
 # Usage:
-#   fkubectllogs k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
+#   fkubectllogs k8s_resource [--fk_grep grep_pattern] [k8s_options...]
 #
 # Example:
-#   fkubectllogs pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
+#   fkubectllogs pods --fk_grep "-ive 'running'" --context target_context --namespace target_namespace
 fkubectllogs() {
   local resource_type="$1"; shift
   _fkubectlpreview --fk_type "$resource_type" \
