@@ -130,19 +130,19 @@ _fkubectlpreview() {
     while (( $# )); do
       case "${1-}" in
         --)                 shift; positional+=("${@[@]}"); break  ;;
-        --type)             shift; resource_type=$1                ;;
-        --action)           shift; action_cmd=$1                   ;;
-        --action_desc)      shift; action_desc=$1                  ;;
-        --action_mode)      shift; action_mode=$1                  ;;
-        --select)           shift; select_cmd=$1                   ;;
-        --select_desc)      shift; select_desc=$1                  ;;
-        --select_mode)      shift; select_mode=$1                  ;;
-        -g|--grep)          shift; grep_opts=$1                    ;;
-        -*)                 echo "Unknown option: $1" && return    ;;
+        --fk_type)             shift; resource_type=$1                ;;
+        --fk_action)           shift; action_cmd=$1                   ;;
+        --fk_action_desc)      shift; action_desc=$1                  ;;
+        --fk_action_mode)      shift; action_mode=$1                  ;;
+        --fk_select)           shift; select_cmd=$1                   ;;
+        --fk_select_desc)      shift; select_desc=$1                  ;;
+        --fk_select_mode)      shift; select_mode=$1                  ;;
+        --fk_grep)          shift; grep_opts=$1                    ;;
         *)                  positional+=("$1");                    ;;
       esac
       shift
     done
+    # -*)                 echo "Unknown option: $1" && return    ;;
 
     [[ -z "$resource_type" ]] && {
       echo "Resource type cannot be empty"
@@ -177,57 +177,57 @@ _fkubectlpreview() {
 # Search selected k8s resource
 #
 # Usage:
-#   fkubectlsearch k8s_resource [-g|--grep grep_pattern] -- [k8s_options...]
+#   fkubectlsearch k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
 #
 # Example:
 #   fkubectlsearch pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectlsearch() {
   local resource_type="$1"; shift
-  _fkubectlpreview --type "$resource_type" \
+  _fkubectlpreview --fk_type "$resource_type" \
     "${@[@]}"
 }
 
 # Edit selected k8s resource
 #
 # Usage:
-#   fkubectledit k8s_resource [-g|--grep grep_pattern] -- [k8s_options...]
+#   fkubectledit k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
 #
 # Example:
 #   fkubectledit pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectledit() {
   local resource_type="$1"; shift
-  _fkubectlpreview --type "$resource_type" \
-    --action "kubectl edit $resource_type {1} --namespace={2}" \
-    --action_desc "Edit $resource_type" --action_mode "become" \
+  _fkubectlpreview --fk_type "$resource_type" \
+    --fk_action "kubectl edit $resource_type {1} --namespace={2}" \
+    --fk_action_desc "Edit $resource_type" --fk_action_mode "become" \
     "${@[@]}"
 }
 
 # Delete selected k8s resource
 #
 # Usage:
-#   fkubectldelete k8s_resource [-g|--grep grep_pattern] -- [k8s_options...]
+#   fkubectldelete k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
 #
 # Example:
 #   fkubectldelete pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectldelete() {
   local resource_type="$1"; shift
-  _fkubectlpreview --type "$resource_type" \
-    --action "kubectl delete $resource_type {1} --namespace={2}" \
-    --action_desc "Delete $resource_type" --action_mod "execute" \
+  _fkubectlpreview --fk_type "$resource_type" \
+    --fk_action "kubectl delete $resource_type {1} --namespace={2}" \
+    --fk_action_desc "Delete $resource_type" --fk_action_mod "execute" \
     "${@[@]}"
 }
 
 # Fuzzy search on logs of selected k8s resource
 #
 # Usage:
-#   fkubectllogs k8s_resource [-g|--grep grep_pattern] -- [k8s_options...]
+#   fkubectllogs k8s_resource [-g|--fk_grep grep_pattern] -- [k8s_options...]
 #
 # Example:
 #   fkubectllogs pods -g "-ive 'running'" -- --context target_context --namespace target_namespace
 fkubectllogs() {
   local resource_type="$1"; shift
-  _fkubectlpreview --type "$resource_type" \
-    --action "kubectl logs $resource_type/{1} --namespace={2} --tail=10000 | sort --reverse | fzf --height=80% --info=inline --layout=reverse" \
-    --action_desc "Fuzzy search on logs" --action_mode "become" \
+  _fkubectlpreview --fk_type "$resource_type" \
+    --fk_action "kubectl logs $resource_type/{1} --namespace={2} --tail=10000 | sort --reverse | fzf --height=80% --info=inline --layout=reverse" \
+    --fk_action_desc "Fuzzy search on logs" --fk_action_mode "become" \
     "${@[@]:1}"
 }
