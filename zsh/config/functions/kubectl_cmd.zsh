@@ -48,7 +48,7 @@ _fkubectlresourceinfo() {
         set -A "$columns_var" "$name_header,STATUS:.status.phase,$creation_header"
     # no    nodes
     elif [[ "$resource_type" =~ ^(no|node(s)?)$ ]]; then
-        set -A "$columns_var" "$name_header,STATUS:.status.conditions[-1].type,VERSION:.status.nodeInfo.kubeletVersion,$creation_header"
+        set -A "$columns_var" "$name_header,STATUS:.status.conditions[-1].reason,VERSION:.status.nodeInfo.kubeletVersion,$creation_header"
     # pvc    persistentvolumeclaims
     elif [[ "$resource_type" =~ ^(pvc|persistentvolumeclaim(s)?)$ ]]; then
         set -A "$columns_var" "$name_header,$namespace_header,STATUS:.status.phase,VOLUME:.spec.volumeName,CAPACITY:.status.capacity.storage,ACCESS MODES:.spec.accessModes[*],STORAGE CLASS:.spec.storageClassName,$creation_header"
