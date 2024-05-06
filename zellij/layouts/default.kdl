@@ -30,29 +30,31 @@
 // },
 
 layout {
-    pane
-    pane size=1 borderless=true {
-        plugin location="file:zjstatus.wasm" {
-            format_left  "{mode} #[bg=#232634,fg=green,bold]{session} {tabs}"
-            format_right "{datetime}"
-            format_space "#[bg=#232634]"
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="file:zjstatus.wasm" {
+                format_left  "{mode} #[bg=#232634,fg=green,bold]{session} {tabs}"
+                format_right "{datetime}"
+                format_space "#[bg=#232634]"
 
-            mode_normal       "#[bg=cyan] "
-            mode_locked       "#[fg=#232634,bg=magenta] 󰌾  {name} "
-            mode_pane         "#[fg=#232634,bg=red] 󱏂  {name} "
-            mode_tab          "#[fg=#232634,bg=red] 󱂬  {name} "
-            mode_session      "#[fg=#232634,bg=magenta] 󰨣  {name} "
-            mode_resize       "#[fg=#232634,bg=green] 󰩨  {name} "
-            mode_scroll       "#[fg=#232634,bg=green] 󰦨  {name} "
-            mode_enter_search "#[fg=#232634,bg=green] 󱎸 󰏫  {name} "
-            mode_search       "#[fg=#232634,bg=green] 󱎸  {name} "
+                mode_normal       "#[bg=cyan] "
+                mode_locked       "#[fg=#232634,bg=magenta] 󰌾  {name} "
+                mode_pane         "#[fg=#232634,bg=red] 󱏂  {name} "
+                mode_tab          "#[fg=#232634,bg=red] 󱂬  {name} "
+                mode_session      "#[fg=#232634,bg=magenta] 󰨣  {name} "
+                mode_resize       "#[fg=#232634,bg=green] 󰩨  {name} "
+                mode_scroll       "#[fg=#232634,bg=green] 󰦨  {name} "
+                mode_enter_search "#[fg=#232634,bg=green] 󱎸 󰏫  {name} "
+                mode_search       "#[fg=#232634,bg=green] 󱎸  {name} "
 
-            datetime          "#[bg=#414559,fg=#b5bfe2] {format} "
-            datetime_format   "%A, %d %b %Y %H:%M"
-            datetime_timezone "Asia/Singapore"
+                datetime          "#[bg=#414559,fg=#b5bfe2] {format} "
+                datetime_format   "%A, %d %b %Y %H:%M"
+                datetime_timezone "Asia/Singapore"
 
-            tab_normal   "#[fg=#c6d0f5,bg=#414559,bold,italic] {index} #[fg=#b5bfe2,bg=#232634,bold,italic] {name} "
-            tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#232634,bold] {name} "
+                tab_normal   "#[fg=#c6d0f5,bg=#414559,bold,italic] {index} #[fg=#b5bfe2,bg=#232634,bold,italic] {name} "
+                tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#232634,bold] {name} "
+            }
         }
     }
 }
