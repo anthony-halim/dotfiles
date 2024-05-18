@@ -1,79 +1,81 @@
-return {
-  -- Extend autocompletion with crates
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      {
-        "Saecki/crates.nvim",
-        event = { "BufRead Cargo.toml" },
-        opts = {
-          src = {
-            cmp = { enabled = true },
-          },
-        },
-      },
-    },
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      opts.sources = opts.sources or {}
-      table.insert(opts.sources, { name = "crates" })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed or {}, {
-        "ron",
-        "rust",
-        "toml",
-      })
-    end,
-  },
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        rust_analyzer = {
-          settings = {
-            ["rust-analyzer"] = {
-              cargo = {
-                allFeatures = true,
-                loadOutDirsFromCheck = true,
-                runBuildScripts = true,
-              },
-              -- Add clippy lints for Rust.
-              checkOnSave = {
-                allFeatures = true,
-                command = "clippy",
-                extraArgs = { "--no-deps" },
-              },
-              procMacro = {
-                enable = true,
-                ignored = {
-                  ["async-trait"] = { "async_trait" },
-                  ["napi-derive"] = { "napi" },
-                  ["async-recursion"] = { "async_recursion" },
-                },
-              },
-            },
-          },
-        },
-        -- taplo = {
-        --   keys = {
-        --     {
-        --       "K",
-        --       function()
-        --         if vim.fn.expand("%:t") == "Cargo.toml" and require("crates").popup_available() then
-        --           require("crates").show_popup()
-        --         else
-        --           vim.lsp.buf.hover()
-        --         end
-        --       end,
-        --       desc = "Show Crate Documentation",
-        --     },
-        --   },
-        -- },
-      },
-    },
-  },
-}
+return {}
+
+-- return {
+--   -- Extend autocompletion with crates
+--   {
+--     "hrsh7th/nvim-cmp",
+--     dependencies = {
+--       {
+--         "Saecki/crates.nvim",
+--         event = { "BufRead Cargo.toml" },
+--         opts = {
+--           src = {
+--             cmp = { enabled = true },
+--           },
+--         },
+--       },
+--     },
+--     ---@param opts cmp.ConfigSchema
+--     opts = function(_, opts)
+--       opts.sources = opts.sources or {}
+--       table.insert(opts.sources, { name = "crates" })
+--     end,
+--   },
+--   {
+--     "nvim-treesitter/nvim-treesitter",
+--     opts = function(_, opts)
+--       vim.list_extend(opts.ensure_installed or {}, {
+--         "ron",
+--         "rust",
+--         "toml",
+--       })
+--     end,
+--   },
+--   {
+--     "neovim/nvim-lspconfig",
+--     opts = {
+--       servers = {
+--         rust_analyzer = {
+--           settings = {
+--             ["rust-analyzer"] = {
+--               cargo = {
+--                 allFeatures = true,
+--                 loadOutDirsFromCheck = true,
+--                 runBuildScripts = true,
+--               },
+--               -- Add clippy lints for Rust.
+--               checkOnSave = {
+--                 allFeatures = true,
+--                 command = "clippy",
+--                 extraArgs = { "--no-deps" },
+--               },
+--               procMacro = {
+--                 enable = true,
+--                 ignored = {
+--                   ["async-trait"] = { "async_trait" },
+--                   ["napi-derive"] = { "napi" },
+--                   ["async-recursion"] = { "async_recursion" },
+--                 },
+--               },
+--             },
+--           },
+--         },
+--         -- taplo = {
+--         --   keys = {
+--         --     {
+--         --       "K",
+--         --       function()
+--         --         if vim.fn.expand("%:t") == "Cargo.toml" and require("crates").popup_available() then
+--         --           require("crates").show_popup()
+--         --         else
+--         --           vim.lsp.buf.hover()
+--         --         end
+--         --       end,
+--         --       desc = "Show Crate Documentation",
+--         --     },
+--         --   },
+--         -- },
+--       },
+--     },
+--   },
+-- }
