@@ -10,7 +10,9 @@ return {
       {
         "<leader>e",
         function()
+          --- @diagnostic disable-next-line:undefined-global
           if not MiniFiles.close() then
+            --- @diagnostic disable-next-line:undefined-global
             MiniFiles.open(vim.api.nvim_buf_get_name(0))
           end
         end,
@@ -248,6 +250,8 @@ return {
     opts = function()
       local hipatterns = require("mini.hipatterns")
       return {
+        -- To see all highlight groups that are currently active,
+        -- :so $VIMRUNTIME/syntax/hitest.vim
         highlighters = {
           fixme = {
             pattern = "%f[%w]()FIXME()%f[%W]",

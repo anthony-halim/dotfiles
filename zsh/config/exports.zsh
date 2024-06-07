@@ -11,25 +11,25 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
   --padding="1" --margin="1" --prompt="  " --marker=""
   --pointer="" --info="right"'
 
-# Pyenv 
+# Pyenv
 [[ -d "${HOME}/.pyenv" ]] && {
-    export PYENV_ROOT="${HOME}/.pyenv"
-    command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-    eval  "$(pyenv init -)"
+	export PYENV_ROOT="${HOME}/.pyenv"
+	command -v pyenv >/dev/null || export PATH="$PATH:$PYENV_ROOT/bin"
+	eval "$(pyenv init -)"
 }
 
-# Golang 
+# Golang
 [[ -x "/usr/local/go/bin/go" ]] && {
-    command -v go >/dev/null || export PATH="/usr/local/go/bin:$PATH"
+	export GOPATH="${HOME}/go"
+	command -v go >/dev/null || export PATH="$PATH:/usr/local/go/bin:$GOPATH/bin"
 }
 
 # Rust
 [[ -f "${HOME}/.cargo/env" ]] && {
-    source "${HOME}/.cargo/env"
+	source "${HOME}/.cargo/env"
 }
 
 # Sword
 [[ -d "${HOME}/.sword" ]] && {
-    export SWORD_PATH="${HOME}/.sword"
+	export SWORD_PATH="${HOME}/.sword"
 }
-

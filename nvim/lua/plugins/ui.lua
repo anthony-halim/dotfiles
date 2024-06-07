@@ -21,7 +21,7 @@ return {
         end
 
         local sign = "" -- nf-fa-gear \uf013
-        local lsp_clients = vim.lsp.get_active_clients()
+        local lsp_clients = vim.lsp.get_clients()
         local messages_map = {}
         for _, climsg in ipairs(client_messages) do
           messages_map[climsg.name] = climsg.body
@@ -154,7 +154,7 @@ return {
         -- Filename
         local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":p:.")
         local ft_icon, ft_color = require("nvim-web-devicons").get_icon_color(filename)
-        local modified = vim.api.nvim_buf_get_option(props.buf, "modified") and "bold,italic" or "bold"
+        local modified = vim.api.nvim_get_option_value("modified", { buf = props.buf }) and "bold,italic" or "bold"
 
         -- Diagnostic
         local diagnostic_labels = {}
