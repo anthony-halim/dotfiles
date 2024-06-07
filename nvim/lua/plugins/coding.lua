@@ -56,39 +56,11 @@ return {
           ["<CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Insert,
             select = true,
-          }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          }),
           ["<S-CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
-          }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              -- Auto select if there is only a single entry
-              if #cmp.get_entries() == 1 then
-                cmp.confirm({ select = true })
-              else
-                cmp.select_next_item()
-              end
-            elseif luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              -- Auto select if there is only a single entry
-              if #cmp.get_entries() == 1 then
-                cmp.confirm({ select = true })
-              else
-                cmp.select_prev_item()
-              end
-            elseif luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end),
+          }),
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
@@ -128,14 +100,6 @@ return {
   {
     "echasnovski/mini.pairs",
     event = "VeryLazy",
-    opts = {},
-  },
-
-  -- "gc" to comment
-  {
-    "echasnovski/mini.comment",
-    event = "VeryLazy",
-    version = false,
     opts = {},
   },
 }

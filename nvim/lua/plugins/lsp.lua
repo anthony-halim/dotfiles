@@ -15,7 +15,12 @@ local lsp_keymaps = {
   {
     key = "<leader>ca",
     func = function()
-      vim.lsp.buf.code_action({ context = { only = { "quickfix", "refactor", "source" } } })
+      vim.lsp.buf.code_action({
+        context = {
+          only = { "quickfix", "refactor", "source" },
+          diagnostics = {},
+        },
+      })
     end,
     desc = "Code action",
   },
@@ -112,10 +117,24 @@ end
 
 return {
   {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    dependencies = {
+      { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
+    },
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+  {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "folke/neodev.nvim", opts = {} },
+      { "folke/lazydev.nvim", ft = "lua", opts = {} },
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
 

@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     if event.match:match("^%w%w+://") then
       return
     end
-    local file = vim.loop.fs_realpath(event.match) or event.match
+    local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
@@ -98,9 +98,7 @@ end, {})
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   pattern = ".zshrc",
   callback = function()
-    -- if vim.fn.search("{{.\\+}}", "nw") ~= 0 then
     local buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_set_option(buf, "filetype", "zsh")
-    -- end
+    vim.api.nvim_set_option_value("filetype", "zsh", { buf = buf })
   end,
 })
