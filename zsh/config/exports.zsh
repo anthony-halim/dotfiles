@@ -20,7 +20,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 
 # Golang
 [[ -x "/usr/local/go/bin/go" ]] && {
-	export GOPATH="${HOME}/go"
+	[[ -v GOPATH ]] || { export GOPATH="${HOME}/go" }
 	command -v go >/dev/null || export PATH="$PATH:/usr/local/go/bin:$GOPATH/bin"
 }
 
