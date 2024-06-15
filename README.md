@@ -37,28 +37,6 @@ For those have not checked out [z](https://github.com/rupa/z), I recommend tryin
 - `goto` fast travels to the directory e.g. `goto foo`, where `foo` is a fuzzy match to the full path.
 - On name conflict, `fzf` window will be spawned.
 
-#### Notes Taking
-
-This repository provides shortcuts to enable [Zettlekasten](https://zettelkasten.de/posts/overview/) style of note taking. It depends on [Neovim](neovim.io) and [telekasten.nvim](https://github.com/renerocksai/telekasten.nvim) plugin.
-
-- Notes are markdown file based. This avoids additional GUI or application to view the notes.
-- The followings shortcuts are provided to increase ease of use:
-
-  <details>
-    <summary>Shortcuts</summary>
-    <br/>
-
-    - `nfind` find notes by title
-    - `ngrep` find notes by content grep
-    - `ntags` find notes by tags
-    - `nnew` create new notes
-    - `ntmplnew` create new templated note
-    - `npush` commits and push note repository to upstream branch
-    - `npull` pull latest changes of note repository from upstream branch
-  </details>
-
-  For more information and usage, see [notes.zsh](zsh/config/functions/notes.zsh).
-
 ---
 
 ## 🧱 Components

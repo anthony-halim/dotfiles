@@ -18,7 +18,6 @@ require("lazy").setup({
   spec = {
     { import = "plugins" },
     { import = "plugins.lang" },
-    { import = "plugins.extra.notes", enabled = os.getenv("NVIM_EXTRA_NOTES") or true },
     { import = "plugins.extra.bible", enabled = os.getenv("NVIM_EXTRA_BIBLE") or false },
     -- Overrides from local settings
     -- NOTE: The better way is to only load on existence of local_plugins dir & local_plugins/*.lua
