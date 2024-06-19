@@ -746,6 +746,15 @@ setup_wezterm() {
 	log::success "Finished setup for Wezterm."
 }
 
+setup_gitbundler() {
+	log::log "Setting up Gitbundler (Git-based package manager)."
+
+	# TODO: Install Gitbundler via another package manager
+	symlink::safe_create "${SCRIPT_DIR}/gitbundler" "${HOME}/.config/gitbundler"
+
+	log::success "Finished setup for Gitbundler."
+}
+
 setup::colors
 
 # Check OS
@@ -830,6 +839,10 @@ setup_neovim
 # diatheke installation
 log::separator
 setup_diatheke
+
+# Gitbundler installation
+log::separator
+setup_gitbundler
 
 # Create required directories
 log::separator
