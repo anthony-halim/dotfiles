@@ -19,8 +19,6 @@ GIT_USER_LOCAL_FILE=""
 GOLANG_TAG="latest"
 LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
 LOCAL_NVIM_CONFIG_DIR="$HOME/.config/nvim/lua/local_config"
-NOTES_PERSONAL_DIR="$HOME/notes/personal"
-NOTES_WORK_DIR="$HOME/notes/work"
 REPO_PERSONAL_DIR="$HOME/repos/personal"
 REPO_WORK_DIR="$HOME/repos/work"
 
@@ -851,8 +849,6 @@ dir::create_with_confirmation "$LOCAL_CONFIG_DIR" "directory to place uncommitte
 dir::create_with_confirmation "$LOCAL_NVIM_CONFIG_DIR" "directory to place uncommitted Neovim configurations. (options|keymaps|autocmds).lua files in this directory will automatically be sourced."
 dir::create_with_confirmation "$REPO_PERSONAL_DIR" "personal repository directory."
 dir::create_with_confirmation "$REPO_WORK_DIR" "work repository directory."
-dir::create_with_confirmation "$NOTES_PERSONAL_DIR" "personal notes vault (note directory)."
-dir::create_with_confirmation "$NOTES_WORK_DIR" "work notes vault (note directory)."
 log::success "directories: success!"
 
 # Report git information at the very end to make it clear to user
