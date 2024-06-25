@@ -10,10 +10,14 @@ return {
       {
         "<leader>e",
         function()
-          --- @diagnostic disable-next-line:undefined-global
-          if not MiniFiles.close() then
-            --- @diagnostic disable-next-line:undefined-global
-            MiniFiles.open(vim.api.nvim_buf_get_name(0))
+          local minifiles = require("mini.files")
+          if vim.bo.ft == "minifiles" then
+            minifiles.close()
+          else
+            local file = vim.api.nvim_buf_get_name(0)
+            local file_exists = vim.fn.filereadable(file) ~= 0
+            minifiles.open(file_exists and file or nil)
+            minifiles.reveal_cwd()
           end
         end,
         desc = "Explorer Tree",
@@ -34,9 +38,8 @@ return {
         trim_right = ">",
       },
       content = {
-        -- Filter .git
-        filter = function(fs_entry)
-          return not vim.startswith(fs_entry.name, ".git")
+        filter = function(entry)
+          return entry.name ~= ".DS_Store" and entry.name ~= ".git" and entry.name ~= ".direnv"
         end,
       },
       windows = {
@@ -50,9 +53,6 @@ return {
         width_nofocus = math.min(math.floor(vim.o.columns * 0.2), 25),
         -- Width of preview window
         width_preview = math.min(math.floor(vim.o.columns * 0.3), 80),
-      },
-      options = {
-        use_as_default_explorer = true,
       },
     },
   },
@@ -138,6 +138,13 @@ return {
         desc = "Find files",
       },
       {
+        "<leader>fF",
+        function()
+          require("telescope.builtin").find_files({ no_ignore = true })
+        end,
+        desc = "Find files (including hidden)",
+      },
+      {
         "<leader>fd",
         "<cmd>Telescope find_files search_dirs={'%:p:h'}<cr>",
         desc = "Files in directory",
@@ -148,7 +155,6 @@ return {
         desc = "Search fuzzy current buffer",
       },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
-      { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "Search current word" },
       { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Search grep" },
       {
         "<leader>sG",
@@ -231,9 +237,6 @@ return {
         ["<leader>gd"] = { name = "+diff" },
         ["<leader>s"] = { name = "+search" },
         ["<leader>u"] = { name = "+ui" },
-        ["<leader>z"] = { name = "+zettelkasten" },
-        ["<leader>zs"] = { name = "+search" },
-        ["<leader>zn"] = { name = "+notes" },
       },
     },
     config = function(_, opts)

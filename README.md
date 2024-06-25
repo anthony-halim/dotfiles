@@ -197,7 +197,6 @@ The following environment variables are supported.
 
   | Name                       | Type                   | Defaults                 | Description                             |
   |--------------------------- | ---------------------- | ------------------------ | --------------------------------------- |
-  | NVIM_EXTRA_NOTES           | boolean                | true                     | Enable notes related plugins in Neovim. |
   | NVIM_EXTRA_BIBLE           | boolean                | false                    | Enable Bible related plugins in Neovim. |
 </details>
 

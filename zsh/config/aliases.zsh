@@ -38,11 +38,7 @@ alias sshconf="cat $HOME/.ssh/config"
 
 alias gitconf="git config --list --show-origin"
 
-alias dateunixnow="date '+%s'"
-
 # Fuzzy search
-
-alias fh="fhist"
 
 alias kcc="kubectl config use-context"
 
