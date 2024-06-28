@@ -1,7 +1,5 @@
 # Set directories
 export ZSH="${HOME}/.config/zsh"
-export ZSH_PLUGIN="${ZSH}/plugin"
-ZSH_CUSTOM="${ZSH}/custom"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
 ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
