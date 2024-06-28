@@ -1,4 +1,4 @@
-export PATH="${HOME}/.local/bin:$PATH"
+path_append PATH "${HOME}/.local/bin"
 export EDITOR="nvim"
 
 # Zellij
@@ -14,14 +14,14 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # Pyenv
 [[ -d "${HOME}/.pyenv" ]] && {
 	export PYENV_ROOT="${HOME}/.pyenv"
-	command -v pyenv >/dev/null || export PATH="$PATH:$PYENV_ROOT/bin"
+    path_append PATH "$PYENV_ROOT/bin"
 	eval "$(pyenv init -)"
 }
 
 # Golang
-[[ -x "/usr/local/go/bin/go" ]] && {
-	[[ -v GOPATH ]] || { export GOPATH="${HOME}/go" }
-	command -v go >/dev/null || export PATH="$PATH:/usr/local/go/bin:$GOPATH/bin"
+[[ -d "${HOME}/go" ]] && {
+    path_append GOPATH "${HOME}/go"
+    path_append PATH "/usr/local/go/bin/" "${HOME}/go/bin"
 }
 
 # Rust

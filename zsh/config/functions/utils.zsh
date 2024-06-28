@@ -9,6 +9,29 @@ safe_source() {
   [[ ! -e "$1" ]] || source "$1"
 }
 
+# Append paths to the given variable if it does not exist.
+#
+# Usage:
+# path_append <name_of_var> [path1 [path2 [path3]]]
+#
+# Example:
+#   # Note the lack of '$' prefix to allow PATH to be 
+#   # passed as indirect variable
+#   path_append PATH "/usr/bin/"
+#
+# Params:
+#   - <name_of_var> name of variable containing paths.
+#   - path STRING path to append
+path_append() {
+  for ARG in "${@:2}"
+  do
+    if [ -d "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
+      eval "$1=${(P)1}:$ARG"
+    fi
+  done
+  export "${1}"
+}
+
 # Load local plugin from the plugin_name and plugin_source.
 #
 # Usage: 
