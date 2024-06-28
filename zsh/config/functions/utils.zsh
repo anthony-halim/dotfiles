@@ -26,10 +26,9 @@ path_append() {
   for ARG in "${@:2}"
   do
     if [ -d "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
-      eval "$1=${(P)1}:$ARG"
+      export "$1=${(P)1}:$ARG"
     fi
   done
-  export "${1}"
 }
 
 # Load local plugin from the plugin_name and plugin_source.
