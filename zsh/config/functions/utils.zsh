@@ -26,7 +26,11 @@ path_append() {
   for ARG in "${@:2}"
   do
     if [ -d "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
-      export "$1=${(P)1}:$ARG"
+      if [[ -z "${(P)1}" ]]; then
+        export "$1=$ARG"
+      else
+        export "$1=$ARG:${(P)1}"
+      fi
     fi
   done
 }

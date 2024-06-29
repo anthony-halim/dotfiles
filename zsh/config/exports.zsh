@@ -14,14 +14,14 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # Pyenv
 [[ -d "${HOME}/.pyenv" ]] && {
 	export PYENV_ROOT="${HOME}/.pyenv"
-    path_append PATH "$PYENV_ROOT/bin"
+	path_append PATH "$PYENV_ROOT/bin"
 	eval "$(pyenv init -)"
 }
 
 # Golang
-[[ -d "${HOME}/go" ]] && {
-    path_append GOPATH "${HOME}/go"
-    path_append PATH "/usr/local/go/bin/" "${HOME}/go/bin"
+[[ -x "/usr/local/go/bin/go" ]] && {
+	path_append GOPATH "${HOME}/go"
+	path_append PATH "/usr/local/go/bin/" "${HOME}/go/bin"
 }
 
 # Rust
