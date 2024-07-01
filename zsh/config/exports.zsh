@@ -21,7 +21,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # Golang
 [[ -x "/usr/local/go/bin/go" ]] && {
 	path_append GOPATH "${HOME}/go"
-	path_append PATH "/usr/local/go/bin/" "${HOME}/go/bin"
+	path_append PATH "/usr/local/go/bin" "${HOME}/go/bin"
 }
 
 # Rust
