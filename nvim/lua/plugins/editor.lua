@@ -17,7 +17,6 @@ return {
             local file = vim.api.nvim_buf_get_name(0)
             local file_exists = vim.fn.filereadable(file) ~= 0
             minifiles.open(file_exists and file or nil)
-            minifiles.reveal_cwd()
           end
         end,
         desc = "Explorer Tree",
