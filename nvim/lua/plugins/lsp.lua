@@ -261,7 +261,7 @@ return {
           return
         end
 
-        return { timeout_ms = 3000, lsp_fallback = true }
+        return { timeout_ms = 3000, lsp_format = "fallback" }
       end,
     },
     init = function()
