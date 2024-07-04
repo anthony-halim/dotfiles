@@ -25,7 +25,7 @@ safe_source() {
 path_append() {
   for ARG in "${@:2}"
   do
-    if [ -d "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
+    if [ -e "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
       if [[ -z "${(P)1}" ]]; then
         export "$1=$ARG"
       else
@@ -51,7 +51,7 @@ path_append() {
 path_prepend() {
   for ARG in "${@:2}"
   do
-    if [ -d "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
+    if [ -e "$ARG" ] && [[ ":${(P)1}:" != *":$ARG:"* ]]; then
       if [[ -z "${(P)1}" ]]; then
         export "$1=$ARG"
       else
