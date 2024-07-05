@@ -76,9 +76,9 @@ return {
     },
     opts = {
       pickers = {
-        find_files = {
-          hidden = true,
-        },
+        find_files = { theme = "ivy" },
+        live_grep = { theme = "ivy" },
+        buffers = { theme = "ivy" },
       },
       defaults = {
         prompt_prefix = " ",
@@ -114,7 +114,11 @@ return {
       },
     },
     keys = {
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Files in buffers" },
+      {
+        "<leader>fb",
+        "<cmd>Telescope buffers<cr>",
+        desc = "Files in buffers"
+      },
       {
         "<leader>ff",
         function()
@@ -133,36 +137,48 @@ return {
               cwd = get_git_root(),
             }
           end
-          require("telescope.builtin").find_files(opts)
+          require("telescope.builtin").find_files({ opts })
         end,
         desc = "Find files",
       },
       {
         "<leader>fF",
         function()
-          require("telescope.builtin").find_files({ no_ignore = true })
+          require("telescope.builtin").find_files({ no_ignore = true, hidden = true })
         end,
         desc = "Find files (including hidden)",
       },
       {
         "<leader>fd",
-        "<cmd>Telescope find_files search_dirs={'%:p:h'}<cr>",
-        desc = "Files in directory",
+        function()
+          require("telescope.builtin").find_files({ no_ignore = true, hidden = true, search_dirs = { '%:p:h' } })
+        end,
+        desc = "Find files (in directory)",
       },
       {
         "<leader>sb",
-        "<cmd>Telescope current_buffer_fuzzy_find<cr>",
+        function()
+          require("telescope.builtin").current_buffer_fuzzy_find({})
+        end,
         desc = "Search fuzzy current buffer",
       },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Search grep" },
       {
-        "<leader>sG",
-        "<cmd>Telescope live_grep search_dirs={'%:p:h'}<cr>",
-        desc = "Search by grep in file directory",
+        "<leader>ss",
+        function()
+          require("telescope.builtin").live_grep({})
+        end,
+        desc = "Search grep",
       },
-      { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
+      {
+        "<leader>sd",
+        function()
+          require("telescope.builtin").live_grep({ cwd = require("telescope.utils").buffer_dir() })
+        end,
+        desc = "Search by grep (in buffer directory)",
+      },
+      { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
     },
   },
 
@@ -304,9 +320,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
