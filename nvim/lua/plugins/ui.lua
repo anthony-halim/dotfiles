@@ -253,9 +253,9 @@ return {
       dashboard.section.header.val = vim.split(logo, "\n", { trimempty = true })
       dashboard.section.buttons.val = {
         dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-        dashboard.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
+        dashboard.button("s", " " .. " Find text", ":Telescope live_grep <CR>"),
         dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-        dashboard.button("s", " " .. " Restore Session", ":SessionLoadLast <CR>"),
+        dashboard.button("r", " " .. " Restore Session", ":SessionLoadLast <CR>"),
         dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dashboard.button("q", " " .. " Quit", ":qa<CR>"),
       }
