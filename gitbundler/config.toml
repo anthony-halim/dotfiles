@@ -1,20 +1,17 @@
-# [[bundle]]
-# name = "fzf"
-# source = "junegunn/fzf"
+[[bundle]]
+name = "fzf"
+source = "junegunn/fzf"
 
 [[bundle]]
 name = "nvim"
 source = "neovim/neovim"
 
+[[bundle]]
+name = "eza"
+source = "eza-community/eza"
+arch = "x86_64"
+
 # [[bundle]]
-# name = "eza"
-# source = "eza-community/eza"
-# arch = "x86_64"
-#
-# [[bundle]]
-# name = "zellij"
-# source = "zellij-org/zellij"
-# arch = "x86_64"
 # name = "zellij"
 # source = "zellij-org/zellij"
 # arch = "x86_64"
