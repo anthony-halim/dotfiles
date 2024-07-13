@@ -106,7 +106,7 @@ return {
         },
         file_ignore_patterns = {
           "^.git/",
-          "node_modules/"
+          "node_modules/",
         },
       },
       extensions = {
@@ -117,7 +117,7 @@ return {
       {
         "<leader>fb",
         "<cmd>Telescope buffers<cr>",
-        desc = "Files in buffers"
+        desc = "Files in buffers",
       },
       {
         "<leader>ff",
@@ -151,7 +151,7 @@ return {
       {
         "<leader>fd",
         function()
-          require("telescope.builtin").find_files({ no_ignore = true, hidden = true, search_dirs = { '%:p:h' } })
+          require("telescope.builtin").find_files({ no_ignore = true, hidden = true, search_dirs = { "%:p:h" } })
         end,
         desc = "Find files (in directory)",
       },
@@ -177,8 +177,8 @@ return {
         desc = "Search by grep (in buffer directory)",
       },
       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
     },
   },
 
@@ -236,30 +236,20 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
-      plugins = { spelling = true },
-      defaults = {
-        mode = { "n", "v" },
-        ["g"] = { name = "+goto" },
-        ["]"] = { name = "+next" },
-        ["["] = { name = "+prev" },
-        ["<leader>b"] = { name = "+buffer" },
-        ["<leader>B"] = { name = "+Bible" },
-        ["<leader>c"] = { name = "+code" },
-        ["<leader>d"] = { name = "+diagnostic" },
-        ["<leader>f"] = { name = "+file" },
-        ["<leader>g"] = { name = "+git" },
-        ["<leader>gh"] = { name = "+hunks" },
-        ["<leader>gb"] = { name = "+blame" },
-        ["<leader>gd"] = { name = "+diff" },
-        ["<leader>s"] = { name = "+search" },
-        ["<leader>u"] = { name = "+ui" },
+      spec = {
+        { "<leader>b", desc = "+buffer" },
+        { "<leader>B", desc = "+Bible" },
+        { "<leader>c", desc = "+code" },
+        { "<leader>d", desc = "+diagnostic" },
+        { "<leader>f", desc = "+file" },
+        { "<leader>g", desc = "+git" },
+        { "<leader>gh", desc = "+hunks" },
+        { "<leader>gb", desc = "+blame" },
+        { "<leader>gd", desc = "+diff" },
+        { "<leader>s", desc = "+search" },
+        { "<leader>u", desc = "+ui" },
       },
     },
-    config = function(_, opts)
-      local wk = require("which-key")
-      wk.setup(opts)
-      wk.register(opts.defaults)
-    end,
   },
 
   -- Custom highlighting
@@ -320,9 +310,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
