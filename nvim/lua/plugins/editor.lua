@@ -1,3 +1,7 @@
+-- We cache the results of "git rev-parse"
+-- Process creation is expensive in Windows, so this reduces latency
+local is_inside_work_tree = {}
+
 return {
   {
     "echasnovski/mini.files",
@@ -122,22 +126,13 @@ return {
       {
         "<leader>ff",
         function()
-          -- Check for git repo to use as cwd, then fallback to current directory
-          local function is_git_repo()
-            vim.fn.system("git rev-parse --is-inside-work-tree")
-            return vim.v.shell_error == 0
+          local opts = {} -- define here if you want to define something
+          vim.fn.system("git rev-parse --is-inside-work-tree")
+          if vim.v.shell_error == 0 then
+            require("telescope.builtin").git_files(opts)
+          else
+            require("telescope.builtin").find_files(opts)
           end
-          local function get_git_root()
-            local dot_git_path = vim.fn.finddir(".git", ".;")
-            return vim.fn.fnamemodify(dot_git_path, ":h")
-          end
-          local opts = {}
-          if is_git_repo() then
-            opts = {
-              cwd = get_git_root(),
-            }
-          end
-          require("telescope.builtin").find_files({ opts })
         end,
         desc = "Find files",
       },
@@ -177,8 +172,8 @@ return {
         desc = "Search by grep (in buffer directory)",
       },
       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
     },
   },
 
@@ -237,17 +232,17 @@ return {
     event = "VeryLazy",
     opts = {
       spec = {
-        { "<leader>b", desc = "+buffer" },
-        { "<leader>B", desc = "+Bible" },
-        { "<leader>c", desc = "+code" },
-        { "<leader>d", desc = "+diagnostic" },
-        { "<leader>f", desc = "+file" },
-        { "<leader>g", desc = "+git" },
+        { "<leader>b",  desc = "+buffer" },
+        { "<leader>B",  desc = "+Bible" },
+        { "<leader>c",  desc = "+code" },
+        { "<leader>d",  desc = "+diagnostic" },
+        { "<leader>f",  desc = "+file" },
+        { "<leader>g",  desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
         { "<leader>gb", desc = "+blame" },
         { "<leader>gd", desc = "+diff" },
-        { "<leader>s", desc = "+search" },
-        { "<leader>u", desc = "+ui" },
+        { "<leader>s",  desc = "+search" },
+        { "<leader>u",  desc = "+ui" },
       },
     },
   },
@@ -310,9 +305,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
