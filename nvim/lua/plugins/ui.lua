@@ -237,7 +237,9 @@ return {
       "echasnovski/mini.sessions",
     },
     opts = function()
-      local starter = require('mini.starter')
+      local utils = require("utils.utils")
+      local starter = require("mini.starter")
+      local sessions = require("mini.sessions")
       local options = {}
 
       options.header = [[
@@ -264,6 +266,19 @@ return {
         { name = "Lazy",        action = "Lazy",                 section = "Shortcuts" },
         { name = "Quit",        action = "qall",                 section = "Shortcuts" },
       }
+
+      -- Add additional shortcut to reload current directory
+      -- session if present
+      local session_name = utils.generate_session_name_cwd()
+      if sessions.detected[utils.generate_session_name_cwd()] ~= nil then
+        table.insert(options.items, 2, {
+          name = "Restore session",
+          action = function()
+            sessions.read(session_name)
+          end,
+          section = "Shortcuts",
+        })
+      end
 
       options.footer = function()
         local hour = tonumber(vim.fn.strftime('%H'))
