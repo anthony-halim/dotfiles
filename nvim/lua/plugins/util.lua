@@ -5,6 +5,7 @@ return {
   {
     "echasnovski/mini.sessions",
     version = false,
+    lazy = false,
     opts = {
       autoread = false,
     },

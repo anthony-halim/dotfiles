@@ -258,14 +258,11 @@ return {
 
       options.items = {
         starter.sections.sessions(3, true),
-        { name = "New file", action = "enew", section = "Builtin actions" },
-        { name = "Lazy",     action = "Lazy", section = "Builtin actions" },
-        { name = "Quit",     action = "qall", section = "Builtin actions" },
-      }
-
-      options.content_hooks = {
-        starter.gen_hook.adding_bullet(),
-        starter.gen_hook.aligning('center', 'center'),
+        { name = "Find file",   action = "Telescope find_files", section = "Shortcuts" },
+        { name = "Search grep", action = "Telescope live_grep",  section = "Shortcuts" },
+        { name = "New file",    action = "enew",                 section = "Shortcuts" },
+        { name = "Lazy",        action = "Lazy",                 section = "Shortcuts" },
+        { name = "Quit",        action = "qall",                 section = "Shortcuts" },
       }
 
       options.footer = function()
