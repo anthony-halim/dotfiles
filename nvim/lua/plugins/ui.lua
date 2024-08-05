@@ -185,9 +185,9 @@ return {
         local buffer = {
           { diagnostic_labels },
           { git_labels },
-          { ft_icon, guifg = ft_color },
+          { ft_icon,          guifg = ft_color },
           { " " },
-          { filename, gui = modified },
+          { filename,         gui = modified },
         }
         return buffer
       end,
@@ -230,58 +230,56 @@ return {
 
   -- Splash screen
   {
-    "goolord/alpha-nvim",
+    "echasnovski/mini.starter",
+    version = false,
     event = "VimEnter",
+    dependencies = {
+      "echasnovski/mini.sessions",
+    },
     opts = function()
-      local dashboard = require("alpha.themes.dashboard")
-      local logo = [[
-  ⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿
-  ⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿
-  ⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿
-  ⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡆⢻⣿⣿
-  ⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣤⣻⣿⣯⣤⣹⣿
-  ⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⡇⠀⣿⢟⣿⡀⠟⢹⣿
-  ⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⣤⣤⣼⣿⣿⡄⢹⣿
-  ⣷⠀⠀⠀⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⠛⠉⠈⢻
-  ⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠛⠛⠛⠀⠀⣤⣾
-  ⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠛⠁⣰⣿⣿
-  ⣿⣿⣿⣿⣿⣷⣦⣤⣤⣤⣤⣄⣀⣀⣀⣀⣀⣠⣤⣤⣤⣾⣿⣿⣿
+      local starter = require('mini.starter')
+      local options = {}
 
-      [ anthony-halim ]
-        ]]
+      options.header = [[
+⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿
+⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿
+⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡆⢻⣿⣿
+⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣤⣻⣿⣯⣤⣹⣿
+⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⡇⠀⣿⢟⣿⡀⠟⢹⣿
+⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⣤⣤⣼⣿⣿⡄⢹⣿
+⣷⠀⠀⠀⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⠛⠉⠈⢻
+⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠛⠛⠛⠀⠀⣤⣾
+⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠛⠁⣰⣿⣿
+⣿⣿⣿⣿⣿⣷⣦⣤⣤⣤⣤⣄⣀⣀⣀⣀⣀⣠⣤⣤⣤⣾⣿⣿⣿
+]]
 
-      dashboard.section.header.val = vim.split(logo, "\n", { trimempty = true })
-      dashboard.section.buttons.val = {
-        dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-        dashboard.button("s", " " .. " Find text", ":Telescope live_grep <CR>"),
-        dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-        dashboard.button("r", " " .. " Restore Session", ":SessionLoadLast <CR>"),
-        dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
-        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
+      options.evaluate_single = true
+
+      options.items = {
+        starter.sections.sessions(3, true),
+        { name = "New file", action = "enew", section = "Builtin actions" },
+        { name = "Lazy",     action = "Lazy", section = "Builtin actions" },
+        { name = "Quit",     action = "qall", section = "Builtin actions" },
       }
-      for _, button in ipairs(dashboard.section.buttons.val) do
-        button.opts.hl = "AlphaButtons"
-        button.opts.hl_shortcut = "AlphaShortcut"
-      end
-      dashboard.section.header.opts.hl = "AlphaHeader"
-      dashboard.section.buttons.opts.hl = "AlphaButtons"
-      dashboard.section.footer.opts.hl = "AlphaFooter"
-      dashboard.opts.layout[1].val = 8
-      return dashboard
-    end,
-    config = function(_, dashboard)
-      -- close Lazy and re-open when the dashboard is ready
-      if vim.o.filetype == "lazy" then
-        vim.cmd.close()
-        vim.api.nvim_create_autocmd("User", {
-          pattern = "AlphaReady",
-          callback = function()
-            require("lazy").show()
-          end,
-        })
+
+      options.content_hooks = {
+        starter.gen_hook.adding_bullet(),
+        starter.gen_hook.aligning('center', 'center'),
+      }
+
+      options.footer = function()
+        local hour = tonumber(vim.fn.strftime('%H'))
+        -- [04:00, 12:00) - morning, [12:00, 20:00) - day, [20:00, 04:00) - evening
+        local part_id = math.floor((hour + 4) / 8) + 1
+        local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
+        local username = vim.uv.os_get_passwd()['username'] or 'USERNAME'
+        return ('Good %s, %s'):format(day_part, username)
       end
 
-      require("alpha").setup(dashboard.opts)
+      options.silent = true
+
+      return options
     end,
   },
 
@@ -289,5 +287,5 @@ return {
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim", lazy = true },
+  { "MunifTanjim/nui.nvim",        lazy = true },
 }
