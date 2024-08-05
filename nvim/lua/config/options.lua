@@ -63,11 +63,8 @@ opt.fillchars = {
   diff = "╱",
   eob = " ",
 }
-
-if vim.fn.has("nvim-0.9.0") == 1 then
-  opt.splitkeep = "screen"
-  opt.shortmess:append({ C = true })
-end
+opt.splitkeep = "screen"
+opt.shortmess:append({ C = true })
 
 if vim.fn.has("wsl") == 1 then
   vim.g.clipboard = {
