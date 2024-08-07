@@ -15,7 +15,7 @@ return {
     name = "catppuccin",
     priority = 1000,
     opts = {
-      flavour = "frappe",
+      flavour = "macchiato",
       custom_highlights = function(colors)
         return {
           VertSplit = { fg = colors.surface2 },
