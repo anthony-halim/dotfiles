@@ -80,6 +80,7 @@ return {
     },
     opts = {
       pickers = {
+        git_files = { theme = "ivy" },
         find_files = { theme = "ivy" },
         live_grep = { theme = "ivy" },
         buffers = { theme = "ivy" },
@@ -172,8 +173,8 @@ return {
         desc = "Search by grep (in buffer directory)",
       },
       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
     },
   },
 
@@ -232,17 +233,17 @@ return {
     event = "VeryLazy",
     opts = {
       spec = {
-        { "<leader>b",  desc = "+buffer" },
-        { "<leader>B",  desc = "+Bible" },
-        { "<leader>c",  desc = "+code" },
-        { "<leader>d",  desc = "+diagnostic" },
-        { "<leader>f",  desc = "+file" },
-        { "<leader>g",  desc = "+git" },
+        { "<leader>b", desc = "+buffer" },
+        { "<leader>B", desc = "+Bible" },
+        { "<leader>c", desc = "+code" },
+        { "<leader>d", desc = "+diagnostic" },
+        { "<leader>f", desc = "+file" },
+        { "<leader>g", desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
         { "<leader>gb", desc = "+blame" },
         { "<leader>gd", desc = "+diff" },
-        { "<leader>s",  desc = "+search" },
-        { "<leader>u",  desc = "+ui" },
+        { "<leader>s", desc = "+search" },
+        { "<leader>u", desc = "+ui" },
       },
     },
   },
@@ -305,9 +306,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
