@@ -185,9 +185,9 @@ return {
         local buffer = {
           { diagnostic_labels },
           { git_labels },
-          { ft_icon,          guifg = ft_color },
+          { ft_icon, guifg = ft_color },
           { " " },
-          { filename,         gui = modified },
+          { filename, gui = modified },
         }
         return buffer
       end,
@@ -238,7 +238,6 @@ return {
     },
     opts = function()
       local utils = require("utils.utils")
-      local starter = require("mini.starter")
       local sessions = require("mini.sessions")
       local options = {}
 
@@ -259,19 +258,18 @@ return {
       options.evaluate_single = true
 
       options.items = {
-        starter.sections.sessions(3, true),
-        { name = "Find file",   action = "Telescope find_files", section = "Shortcuts" },
-        { name = "Search grep", action = "Telescope live_grep",  section = "Shortcuts" },
-        { name = "New file",    action = "enew",                 section = "Shortcuts" },
-        { name = "Lazy",        action = "Lazy",                 section = "Shortcuts" },
-        { name = "Quit",        action = "qall",                 section = "Shortcuts" },
+        { name = "Find file", action = "Telescope find_files", section = "Shortcuts" },
+        { name = "Search grep", action = "Telescope live_grep", section = "Shortcuts" },
+        { name = "New file", action = "enew", section = "Shortcuts" },
+        { name = "Lazy", action = "Lazy", section = "Shortcuts" },
+        { name = "Quit", action = "qall", section = "Shortcuts" },
       }
 
       -- Add additional shortcut to reload current directory
       -- session if present
       local session_name = utils.generate_session_name_cwd()
       if sessions.detected[utils.generate_session_name_cwd()] ~= nil then
-        table.insert(options.items, 2, {
+        table.insert(options.items, 0, {
           name = "Restore session",
           action = function()
             sessions.read(session_name)
@@ -281,12 +279,12 @@ return {
       end
 
       options.footer = function()
-        local hour = tonumber(vim.fn.strftime('%H'))
+        local hour = tonumber(vim.fn.strftime("%H"))
         -- [04:00, 12:00) - morning, [12:00, 20:00) - day, [20:00, 04:00) - evening
         local part_id = math.floor((hour + 4) / 8) + 1
-        local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
-        local username = vim.uv.os_get_passwd()['username'] or 'USERNAME'
-        return ('Good %s, %s'):format(day_part, username)
+        local day_part = ({ "evening", "morning", "afternoon", "evening" })[part_id]
+        local username = vim.uv.os_get_passwd()["username"] or "USERNAME"
+        return ("Good %s, %s"):format(day_part, username)
       end
 
       options.silent = true
@@ -299,5 +297,5 @@ return {
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim",        lazy = true },
+  { "MunifTanjim/nui.nvim", lazy = true },
 }
