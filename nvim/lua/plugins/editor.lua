@@ -126,7 +126,6 @@ return {
           local opts = {} -- define here if you want to define something
           local git_dir = require("utils.utils").git_dir_cwd()
           if git_dir ~= "" then
-            vim.notify(git_dir)
             require("telescope.builtin").git_files(opts)
           else
             require("telescope.builtin").find_files(opts)
