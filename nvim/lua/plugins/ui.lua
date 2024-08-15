@@ -136,6 +136,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "lewis6991/gitsigns.nvim",
+      "echasnovski/mini.icons",
     },
     opts = {
       window = {
@@ -149,16 +150,17 @@ return {
         },
       },
       render = function(props)
-        local icons = require("config").options.icons
+        local icons_config = require("config").options.icons
+        local icons = require("mini.icons")
 
         -- Filename
         local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":p:.")
-        local ft_icon, ft_color = require("nvim-web-devicons").get_icon_color(filename)
+        local ft_icon, ft_hl, _ = icons.get('file', filename)
         local modified = vim.api.nvim_get_option_value("modified", { buf = props.buf }) and "bold,italic" or "bold"
 
         -- Diagnostic
         local diagnostic_labels = {}
-        for severity, icon in pairs(icons.diagnostics) do
+        for severity, icon in pairs(icons_config.diagnostics) do
           local n = #vim.diagnostic.get(props.buf, { severity = vim.diagnostic.severity[string.upper(severity)] })
           if n > 0 then
             table.insert(diagnostic_labels, { icon .. " " .. n .. " ", group = "DiagnosticSign" .. severity })
@@ -172,7 +174,7 @@ return {
         local git_labels = {}
         local ok, gitsign_status = pcall(vim.api.nvim_buf_get_var, props.buf, "gitsigns_status_dict")
         if ok then
-          for name, icon in pairs(icons.git) do
+          for name, icon in pairs(icons_config.git) do
             if tonumber(gitsign_status[name]) and gitsign_status[name] > 0 then
               table.insert(git_labels, { icon .. " " .. gitsign_status[name] .. " ", group = "Diff" .. name })
             end
@@ -185,9 +187,9 @@ return {
         local buffer = {
           { diagnostic_labels },
           { git_labels },
-          { ft_icon, guifg = ft_color },
+          { ft_icon,          group = ft_hl },
           { " " },
-          { filename, gui = modified },
+          { filename,         gui = modified },
         }
         return buffer
       end,
@@ -258,11 +260,11 @@ return {
       options.evaluate_single = true
 
       options.items = {
-        { name = "Find file", action = "Telescope find_files", section = "Shortcuts" },
-        { name = "Search grep", action = "Telescope live_grep", section = "Shortcuts" },
-        { name = "New file", action = "enew", section = "Shortcuts" },
-        { name = "Lazy", action = "Lazy", section = "Shortcuts" },
-        { name = "Quit", action = "qall", section = "Shortcuts" },
+        { name = "Find file",   action = "Telescope find_files", section = "Shortcuts" },
+        { name = "Search grep", action = "Telescope live_grep",  section = "Shortcuts" },
+        { name = "New file",    action = "enew",                 section = "Shortcuts" },
+        { name = "Lazy",        action = "Lazy",                 section = "Shortcuts" },
+        { name = "Quit",        action = "qall",                 section = "Shortcuts" },
       }
 
       -- Add additional shortcut to reload current directory
@@ -294,5 +296,5 @@ return {
   },
 
   -- icons
-  { "nvim-tree/nvim-web-devicons", lazy = true },
+  { "echasnovski/mini.icons", opts = {}, lazy = true },
 }
