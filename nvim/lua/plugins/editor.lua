@@ -124,8 +124,9 @@ return {
         "<leader>ff",
         function()
           local opts = {} -- define here if you want to define something
-          vim.fn.system("git rev-parse --is-inside-work-tree")
-          if vim.v.shell_error == 0 then
+          local git_dir = require("utils.utils").git_dir_cwd()
+          if git_dir ~= "" then
+            vim.notify(git_dir)
             require("telescope.builtin").git_files(opts)
           else
             require("telescope.builtin").find_files(opts)
@@ -157,7 +158,12 @@ return {
       {
         "<leader>ss",
         function()
-          require("telescope.builtin").live_grep({})
+          local opts = {}
+          local git_dir = require("utils.utils").git_dir_cwd()
+          if git_dir ~= "" then
+            opts = { cwd = git_dir, }
+          end
+          require("telescope.builtin").live_grep(opts)
         end,
         desc = "Search grep",
       },
@@ -250,7 +256,8 @@ return {
     init = function()
       local function create_custom_global_hl(group_name, source_name)
         local existing_hl = vim.api.nvim_get_hl(0, { name = source_name })
-        vim.api.nvim_set_hl(0, group_name, {  italic = true, bold = true, underdotted = true, bg = existing_hl.bg, fg = existing_hl.fg })
+        vim.api.nvim_set_hl(0, group_name,
+          { italic = true, bold = true, underdotted = true, bg = existing_hl.bg, fg = existing_hl.fg })
       end
       create_custom_global_hl('CustomHipatternsFixme', 'DiagnosticError')
       create_custom_global_hl('CustomHipatternsHack', 'DiagnosticWarn')
