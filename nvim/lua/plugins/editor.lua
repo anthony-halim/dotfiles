@@ -234,7 +234,6 @@ return {
     opts = {
       spec = {
         { "<leader>b", desc = "+buffer" },
-        { "<leader>B", desc = "+Bible" },
         { "<leader>c", desc = "+code" },
         { "<leader>d", desc = "+diagnostic" },
         { "<leader>f", desc = "+file" },

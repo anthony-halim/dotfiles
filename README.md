@@ -192,14 +192,6 @@ The following environment variables are supported.
   | ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
 </details>
 
-<details>
-  <summary>Neovim</summary>
-
-  | Name                       | Type                   | Defaults                 | Description                             |
-  |--------------------------- | ---------------------- | ------------------------ | --------------------------------------- |
-  | NVIM_EXTRA_BIBLE           | boolean                | false                    | Enable Bible related plugins in Neovim. |
-</details>
-
 ##### `zsh/local_config/*.zsh`
 
 Any `*.zsh` file in this directory will be automatically loaded during ZSH initialisation. You can use this to add additional aliases or functions.

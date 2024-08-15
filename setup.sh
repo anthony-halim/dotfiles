@@ -674,67 +674,6 @@ setup_git() {
 	log::success "Finished setup for Git configurations."
 }
 
-setup_diatheke() {
-	# Installation
-	need_installation_predicate() {
-		if [[ ! $(command -v diatheke) ]] || [[ ! $(command -v installmgr) ]]; then
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	install_func() {
-		if [[ "${OSTYPE}" =~ ^darwin ]]; then
-			brew install sword
-		elif [[ "${OSTYPE}" =~ ^linux ]]; then
-			sudo apt install -y libsword-utils diatheke
-		fi
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		# Last update was 2018
-		echo 1
-	}
-	upgrade_func() {
-		return
-	}
-
-	# Configuration
-	configure_func() {
-		if [[ ! $(command -v installmgr) ]]; then
-			log::err "installmgr is not found"
-			return 0
-		fi
-
-		export SWORD_PATH="${HOME}/.sword"
-		local sword_mods="${SWORD_PATH}/mods.d"
-		log::info "SWORD mods.d is set at: ${sword_mods}."
-		mkdir -p "$sword_mods"
-
-		input::prompt_confirmation "Initialising user config file. Do you want to proceed?" && {
-			yes "yes" 2>/dev/null | installmgr -init # create a basic user config file
-		}
-
-		local has_kjv=$(installmgr -l | grep KJV | wc -l)
-		if [[ "$has_kjv" -eq 0 ]]; then
-			input::prompt_confirmation "Installing CrossWire's KJV Bible module. Do you want to proceed?" && {
-				yes "yes" 2>/dev/null | installmgr -sc               # sync config with list of known remote repos
-				yes "yes" 2>/dev/null | installmgr -r CrossWire      # refresh remote source
-				yes "yes" 2>/dev/null | installmgr -ri CrossWire KJV # install module from remote source
-				log::success "CrossWire's KJV Bible module installed"
-			}
-		else
-			log::info "KJV Bible module is already installed."
-		fi
-
-		# Explicitly return 0, user skipping configuration is not an error
-		return 0
-	}
-
-	pkg::setup_wrapper "diatheke" "CLI for the SWORD project, OSS Bible Software. Used for bible-verse.nvim" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
-}
-
 setup_wezterm() {
 	log::log "Setting up Wezterm (cross-platform terminal emulator)."
 
@@ -833,10 +772,6 @@ setup_rust
 # Neovim installation
 log::separator
 setup_neovim
-
-# diatheke installation
-log::separator
-setup_diatheke
 
 # Gitbundler installation
 log::separator
