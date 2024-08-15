@@ -1,7 +1,3 @@
--- We cache the results of "git rev-parse"
--- Process creation is expensive in Windows, so this reduces latency
-local is_inside_work_tree = {}
-
 return {
   {
     "echasnovski/mini.files",
@@ -173,8 +169,8 @@ return {
         desc = "Search by grep (in buffer directory)",
       },
       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
     },
   },
 
@@ -233,16 +229,16 @@ return {
     event = "VeryLazy",
     opts = {
       spec = {
-        { "<leader>b", desc = "+buffer" },
-        { "<leader>c", desc = "+code" },
-        { "<leader>d", desc = "+diagnostic" },
-        { "<leader>f", desc = "+file" },
-        { "<leader>g", desc = "+git" },
+        { "<leader>b",  desc = "+buffer" },
+        { "<leader>c",  desc = "+code" },
+        { "<leader>d",  desc = "+diagnostic" },
+        { "<leader>f",  desc = "+file" },
+        { "<leader>g",  desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
         { "<leader>gb", desc = "+blame" },
         { "<leader>gd", desc = "+diff" },
-        { "<leader>s", desc = "+search" },
-        { "<leader>u", desc = "+ui" },
+        { "<leader>s",  desc = "+search" },
+        { "<leader>u",  desc = "+ui" },
       },
     },
   },
@@ -251,6 +247,17 @@ return {
   {
     "echasnovski/mini.hipatterns",
     event = { "BufReadPost" },
+    init = function()
+      local function create_custom_global_hl(group_name, source_name)
+        local existing_hl = vim.api.nvim_get_hl(0, { name = source_name })
+        vim.api.nvim_set_hl(0, group_name, {  italic = true, bold = true, underdotted = true, bg = existing_hl.bg, fg = existing_hl.fg })
+      end
+      create_custom_global_hl('CustomHipatternsFixme', 'DiagnosticError')
+      create_custom_global_hl('CustomHipatternsHack', 'DiagnosticWarn')
+      create_custom_global_hl('CustomHipatternsWarn', 'DiagnosticWarn')
+      create_custom_global_hl('CustomHipatternsTodo', 'DiagnosticInfo')
+      create_custom_global_hl('CustomHipatternsNote', 'DiagnosticHint')
+    end,
     opts = function()
       local hipatterns = require("mini.hipatterns")
       return {
@@ -258,28 +265,28 @@ return {
         -- :so $VIMRUNTIME/syntax/hitest.vim
         highlighters = {
           fixme = {
-            pattern = "%f[%w]()FIXME()%f[%W]",
-            group = "DiagnosticVirtualTextError",
+            pattern = "%f[%w]()" .. vim.pesc("FIXME") .. "()%f[%W]",
+            group = "CustomHipatternsFixme",
             extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignError" },
           },
           hack = {
-            pattern = "%f[%w]()HACK()%f[%W]",
-            group = "DiagnosticVirtualTextWarn",
+            pattern = "%f[%w]()" .. vim.pesc("HACK") .. "()%f[%W]",
+            group = "CustomHipatternsHack",
             extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
           },
-          warn = {
-            pattern = "%f[%w]()WARNING()%f[%W]",
-            group = "DiagnosticVirtualTextWarn",
+          warning = {
+            pattern = "%f[%w]()" .. vim.pesc("WARNING") .. "()%f[%W]",
+            group = "CustomHipatternsWarn",
             extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
           },
           todo = {
-            pattern = "%f[%w]()TODO()%f[%W]",
-            group = "DiagnosticVirtualTextInfo",
+            pattern = "%f[%w]()" .. vim.pesc("TODO") .. "()%f[%W]",
+            group = "CustomHipatternsTodo",
             extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignInfo" },
           },
           note = {
-            pattern = "%f[%w]()NOTE()%f[%W]",
-            group = "DiagnosticVirtualTextHint",
+            pattern = "%f[%w]()" .. vim.pesc("NOTE") .. "()%f[%W]",
+            group = "CustomHipatternsNote",
             extmark_opts = { sign_text = " ", sign_hl_group = "DiagnosticSignHint" },
           },
 
@@ -305,9 +312,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
