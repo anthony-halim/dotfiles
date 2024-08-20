@@ -160,7 +160,7 @@ return {
           local opts = {}
           local git_dir = require("utils.utils").git_dir_cwd()
           if git_dir ~= "" then
-            opts = { cwd = git_dir, }
+            opts = { cwd = git_dir }
           end
           require("telescope.builtin").live_grep(opts)
         end,
@@ -174,8 +174,8 @@ return {
         desc = "Search by grep (in buffer directory)",
       },
       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
+      { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
     },
   },
 
@@ -234,16 +234,16 @@ return {
     event = "VeryLazy",
     opts = {
       spec = {
-        { "<leader>b",  desc = "+buffer" },
-        { "<leader>c",  desc = "+code" },
-        { "<leader>d",  desc = "+diagnostic" },
-        { "<leader>f",  desc = "+file" },
-        { "<leader>g",  desc = "+git" },
+        { "<leader>b", desc = "+buffer" },
+        { "<leader>c", desc = "+code" },
+        { "<leader>d", desc = "+diagnostic" },
+        { "<leader>f", desc = "+file" },
+        { "<leader>g", desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
         { "<leader>gb", desc = "+blame" },
         { "<leader>gd", desc = "+diff" },
-        { "<leader>s",  desc = "+search" },
-        { "<leader>u",  desc = "+ui" },
+        { "<leader>s", desc = "+search" },
+        { "<leader>u", desc = "+ui" },
       },
     },
   },
@@ -255,14 +255,17 @@ return {
     init = function()
       local function create_custom_global_hl(group_name, source_name)
         local existing_hl = vim.api.nvim_get_hl(0, { name = source_name })
-        vim.api.nvim_set_hl(0, group_name,
-          { italic = true, bold = true, underdotted = true, bg = existing_hl.bg, fg = existing_hl.fg })
+        vim.api.nvim_set_hl(
+          0,
+          group_name,
+          { italic = true, bold = true, underdotted = true, bg = existing_hl.bg, fg = existing_hl.fg }
+        )
       end
-      create_custom_global_hl('CustomHipatternsFixme', 'DiagnosticError')
-      create_custom_global_hl('CustomHipatternsHack', 'DiagnosticWarn')
-      create_custom_global_hl('CustomHipatternsWarn', 'DiagnosticWarn')
-      create_custom_global_hl('CustomHipatternsTodo', 'DiagnosticInfo')
-      create_custom_global_hl('CustomHipatternsNote', 'DiagnosticHint')
+      create_custom_global_hl("CustomHipatternsFixme", "DiagnosticError")
+      create_custom_global_hl("CustomHipatternsHack", "DiagnosticWarn")
+      create_custom_global_hl("CustomHipatternsWarn", "DiagnosticWarn")
+      create_custom_global_hl("CustomHipatternsTodo", "DiagnosticInfo")
+      create_custom_global_hl("CustomHipatternsNote", "DiagnosticHint")
     end,
     opts = function()
       local hipatterns = require("mini.hipatterns")
@@ -318,9 +321,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
