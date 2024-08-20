@@ -17,6 +17,7 @@ return {
       local autowrite = function()
         -- Only write session for meaningful buffers
         local bufs = vim.tbl_filter(function(b)
+          -- Filter by buffer type
           if
             vim.bo[b].filetype == "gitcommit"
             or vim.bo[b].filetype == "gitrebase"
@@ -24,6 +25,13 @@ return {
           then
             return false
           end
+
+          -- Filter by buffer name
+          local bufname = vim.api.nvim_buf_get_name(b)
+           if bufname:match("/tmp/edit%.[%d%a]+/") then
+            return false
+          end
+
           return vim.api.nvim_buf_get_name(b) ~= ""
         end, vim.api.nvim_list_bufs())
         if #bufs == 0 then
