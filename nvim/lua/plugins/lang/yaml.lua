@@ -8,7 +8,18 @@ return {
     end,
   },
   {
+    "williamboman/mason.nvim",
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed or {}, {
+        "yaml-language-server",
+      })
+    end,
+  },
+  {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "b0o/SchemaStore.nvim",
+    },
     opts = {
       servers = {
         yamlls = {
@@ -24,6 +35,14 @@ return {
           settings = {
             redhat = { telemetry = { enabled = false } },
             yaml = {
+              schemaStore = {
+                -- You must disable built-in schemaStore support if you want to use
+                -- this plugin and its advanced options like `ignore`.
+                enable = false,
+                -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+                url = "",
+              },
+              schemas = require("schemastore").yaml.schemas(),
               keyOrdering = false,
               format = {
                 enable = true,

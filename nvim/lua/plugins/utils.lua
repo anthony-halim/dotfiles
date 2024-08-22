@@ -28,7 +28,7 @@ return {
 
           -- Filter by buffer name
           local bufname = vim.api.nvim_buf_get_name(b)
-           if bufname:match("/tmp/edit%.[%d%a]+/") then
+          if bufname:match("/tmp/edit%.[%d%a]+/") then
             return false
           end
 
@@ -51,4 +51,11 @@ return {
 
   -- library used by other plugins
   { "nvim-lua/plenary.nvim", lazy = true },
+
+  -- SchemaStore for JSONs and YAMLs
+  {
+    "b0o/SchemaStore.nvim",
+    lazy = true,
+    version = false, -- last release is way too old
+  },
 }
