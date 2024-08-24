@@ -53,7 +53,27 @@ return {
         -- Width of preview window
         width_preview = math.min(math.floor(vim.o.columns * 0.3), 80),
       },
+      options = {
+        use_as_default_explorer = true,
+      },
     },
+    init = function()
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = vim.api.nvim_create_augroup("mini_files_start_directory", { clear = true }),
+        desc = "Start Mini.files with directory",
+        once = true,
+        callback = function()
+          if package.loaded["mini.files"] then
+            return
+          else
+            local stats = vim.uv.fs_stat(vim.fn.argv(0))
+            if stats and stats.type == "directory" then
+              require("mini.files").open()
+            end
+          end
+        end,
+      })
+    end,
   },
 
   -- Fuzzy Finder (files, lsp, etc)
