@@ -22,6 +22,7 @@ return {
             vim.bo[b].filetype == "gitcommit"
             or vim.bo[b].filetype == "gitrebase"
             or vim.bo[b].filetype == "ministarter"
+            or vim.bo[b].filetype == "minifiles"
           then
             return false
           end
