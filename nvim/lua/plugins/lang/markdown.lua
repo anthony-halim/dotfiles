@@ -2,7 +2,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreview", "MarkdownPreviewToggle", "MarkdownPreviewStop" },
-    ft = { "markdown", "telekasten" },
+    ft = { "markdown" },
     keys = {
       { "<leader>mp", "<cmd>MarkdownPreview<cr>", desc = "Markdown preview" },
     },

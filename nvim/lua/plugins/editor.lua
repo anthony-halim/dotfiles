@@ -93,6 +93,7 @@ return {
           return vim.fn.executable("make") == 1
         end,
       },
+      "echasnovski/mini.icons",
     },
     opts = {
       pickers = {
@@ -197,6 +198,9 @@ return {
       { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
     },
+    init = function ()
+      require("mini.icons").mock_nvim_web_devicons()
+    end
   },
 
   -- git signs highlights text that has changed since the list
