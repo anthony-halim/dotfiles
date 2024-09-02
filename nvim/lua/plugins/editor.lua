@@ -58,6 +58,9 @@ return {
       },
     },
     init = function()
+      -- For other plugins that only supports nvim-web-devicons
+      require("mini.icons").mock_nvim_web_devicons()
+
       vim.api.nvim_create_autocmd("BufEnter", {
         group = vim.api.nvim_create_augroup("mini_files_start_directory", { clear = true }),
         desc = "Start Mini.files with directory",
@@ -198,9 +201,6 @@ return {
       { "<leader>sr", "<cmd>Telescope resume<cr>", desc = "Resume search" },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
     },
-    init = function ()
-      require("mini.icons").mock_nvim_web_devicons()
-    end
   },
 
   -- git signs highlights text that has changed since the list
