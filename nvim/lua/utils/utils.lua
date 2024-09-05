@@ -22,7 +22,6 @@ function M.generate_session_name_cwd()
   return session_name_short
 end
 
-
 --- Returns git_dir associated with the cwd, if any.
 --- If cwd does not belong in git repo, returns empty string.
 ---@return string git_dir
@@ -31,12 +30,15 @@ function M.git_dir_cwd()
 
   -- If not present from cache, populate it
   if M._git_repo_cache[cwd] == nil then
+    local git_dir = ""
+
     vim.fn.system("git rev-parse --is-inside-work-tree")
-    if vim.v.shell_error == 0 then
-      local git_dir = vim.fn.system(string.format("git -C %s rev-parse --show-toplevel", vim.fn.expand("%:p:h")))
+    if not vim.v.shell_error then
+      git_dir = vim.fn.system(string.format("git -C %s rev-parse --show-toplevel", vim.fn.expand("%:p:h")))
       git_dir = string.gsub(git_dir, "\n", "") -- remove newline character from git_dir
-      M._git_repo_cache[cwd] = git_dir
     end
+
+    M._git_repo_cache[cwd] = git_dir
   end
 
   return M._git_repo_cache[cwd]
