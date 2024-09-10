@@ -237,6 +237,7 @@ return {
     event = "VimEnter",
     dependencies = {
       "echasnovski/mini.sessions",
+      "nvim-telescope/telescope.nvim",
     },
     opts = function()
       local utils = require("utils.utils")
@@ -260,11 +261,34 @@ return {
       options.evaluate_single = true
 
       options.items = {
-        { name = "Find file",   action = "Telescope find_files", section = "Shortcuts" },
-        { name = "Search grep", action = "Telescope live_grep",  section = "Shortcuts" },
-        { name = "New file",    action = "enew",                 section = "Shortcuts" },
-        { name = "Lazy",        action = "Lazy",                 section = "Shortcuts" },
-        { name = "Quit",        action = "qall",                 section = "Shortcuts" },
+        {
+          name = "Find file",
+          action = function()
+            local opts = {} -- define here if you want to define something
+            local git_dir = require("utils.utils").git_dir_cwd()
+            if git_dir ~= "" then
+              require("telescope.builtin").git_files(opts)
+            else
+              require("telescope.builtin").find_files(opts)
+            end
+          end,
+          section = "Shortcuts"
+        },
+        {
+          name = "Search grep",
+          action = function()
+            local opts = {}
+            local git_dir = require("utils.utils").git_dir_cwd()
+            if git_dir ~= "" then
+              opts = { cwd = git_dir }
+            end
+            require("telescope.builtin").live_grep(opts)
+          end,
+          section = "Shortcuts"
+        },
+        { name = "New file", action = "enew", section = "Shortcuts" },
+        { name = "Lazy",     action = "Lazy", section = "Shortcuts" },
+        { name = "Quit",     action = "qall", section = "Shortcuts" },
       }
 
       -- Add additional shortcut to reload current directory
