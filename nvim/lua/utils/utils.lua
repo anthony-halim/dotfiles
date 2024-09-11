@@ -33,7 +33,7 @@ function M.git_dir_cwd()
     local git_dir = ""
 
     vim.fn.system("git rev-parse --is-inside-work-tree")
-    if not vim.v.shell_error then
+    if vim.v.shell_error == 0 then
       git_dir = vim.fn.system(string.format("git -C %s rev-parse --show-toplevel", vim.fn.expand("%:p:h")))
       git_dir = string.gsub(git_dir, "\n", "") -- remove newline character from git_dir
     end
