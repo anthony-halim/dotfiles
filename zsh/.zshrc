@@ -42,10 +42,16 @@ setopt SHARE_HISTORY             # Share history between all sessions.
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 
 # Load zap plugins
+plug "Aloxaf/fzf-tab"
 plug "zsh-users/zsh-autosuggestions"
 plug "zsh-users/zsh-syntax-highlighting"
 plug "zap-zsh/sudo"
 plug "jeffreytse/zsh-vi-mode"
+
+# fzf-tab settings
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # Load add on settings and behaviours
 safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
