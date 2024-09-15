@@ -56,9 +56,7 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 # Load add on settings and behaviours
 safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
 safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
-safe_source "${ZSH_CONFIG}/functions/notes.zsh"
 safe_source "${ZSH_CONFIG}/functions/cmd.zsh"
-safe_source "${ZSH_CONFIG}/functions/kubectl_cmd.zsh"
 safe_source "${ZSH_CONFIG}/bindkeys.zsh"
 safe_source "${ZSH_CONFIG}/aliases.zsh"
 
