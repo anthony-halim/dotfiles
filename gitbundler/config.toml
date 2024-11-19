@@ -1,14 +1,12 @@
 [[bundle]]
-name = "fzf"
-source = "junegunn/fzf"
+name = "junegunn/fzf"
 
 [[bundle]]
-name = "nvim"
-source = "neovim/neovim"
+name = "neovim/neovim"
+bin = "nvim$"
 
 [[bundle]]
-name = "eza"
-source = "eza-community/eza"
+name = "eza-community/eza"
 arch = "x86_64"
 
 # [[bundle]]
