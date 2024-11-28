@@ -4,13 +4,13 @@ local act = wezterm.action
 
 local is_macos = string.find(wezterm.target_triple, "darwin")
 
--- Refactor frequently changed configurations
+-- Frequently changed configurations
 local windows_window_background_opacity = 1.0
 local windows_win32_system_backdrop = "Disable"
 local macos_window_background_opacity = 0.6
 local macos_window_background_blur = 20
 local font_with_fallback = wezterm.font_with_fallback({
-	"JetBrains Mono",
+	"JetBrainsMonoNL Nerd Font Propo",
 	"Symbols Nerd Font Mono",
 })
 local font_size = 10
@@ -64,6 +64,7 @@ config.window_close_confirmation = "NeverPrompt"
 
 -- Editor
 config.font = font_with_fallback
+config.font_dirs = { "fonts" } -- directory is relative to the wezterm.lua
 config.font_size = font_size
 
 -- Colors
