@@ -81,78 +81,41 @@ return {
 
   -- Fuzzy Finder (files, lsp, etc)
   {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    version = false, -- telescope did only one release, so use HEAD for now
+    "echasnovski/mini.pick",
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-      -- Only load if `make` is available. Make sure you have the system
-      -- requirements installed.
-      {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = "make",
-        cond = function()
-          return vim.fn.executable("make") == 1
-        end,
-      },
       "echasnovski/mini.icons",
+      "echasnovski/mini.extra",
     },
     opts = {
-      pickers = {
-        git_files = { theme = "ivy" },
-        find_files = { theme = "ivy" },
-        live_grep = { theme = "ivy" },
-        buffers = { theme = "ivy" },
+      delay = {
+        busy = 10,
       },
-      defaults = {
-        prompt_prefix = " ",
-        selection_caret = " ",
-        mappings = {
-          i = {
-            ["<C-Down>"] = function(...)
-              return require("telescope.actions").cycle_history_next(...)
-            end,
-            ["<C-Up>"] = function(...)
-              return require("telescope.actions").cycle_history_prev(...)
-            end,
-            ["<C-f>"] = function(...)
-              return require("telescope.actions").preview_scrolling_down(...)
-            end,
-            ["<C-b>"] = function(...)
-              return require("telescope.actions").preview_scrolling_up(...)
-            end,
-          },
-          n = {
-            ["q"] = function(...)
-              return require("telescope.actions").close(...)
-            end,
-          },
+      options = {
+        use_cache = true,
+      },
+      window = {
+        config = {
+          border = "rounded",
         },
-        file_ignore_patterns = {
-          "^.git/",
-          "node_modules/",
-        },
-      },
-      extensions = {
-        fzf = {},
-      },
+        prompt_prefix = " "
+      }
     },
     keys = {
       {
         "<leader>fb",
-        "<cmd>Telescope buffers<cr>",
-        desc = "Files in buffers",
+        function()
+          require("mini.pick").builtin.buffers()
+        end,
+        desc = "Find buffers",
       },
       {
         "<leader>ff",
         function()
-          local opts = {} -- define here if you want to define something
           local git_dir = require("utils.utils").git_dir_cwd()
           if git_dir ~= "" then
-            require("telescope.builtin").git_files(opts)
+            require("mini.extra").pickers.git_files()
           else
-            require("telescope.builtin").find_files(opts)
+            require("mini.pick").builtin.files()
           end
         end,
         desc = "Find files",
@@ -160,46 +123,74 @@ return {
       {
         "<leader>fF",
         function()
-          require("telescope.builtin").find_files({ no_ignore = true, hidden = true })
+          local git_dir = require("utils.utils").git_dir_cwd()
+          if git_dir ~= "" then
+            require("mini.extra").pickers.git_files({ scope = "ignored" })
+          else
+            require("mini.pick").builtin.files()
+          end
         end,
-        desc = "Find files (including hidden)",
+        desc = "Find hidden files",
       },
       {
         "<leader>fd",
         function()
-          require("telescope.builtin").find_files({ no_ignore = true, hidden = true, search_dirs = { "%:p:h" } })
+          local opts = { source = { cwd = vim.fn.expand("%:p:h") } }
+          require("mini.pick").builtin.files({}, opts)
         end,
-        desc = "Find files (in directory)",
+        desc = "Find files in buffer directory",
       },
       {
         "<leader>sb",
         function()
-          require("telescope.builtin").current_buffer_fuzzy_find({})
+          require("mini.extra").pickers.buf_lines({ scope = "current" })
         end,
         desc = "Search fuzzy current buffer",
       },
       {
         "<leader>ss",
         function()
-          local opts = {}
-          local git_dir = require("utils.utils").git_dir_cwd()
-          if git_dir ~= "" then
-            opts = { cwd = git_dir }
+          local local_opts = {}
+          if require("utils.utils").git_dir_cwd() ~= "" then
+            local_opts = { tool = "git" }
           end
-          require("telescope.builtin").live_grep(opts)
+          require("mini.pick").builtin.grep_live(local_opts)
         end,
         desc = "Search grep",
       },
       {
         "<leader>sd",
         function()
-          require("telescope.builtin").live_grep({ cwd = require("telescope.utils").buffer_dir() })
+          local opts = { source = { cwd = vim.fn.expand("%:p:h") } }
+          local local_opts = {}
+          if require("utils.utils").git_dir_cwd() ~= "" then
+            local_opts = { tool = "git" }
+          end
+          require("mini.pick").builtin.grep_live(local_opts, opts)
         end,
-        desc = "Search by grep (in buffer directory)",
+        desc = "Search grep in buffer directory",
       },
-      { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Search diagnostics" },
-      { "<leader>sr", "<cmd>Telescope resume<cr>",      desc = "Resume search" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>",   desc = "Search help" },
+      {
+        "<leader>sx",
+        function()
+          require("mini.extra").pickers.diagnostic()
+        end,
+        desc = "Search diagnostics"
+      },
+      {
+        "<leader>sh",
+        function()
+          require("mini.pick").builtin.help()
+        end,
+        desc = "Search help"
+      },
+      {
+        "<leader>sr",
+        function()
+          require("mini.pick").builtin.resume()
+        end,
+        desc = "Resume search",
+      },
     },
   },
 
@@ -276,55 +267,43 @@ return {
   {
     "echasnovski/mini.hipatterns",
     event = { "BufReadPost" },
-    init = function()
-      local function create_custom_global_hl(group_name, source_name)
-        local existing_hl = vim.api.nvim_get_hl(0, { name = source_name })
-        vim.api.nvim_set_hl(
-          0,
-          group_name,
-          { italic = true, bold = true, underdotted = true, bg = existing_hl.bg, fg = existing_hl.fg }
-        )
-      end
-      create_custom_global_hl("CustomHipatternsFixme", "DiagnosticError")
-      create_custom_global_hl("CustomHipatternsHack", "DiagnosticWarn")
-      create_custom_global_hl("CustomHipatternsWarn", "DiagnosticWarn")
-      create_custom_global_hl("CustomHipatternsTodo", "DiagnosticInfo")
-      create_custom_global_hl("CustomHipatternsNote", "DiagnosticHint")
-    end,
+    dependencies = {
+      "echasnovski/mini.extra",
+    },
     opts = function()
-      local hipatterns = require("mini.hipatterns")
+      local hi_words = require("mini.extra").gen_highlighter.words
+      local hi_patterns = require("mini.hipatterns")
       return {
         -- To see all highlight groups that are currently active,
         -- :so $VIMRUNTIME/syntax/hitest.vim
         highlighters = {
-          fixme = {
-            pattern = "%f[%w]()" .. vim.pesc("FIXME") .. "()%f[%W]",
-            group = "CustomHipatternsFixme",
-            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignError" },
-          },
-          hack = {
-            pattern = "%f[%w]()" .. vim.pesc("HACK") .. "()%f[%W]",
-            group = "CustomHipatternsHack",
-            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
-          },
-          warning = {
-            pattern = "%f[%w]()" .. vim.pesc("WARNING") .. "()%f[%W]",
-            group = "CustomHipatternsWarn",
-            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignWarn" },
-          },
-          todo = {
-            pattern = "%f[%w]()" .. vim.pesc("TODO") .. "()%f[%W]",
-            group = "CustomHipatternsTodo",
-            extmark_opts = { sign_text = "", sign_hl_group = "DiagnosticSignInfo" },
-          },
-          note = {
-            pattern = "%f[%w]()" .. vim.pesc("NOTE") .. "()%f[%W]",
-            group = "CustomHipatternsNote",
-            extmark_opts = { sign_text = " ", sign_hl_group = "DiagnosticSignHint" },
-          },
-
+          fixme = hi_words(
+            { "FIXME", "FIX" },
+            "MiniHipatternsFixme",
+            { sign_text = "", sign_hl_group = "DiagnosticSignError" }
+          ),
+          hack = hi_words(
+            { "HACK" },
+            "MiniHipatternsHack",
+            { sign_text = "", sign_hl_group = "DiagnosticSignWarn" }
+          ),
+          warning = hi_words(
+            { "WARNING" },
+            "MiniHipatternsHack",
+            { sign_text = "", sign_hl_group = "DiagnosticSignWarn" }
+          ),
+          todo = hi_words(
+            { "TODO" },
+            "MiniHipatternsTodo",
+            { sign_text = "", sign_hl_group = "DiagnosticSignInfo" }
+          ),
+          note = hi_words(
+            { "NOTE" },
+            "MiniHipatternsNote",
+            { sign_text = " ", sign_hl_group = "DiagnosticSignHint" }
+          ),
           -- Highlight hex color strings (`#rrggbb`) using that color
-          hex_color = hipatterns.gen_highlighter.hex_color({ priority = 2000 }),
+          hex_color = hi_patterns.gen_highlighter.hex_color({ priority = 2000 }),
         },
       }
     end,

@@ -60,9 +60,6 @@ return {
   {
     "rcarriga/nvim-notify",
     event = "VeryLazy",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-    },
     opts = {
       timeout = 3000,
       max_height = function()
@@ -72,9 +69,6 @@ return {
         return math.floor(vim.o.columns * 0.75)
       end,
       stages = "fade_in_slide_out",
-    },
-    keys = {
-      { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "Search notification" },
     },
     init = function()
       vim.notify = require("notify")
@@ -237,7 +231,8 @@ return {
     event = "VimEnter",
     dependencies = {
       "echasnovski/mini.sessions",
-      "nvim-telescope/telescope.nvim",
+      "echasnovski/mini.pick",
+      "echasnovski/mini.extra",
     },
     opts = function()
       local utils = require("utils.utils")
@@ -264,12 +259,11 @@ return {
         {
           name = "Find file",
           action = function()
-            local opts = {} -- define here if you want to define something
             local git_dir = require("utils.utils").git_dir_cwd()
             if git_dir ~= "" then
-              require("telescope.builtin").git_files(opts)
+              require("mini.extra").pickers.git_files()
             else
-              require("telescope.builtin").find_files(opts)
+              require("mini.pick").builtin.files()
             end
           end,
           section = "Shortcuts"
@@ -277,12 +271,11 @@ return {
         {
           name = "Search grep",
           action = function()
-            local opts = {}
-            local git_dir = require("utils.utils").git_dir_cwd()
-            if git_dir ~= "" then
-              opts = { cwd = git_dir }
+            local local_opts = {}
+            if require("utils.utils").git_dir_cwd() ~= "" then
+              local_opts = { tool = "git" }
             end
-            require("telescope.builtin").live_grep(opts)
+            require("mini.pick").builtin.grep_live(local_opts)
           end,
           section = "Shortcuts"
         },
