@@ -91,7 +91,7 @@ return {
       },
       sections = {
         lualine_a = { "mode" },
-        lualine_b = { { "b:gitsigns_head", icon = "" } },
+        lualine_b = { { "branch", icon = "" } },
         lualine_c = {
           { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
           { "filename", path = 1, symbols = { modified = " ", readonly = "", unnamed = "" } },
@@ -129,8 +129,8 @@ return {
     "b0o/incline.nvim",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "lewis6991/gitsigns.nvim",
       "echasnovski/mini.icons",
+      "echasnovski/mini.diff",
     },
     opts = {
       window = {
@@ -149,7 +149,7 @@ return {
 
         -- Filename
         local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":p:.")
-        local ft_icon, ft_hl, _ = icons.get('file', filename)
+        local ft_icon, ft_hl, _ = icons.get("file", filename)
         local modified = vim.api.nvim_get_option_value("modified", { buf = props.buf }) and "bold,italic" or "bold"
 
         -- Diagnostic
@@ -166,12 +166,18 @@ return {
 
         -- Git changes
         local git_labels = {}
-        local ok, gitsign_status = pcall(vim.api.nvim_buf_get_var, props.buf, "gitsigns_status_dict")
+        local ok, minidiff_summary = pcall(vim.api.nvim_buf_get_var, props.buf, "minidiff_summary")
         if ok then
-          for name, icon in pairs(icons_config.git) do
-            if tonumber(gitsign_status[name]) and gitsign_status[name] > 0 then
-              table.insert(git_labels, { icon .. " " .. gitsign_status[name] .. " ", group = "Diff" .. name })
-            end
+          if minidiff_summary.add > 0 then
+            table.insert(git_labels, { icons_config.git.add .. minidiff_summary.add .. " ", group = "MiniDiffSignAdd" })
+          end
+          if minidiff_summary.change > 0 then
+            table.insert(git_labels,
+              { icons_config.git.change .. minidiff_summary.change .. " ", group = "MiniDiffSignChange" })
+          end
+          if minidiff_summary.delete > 0 then
+            table.insert(git_labels,
+              { icons_config.git.delete .. minidiff_summary.delete .. " ", group = "MiniDiffSignDelete" })
           end
           if #git_labels > 0 then
             table.insert(git_labels, { "| " })

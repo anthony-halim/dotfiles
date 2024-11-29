@@ -50,9 +50,6 @@ return {
     end,
   },
 
-  -- library used by other plugins
-  { "nvim-lua/plenary.nvim", lazy = true },
-
   -- SchemaStore for JSONs and YAMLs
   {
     "b0o/SchemaStore.nvim",

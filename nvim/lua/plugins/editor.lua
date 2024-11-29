@@ -194,52 +194,54 @@ return {
     },
   },
 
-  -- git signs highlights text that has changed since the list
-  -- git commit, and also lets you interactively stage & unstage
-  -- hunks in a commit.
+  -- highlights text that has changed since the list git commit
   {
-    "lewis6991/gitsigns.nvim",
+    "echasnovski/mini.diff",
     event = { "BufReadPre", "BufNewFile" },
     opts = {
-      signs = {
-        add = { text = "▎" },
-        change = { text = "▎" },
-        delete = { text = "" },
-        topdelete = { text = "" },
-        changedelete = { text = "▎" },
-        untracked = { text = "▎" },
+      view = {
+        style = "sign",
+        signs = { add = "▎", change = "▒", delete = "", },
       },
-      current_line_blame_opts = {
-        delay = 200,
-        ignore_whitespace = true,
-        virt_text_priority = 100,
-      },
-      preview_config = {
-        border = "rounded",
-      },
-      on_attach = function(buffer)
-        local gs = package.loaded.gitsigns
+      mappings = {
+        -- Apply hunks inside a visual/operator region
+        apply = "<leader>gha",
 
-        local function map(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
-        end
+        -- Reset hunks inside a visual/operator region
+        reset = "<leader>ghr",
 
-        -- stylua: ignore start
-        map("n", "]h", gs.next_hunk, "Next hunk")
-        map("n", "[h", gs.prev_hunk, "Prev hunk")
-        map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage hunk")
-        map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset hunk")
-        map("n", "<leader>ghS", gs.stage_buffer, "Stage buffer")
-        map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo stage hunk")
-        map("n", "<leader>ghR", gs.reset_buffer, "Reset buffer")
-        map("n", "<leader>ghp", gs.preview_hunk, "Preview hunk")
-        map("n", "<leader>gbb", function() gs.blame_line({ full = false }) end, "Blame line")
-        map("n", "<leader>gbB", function() gs.blame_line({ full = true }) end, "Blame line (full)")
-        map("n", "<leader>gbt", gs.toggle_current_line_blame, "Toggle blame line")
-        map("n", "<leader>gdd", gs.diffthis, "Diff this")
-        map("n", "<leader>gdD", function() gs.diffthis("~") end, "Diff this ~")
-      end,
+        -- Hunk range textobject to be used inside operator
+        -- Works also in Visual mode if mapping differs from apply and reset
+        textobject = "<leader>gho",
+
+        -- Go to hunk range in corresponding direction
+        goto_first = "[H",
+        goto_prev = "[h",
+        goto_next = "]h",
+        goto_last = "]H",
+      },
     },
+  },
+
+  -- Git support
+  {
+    "echasnovski/mini-git",
+    main = "mini.git",
+    lazy = false,
+    opts = {
+      job = {
+        timeout = 5000, -- in ms
+      },
+    },
+    keys = {
+      {
+        "<leader>gc",
+        function ()
+          require("mini.git").show_at_cursor({ split = "horizontal" })
+        end,
+        desc = "Show at cursor",
+      },
+    }
   },
 
   -- which-key helps you remember key bindings by showing a popup
