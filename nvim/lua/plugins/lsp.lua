@@ -36,37 +36,37 @@ local lsp_keymaps = {
   },
   {
     key = "gd",
-    func = require("telescope.builtin").lsp_definitions,
+    func = function() require("mini.extra").pickers.lsp({ scope = "definition" }) end,
     desc = "Goto definition",
   },
   {
     key = "gD",
-    func = vim.lsp.buf.declaration,
+    func = function() require("mini.extra").pickers.lsp({ scope = "declaration" }) end,
     desc = "Goto declaration",
   },
   {
     key = "gr",
-    func = require("telescope.builtin").lsp_references,
+    func = function() require("mini.extra").pickers.lsp({ scope = "references" }) end,
     desc = "Goto references",
   },
   {
     key = "gI",
-    func = require("telescope.builtin").lsp_implementations,
+    func = function() require("mini.extra").pickers.lsp({ scope = "implementation" }) end,
     desc = "Goto implementation",
   },
   {
     key = "<leader>cd",
-    func = require("telescope.builtin").lsp_type_definitions,
+    func = function() require("mini.extra").pickers.lsp({ scope = "type_definition" }) end,
     desc = "Type definition",
   },
   {
     key = "<leader>csd",
-    func = require("telescope.builtin").lsp_document_symbols,
+    func = function() require("mini.extra").pickers.lsp({ scope = "document_symbol" }) end,
     desc = "Document symbols",
   },
   {
     key = "<leader>csw",
-    func = require("telescope.builtin").lsp_dynamic_workspace_symbols,
+    func = function() require("mini.extra").pickers.lsp({ scope = "workspace_symbol" }) end,
     desc = "Workspace symbols",
   },
 }
@@ -118,7 +118,7 @@ end
 return {
   {
     "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
+    ft = "lua",                                -- only load on lua files
     dependencies = {
       { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
     },
@@ -139,7 +139,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
 
       -- LSP search functionalities
-      "nvim-telescope/telescope.nvim",
+      "echasnovski/mini.extra",
     },
     opts = {
       -- options for vim.diagnostic.config()

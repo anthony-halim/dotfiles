@@ -524,36 +524,6 @@ setup_go() {
 	pkg::setup_wrapper "Golang" "programming language" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
 }
 
-setup_rust() {
-	# Installation
-	need_installation_predicate() {
-		if [[ ! $(command -v cargo) ]]; then
-			echo 0
-		else
-			echo 1
-		fi
-	}
-	install_func() {
-		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	}
-
-	# Upgrade
-	need_upgrade_predicate() {
-		# No upgrade for this
-		echo 1
-	}
-	upgrade_func() {
-		return
-	}
-
-	# Configuration
-	configure_func() {
-		return
-	}
-
-	pkg::setup_wrapper "Rust" "programming language" need_installation_predicate install_func need_upgrade_predicate upgrade_func configure_func
-}
-
 setup_gitdelta() {
 	local pkg_name="git-delta"
 	local pkg_description="syntax highlighter for git, diff, and grep output"
@@ -679,6 +649,7 @@ setup_wezterm() {
 
 	# Wezterm is installed manually, we only ensure that the configuration is symlinked
 	symlink::safe_create "${SCRIPT_DIR}/wezterm/wezterm.lua" "${HOME}/.wezterm.lua"
+	symlink::safe_create "${SCRIPT_DIR}/wezterm/fonts" "${HOME}/fonts"
 
 	log::success "Finished setup for Wezterm."
 }
@@ -764,10 +735,6 @@ setup_pyenv
 # Golang installation
 log::separator
 setup_go "$GOLANG_TAG"
-
-# Rust installation
-log::separator
-setup_rust
 
 # Neovim installation
 log::separator

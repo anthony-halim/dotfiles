@@ -12,9 +12,9 @@ M.options = {
       Info = " ",
     },
     git = {
-      added = " ",
-      modified = " ",
-      removed = " ",
+      add = " ",
+      change = " ",
+      delete = " ",
     },
     kinds = {
       Array = " ",
