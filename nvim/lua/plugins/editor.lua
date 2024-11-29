@@ -203,31 +203,35 @@ return {
         style = "sign",
         signs = { add = "▎", change = "▒", delete = "", },
       },
-      mappings = {
-        -- Apply hunks inside a visual/operator region
-        apply = "<leader>gha",
-
-        -- Reset hunks inside a visual/operator region
-        reset = "<leader>ghr",
-
-        -- Hunk range textobject to be used inside operator
-        -- Works also in Visual mode if mapping differs from apply and reset
-        textobject = "<leader>gho",
-
-        -- Go to hunk range in corresponding direction
-        goto_first = "[H",
-        goto_prev = "[h",
-        goto_next = "]h",
-        goto_last = "]H",
-      },
     },
+    keys = {
+      {
+        "<leader>gha",
+        function()
+          -- first 'gh': mapping for mini.diff.operator("apply")
+          -- second 'gh': textobject for Git hunk
+          vim.cmd [[norm ghgh]]
+        end,
+        desc = "Apply hunks",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>ghr",
+        function()
+          -- first 'gH': mapping for mini.diff.operator("reset")
+          -- second 'gh': textobject for Git hunk
+          vim.cmd [[norm gHgh]]
+        end,
+        desc = "Reset hunks",
+        mode = { "n", "v" },
+      },
+    }
   },
 
   -- Git support
   {
     "echasnovski/mini-git",
     main = "mini.git",
-    lazy = false,
     opts = {
       job = {
         timeout = 5000, -- in ms
