@@ -97,8 +97,8 @@ return {
         config = {
           border = "rounded",
         },
-        prompt_prefix = " "
-      }
+        prompt_prefix = " ",
+      },
     },
     keys = {
       {
@@ -111,8 +111,7 @@ return {
       {
         "<leader>ff",
         function()
-          local git_dir = require("utils.utils").git_dir_cwd()
-          if git_dir ~= "" then
+          if require("utils.utils").git_dir_cwd() ~= "" then
             require("mini.extra").pickers.git_files()
           else
             require("mini.pick").builtin.files()
@@ -123,8 +122,7 @@ return {
       {
         "<leader>fF",
         function()
-          local git_dir = require("utils.utils").git_dir_cwd()
-          if git_dir ~= "" then
+          if require("utils.utils").git_dir_cwd() ~= "" then
             require("mini.extra").pickers.git_files({ scope = "ignored" })
           else
             require("mini.pick").builtin.files()
@@ -175,14 +173,14 @@ return {
         function()
           require("mini.extra").pickers.diagnostic()
         end,
-        desc = "Search diagnostics"
+        desc = "Search diagnostics",
       },
       {
         "<leader>sh",
         function()
           require("mini.pick").builtin.help()
         end,
-        desc = "Search help"
+        desc = "Search help",
       },
       {
         "<leader>sr",
@@ -201,7 +199,7 @@ return {
     opts = {
       view = {
         style = "sign",
-        signs = { add = "▎", change = "▒", delete = "", },
+        signs = { add = "▎", change = "▒", delete = "" },
       },
     },
     keys = {
@@ -210,7 +208,7 @@ return {
         function()
           -- first 'gh': mapping for mini.diff.operator("apply")
           -- second 'gh': textobject for Git hunk
-          vim.cmd [[norm ghgh]]
+          vim.cmd([[norm ghgh]])
         end,
         desc = "Apply hunks",
         mode = { "n", "v" },
@@ -220,12 +218,12 @@ return {
         function()
           -- first 'gH': mapping for mini.diff.operator("reset")
           -- second 'gh': textobject for Git hunk
-          vim.cmd [[norm gHgh]]
+          vim.cmd([[norm gHgh]])
         end,
         desc = "Reset hunks",
         mode = { "n", "v" },
       },
-    }
+    },
   },
 
   -- Git support
@@ -240,12 +238,12 @@ return {
     keys = {
       {
         "<leader>gc",
-        function ()
+        function()
           require("mini.git").show_at_cursor({ split = "horizontal" })
         end,
         desc = "Show at cursor",
       },
-    }
+    },
   },
 
   -- which-key helps you remember key bindings by showing a popup
@@ -255,16 +253,16 @@ return {
     event = "VeryLazy",
     opts = {
       spec = {
-        { "<leader>b",  desc = "+buffer" },
-        { "<leader>c",  desc = "+code" },
-        { "<leader>d",  desc = "+diagnostic" },
-        { "<leader>f",  desc = "+file" },
-        { "<leader>g",  desc = "+git" },
+        { "<leader>b", desc = "+buffer" },
+        { "<leader>c", desc = "+code" },
+        { "<leader>d", desc = "+diagnostic" },
+        { "<leader>f", desc = "+file" },
+        { "<leader>g", desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
         { "<leader>gb", desc = "+blame" },
         { "<leader>gd", desc = "+diff" },
-        { "<leader>s",  desc = "+search" },
-        { "<leader>u",  desc = "+ui" },
+        { "<leader>s", desc = "+search" },
+        { "<leader>u", desc = "+ui" },
       },
     },
   },
@@ -330,9 +328,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },
