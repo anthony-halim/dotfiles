@@ -130,6 +130,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "echasnovski/mini.icons",
+      "echasnovski/mini.diff",
     },
     opts = {
       window = {
