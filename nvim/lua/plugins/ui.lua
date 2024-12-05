@@ -130,7 +130,6 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "echasnovski/mini.icons",
-      "echasnovski/mini.diff",
     },
     opts = {
       window = {
@@ -168,14 +167,14 @@ return {
         local git_labels = {}
         local ok, minidiff_summary = pcall(vim.api.nvim_buf_get_var, props.buf, "minidiff_summary")
         if ok then
-          if minidiff_summary.add > 0 then
+          if minidiff_summary.add ~= nil and minidiff_summary.add > 0 then
             table.insert(git_labels, { icons_config.git.add .. minidiff_summary.add .. " ", group = "MiniDiffSignAdd" })
           end
-          if minidiff_summary.change > 0 then
+          if minidiff_summary.change ~= nil and minidiff_summary.change > 0 then
             table.insert(git_labels,
               { icons_config.git.change .. minidiff_summary.change .. " ", group = "MiniDiffSignChange" })
           end
-          if minidiff_summary.delete > 0 then
+          if minidiff_summary.delete ~= nil and minidiff_summary.delete > 0 then
             table.insert(git_labels,
               { icons_config.git.delete .. minidiff_summary.delete .. " ", group = "MiniDiffSignDelete" })
           end
@@ -186,7 +185,6 @@ return {
 
         local buffer = {
           { diagnostic_labels },
-          { git_labels },
           { ft_icon,          group = ft_hl },
           { " " },
           { filename,         gui = modified },
