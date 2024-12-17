@@ -1,86 +1,39 @@
 return {
-  -- LSP progress
   {
-    "linrongbin16/lsp-progress.nvim",
+    "folke/snacks.nvim",
     opts = {
-      client_format = function(client_name, spinner, series_messages)
-        if #series_messages == 0 then
-          return nil
-        end
-        return {
-          name = client_name,
-          body = spinner .. " " .. table.concat(series_messages, ", "),
-        }
-      end,
-      format = function(client_messages)
-        --- @param name string
-        --- @param msg string?
-        --- @return string
-        local function stringify(name, msg)
-          return msg and string.format("%s %s", name, msg) or name
-        end
-
-        local sign = "" -- nf-fa-gear \uf013
-        local lsp_clients = vim.lsp.get_clients()
-        local messages_map = {}
-        for _, climsg in ipairs(client_messages) do
-          messages_map[climsg.name] = climsg.body
-        end
-
-        if #lsp_clients > 0 then
-          table.sort(lsp_clients, function(a, b)
-            return a.name < b.name
-          end)
-          local builder = {}
-          for _, cli in ipairs(lsp_clients) do
-            if type(cli) == "table" and type(cli.name) == "string" and string.len(cli.name) > 0 then
-              if messages_map[cli.name] then
-                table.insert(builder, stringify(cli.name, messages_map[cli.name]))
-              else
-                table.insert(builder, stringify(cli.name))
-              end
-            end
-          end
-          if #builder > 0 then
-            return sign .. " " .. table.concat(builder, ", ")
-          end
-        end
-        return ""
-      end,
-    },
-  },
-
-  -- Better vim.ui
-  {
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-  },
-
-  -- Better vim.notify
-  {
-    "rcarriga/nvim-notify",
-    event = "VeryLazy",
-    opts = {
-      timeout = 3000,
-      max_height = function()
-        return math.floor(vim.o.lines * 0.75)
-      end,
-      max_width = function()
-        return math.floor(vim.o.columns * 0.75)
-      end,
-      stages = "fade_in_slide_out",
+      -- Better notification
+      notifier = { enabled = true },
+      -- Better vim.ui.input
+      input = { enabled = true },
+      styles = {
+        -- Input at cursor position
+        input = { relative = "cursor", row = -3, col = 0 },
+      },
     },
     init = function()
-      vim.notify = require("notify")
+      -- LSP Progress via notification
+      vim.api.nvim_create_autocmd("LspProgress", {
+        ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+        callback = function(ev)
+          local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+          ---@diagnostic disable-next-line: param-type-mismatch
+          vim.notify(vim.lsp.status(), "info", {
+            id = "lsp_progress",
+            title = "LSP Progress",
+            opts = function(notif)
+              notif.icon = ev.data.params.value.kind == "end" and " "
+                or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            end,
+          })
+        end,
+      })
     end,
   },
 
   -- statusline
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = {
-      "linrongbin16/lsp-progress.nvim",
-    },
     opts = {
       options = {
         theme = "auto",
@@ -101,27 +54,10 @@ return {
           { "encoding" },
           { "fileformat" },
           { "filetype" },
-          {
-            function()
-              local ok, lsp_progress = pcall(require, "lsp-progress")
-              if ok then
-                return lsp_progress.progress()
-              end
-            end,
-          },
         },
       },
       extensions = { "nvim-tree", "lazy" },
     },
-    init = function()
-      -- listen lsp-progress event and refresh lualine
-      vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
-      vim.api.nvim_create_autocmd("User", {
-        group = "lualine_augroup",
-        pattern = "LspProgressStatusUpdated",
-        callback = require("lualine").refresh,
-      })
-    end,
   },
 
   -- Floating filename for each window
@@ -172,12 +108,16 @@ return {
             table.insert(git_labels, { icons_config.git.add .. minidiff_summary.add .. " ", group = "MiniDiffSignAdd" })
           end
           if minidiff_summary.change ~= nil and minidiff_summary.change > 0 then
-            table.insert(git_labels,
-              { icons_config.git.change .. minidiff_summary.change .. " ", group = "MiniDiffSignChange" })
+            table.insert(
+              git_labels,
+              { icons_config.git.change .. minidiff_summary.change .. " ", group = "MiniDiffSignChange" }
+            )
           end
           if minidiff_summary.delete ~= nil and minidiff_summary.delete > 0 then
-            table.insert(git_labels,
-              { icons_config.git.delete .. minidiff_summary.delete .. " ", group = "MiniDiffSignDelete" })
+            table.insert(
+              git_labels,
+              { icons_config.git.delete .. minidiff_summary.delete .. " ", group = "MiniDiffSignDelete" }
+            )
           end
           if #git_labels > 0 then
             table.insert(git_labels, { "| " })
@@ -186,9 +126,9 @@ return {
 
         local buffer = {
           { diagnostic_labels },
-          { ft_icon,          group = ft_hl },
+          { ft_icon, group = ft_hl },
           { " " },
-          { filename,         gui = modified },
+          { filename, gui = modified },
         }
         return buffer
       end,
@@ -271,7 +211,7 @@ return {
               require("mini.pick").builtin.files()
             end
           end,
-          section = "Shortcuts"
+          section = "Shortcuts",
         },
         {
           name = "Search grep",
@@ -282,11 +222,11 @@ return {
             end
             require("mini.pick").builtin.grep_live(local_opts)
           end,
-          section = "Shortcuts"
+          section = "Shortcuts",
         },
         { name = "New file", action = "enew", section = "Shortcuts" },
-        { name = "Lazy",     action = "Lazy", section = "Shortcuts" },
-        { name = "Quit",     action = "qall", section = "Shortcuts" },
+        { name = "Lazy", action = "Lazy", section = "Shortcuts" },
+        { name = "Quit", action = "qall", section = "Shortcuts" },
       }
 
       -- Add additional shortcut to reload current directory

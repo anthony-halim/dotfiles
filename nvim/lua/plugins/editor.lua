@@ -259,8 +259,6 @@ return {
         { "<leader>f", desc = "+file" },
         { "<leader>g", desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
-        { "<leader>gb", desc = "+blame" },
-        { "<leader>gd", desc = "+diff" },
         { "<leader>s", desc = "+search" },
         { "<leader>u", desc = "+ui" },
       },

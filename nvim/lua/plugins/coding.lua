@@ -1,19 +1,4 @@
 return {
-  -- snippets
-  {
-    "L3MON4D3/LuaSnip",
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end,
-    },
-    opts = {
-      history = true,
-      delete_check_events = "TextChanged",
-    },
-  },
-
   -- Autocompletion
   {
     "saghen/blink.cmp",
@@ -31,10 +16,13 @@ return {
         menu = {
           draw = {
             columns = {
-              { "kind_icon", "kind",              gap = 1 },
-              { "label",     "label_description", gap = 1 },
+              { "kind_icon", "kind", gap = 1 },
+              { "label", "label_description", gap = 1 },
             },
-          }
+          },
+        },
+        trigger = {
+          show_on_insert_trigger_character = false,
         },
       },
     },
