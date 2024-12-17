@@ -278,6 +278,9 @@ I have done my best to ensure that the script is:
 > # Given installation dir: "C:\Program Files\Wezterm"
 > # Given local repository configuration: "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles"
 > New-Item -Path "C:\Program Files\WezTerm\wezterm.lua" -ItemType SymbolicLink -Value "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles\wezterm\wezterm.lua"
+>
+> # Link the fonts folder
+> New-Item -Path "C:\Program Files\WezTerm\fonts" -ItemType SymbolicLink -Value "\\wsl.localhost\Ubuntu\home\anthonyhalim\repos\personal\dotfiles\wezterm\fonts"
 > ```
 
 Below is a screenshot of a snippet of the script run:
