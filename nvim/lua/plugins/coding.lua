@@ -27,17 +27,13 @@ return {
         -- Disable cmdline completions
         cmdline = {},
         default = { "lsp", "path", "luasnip", "buffer" },
-        providers = {
-          snippets = {
-            should_show_items = function(ctx)
-              return ctx.trigger.initial_kind ~= "trigger_character"
-            end,
-          }
-        }
       },
       completion = {
         documentation = {
           auto_show = true,
+        },
+        trigger = {
+          show_on_insert_on_trigger_character = false,
         },
         menu = {
           draw = {
