@@ -25,7 +25,7 @@ opt.list = true            -- Show some invisible characters (tabs...
 opt.listchars = {
   trail = "␣",
   -- This is now handled by snacks.nvim indent functionality
-  -- leadmultispace = "│ ",
+  leadmultispace = "│ ",
   tab = "⇥ ",
 }
 opt.mouse = "a"                    -- Enable mouse mode

@@ -111,22 +111,14 @@ return {
       {
         "<leader>ff",
         function()
-          if require("utils.utils").git_dir_cwd() ~= "" then
-            require("mini.extra").pickers.git_files()
-          else
-            require("mini.pick").builtin.files()
-          end
+          require("utils.pickers").mini_pick.gitfiles_with_fallback()
         end,
         desc = "Find files",
       },
       {
         "<leader>fF",
         function()
-          if require("utils.utils").git_dir_cwd() ~= "" then
-            require("mini.extra").pickers.git_files({ scope = "ignored" })
-          else
-            require("mini.pick").builtin.files()
-          end
+          require("utils.pickers").mini_pick.gitfiles_with_fallback({ scope = "ignored" })
         end,
         desc = "Find hidden files",
       },
@@ -253,14 +245,14 @@ return {
     event = "VeryLazy",
     opts = {
       spec = {
-        { "<leader>b", desc = "+buffer" },
-        { "<leader>c", desc = "+code" },
-        { "<leader>d", desc = "+diagnostic" },
-        { "<leader>f", desc = "+file" },
-        { "<leader>g", desc = "+git" },
+        { "<leader>b",  desc = "+buffer" },
+        { "<leader>c",  desc = "+code" },
+        { "<leader>d",  desc = "+diagnostic" },
+        { "<leader>f",  desc = "+file" },
+        { "<leader>g",  desc = "+git" },
         { "<leader>gh", desc = "+hunks" },
-        { "<leader>s", desc = "+search" },
-        { "<leader>u", desc = "+ui" },
+        { "<leader>s",  desc = "+search" },
+        { "<leader>u",  desc = "+ui" },
       },
     },
   },
@@ -326,9 +318,9 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     keys = {
-      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>", desc = "Resize window (left)" },
-      { "<C-M-j>", "<cmd>SmartResizeDown<cr>", desc = "Resize window (down)" },
-      { "<C-M-k>", "<cmd>SmartResizeUp<cr>", desc = "Resize window (up)" },
+      { "<C-M-h>", "<cmd>SmartResizeLeft<cr>",  desc = "Resize window (left)" },
+      { "<C-M-j>", "<cmd>SmartResizeDown<cr>",  desc = "Resize window (down)" },
+      { "<C-M-k>", "<cmd>SmartResizeUp<cr>",    desc = "Resize window (up)" },
       { "<C-M-l>", "<cmd>SmartResizeRight<cr>", desc = "Resize window (right)" },
     },
   },

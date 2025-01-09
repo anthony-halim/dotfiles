@@ -8,9 +8,10 @@ return {
       input = { enabled = true },
       styles = {
         -- Input at cursor position
-        input = { relative = "cursor", row = -3, col = 0 },
+        -- input = { relative = "cursor", row = -3, col = 0 },
+        input = { relative = "cursor" },
       },
-      indent = { enabled = true },
+      -- indent = { enabled = true },
     },
     init = function()
       -- LSP Progress via notification
@@ -24,7 +25,7 @@ return {
             title = "LSP Progress",
             opts = function(notif)
               notif.icon = ev.data.params.value.kind == "end" and " "
-                or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+                  or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
             end,
           })
         end,
@@ -127,9 +128,9 @@ return {
 
         local buffer = {
           { diagnostic_labels },
-          { ft_icon, group = ft_hl },
+          { ft_icon,          group = ft_hl },
           { " " },
-          { filename, gui = modified },
+          { filename,         gui = modified },
         }
         return buffer
       end,
@@ -172,12 +173,7 @@ return {
         {
           name = "Find file",
           action = function()
-            local git_dir = require("utils.utils").git_dir_cwd()
-            if git_dir ~= "" then
-              require("mini.extra").pickers.git_files()
-            else
-              require("mini.pick").builtin.files()
-            end
+            require("utils.pickers").mini_pick.gitfiles_with_fallback()
           end,
           section = "Shortcuts",
         },
@@ -193,8 +189,8 @@ return {
           section = "Shortcuts",
         },
         { name = "New file", action = "enew", section = "Shortcuts" },
-        { name = "Lazy", action = "Lazy", section = "Shortcuts" },
-        { name = "Quit", action = "qall", section = "Shortcuts" },
+        { name = "Lazy",     action = "Lazy", section = "Shortcuts" },
+        { name = "Quit",     action = "qall", section = "Shortcuts" },
       }
 
       -- Add additional shortcut to reload current directory
