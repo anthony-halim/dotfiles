@@ -1,35 +1,30 @@
 return {
+  -- Better vim.ui
   {
-    "folke/snacks.nvim",
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+  },
+
+  -- Better vim.notify
+  {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy",
     opts = {
-      -- Better notification
-      notifier = { enabled = true },
-      -- Better vim.ui.input
-      input = { enabled = true },
-      styles = {
-        -- Input at cursor position
-        -- input = { relative = "cursor", row = -3, col = 0 },
-        input = { relative = "cursor" },
-      },
-      -- indent = { enabled = true },
+      timeout = 3000,
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.75)
+      end,
+      stages = "fade_in_slide_out",
     },
     init = function()
-      -- LSP Progress via notification
-      vim.api.nvim_create_autocmd("LspProgress", {
-        ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
-        callback = function(ev)
-          local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-          ---@diagnostic disable-next-line: param-type-mismatch
-          vim.notify(vim.lsp.status(), "info", {
-            id = "lsp_progress",
-            title = "LSP Progress",
-            opts = function(notif)
-              notif.icon = ev.data.params.value.kind == "end" and " "
-                  or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
-            end,
-          })
-        end,
-      })
+      -- Override vim.notify
+      vim.notify = require("notify")
+
+      -- LSP integration
+      vim.lsp.handlers["$/progress"] = require("utils.utils").lsp_progress
     end,
   },
 

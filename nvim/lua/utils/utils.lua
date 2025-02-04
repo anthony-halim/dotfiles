@@ -44,4 +44,86 @@ function M.git_dir_cwd()
   return M._git_repo_cache[cwd]
 end
 
+-- nvim-notify integration
+
+M._client_notifs = {}
+M._spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+
+function M._get_notif_data(client_id, token)
+  if not M._client_notifs[client_id] then
+    M._client_notifs[client_id] = {}
+  end
+
+  if not M._client_notifs[client_id][token] then
+    M._client_notifs[client_id][token] = {}
+  end
+
+  return M._client_notifs[client_id][token]
+end
+
+function M._update_spinner(client_id, token)
+  local notif_data = M._get_notif_data(client_id, token)
+
+  if notif_data.spinner then
+    local new_spinner = (notif_data.spinner + 1) % #M._spinner_frames
+    notif_data.spinner = new_spinner
+
+    notif_data.notification = vim.notify(nil, nil, {
+      hide_from_history = true,
+      icon = M._spinner_frames[new_spinner],
+      replace = notif_data.notification,
+    })
+
+    vim.defer_fn(function()
+      M._update_spinner(client_id, token)
+    end, 100)
+  end
+end
+
+function M._format_title(title, client_name)
+  return client_name .. (#title > 0 and ": " .. title or "")
+end
+
+function M._format_message(message, percentage)
+  return (percentage and percentage .. "%\t" or "") .. (message or "")
+end
+
+function M.lsp_progress(_, result, ctx)
+  local client_id = ctx.client_id
+
+  local val = result.value
+  if not val.kind then
+    return
+  end
+
+  local notif_data = M._get_notif_data(client_id, result.token)
+
+  if val.kind == "begin" then
+    local message = M._format_message(val.message, val.percentage)
+
+    notif_data.notification = vim.notify(message, "info", {
+      title = M._format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
+      icon = M._spinner_frames[1],
+      timeout = false,
+      hide_from_history = false,
+    })
+    notif_data.spinner = 1
+
+    M._update_spinner(client_id, result.token)
+  elseif val.kind == "report" and notif_data then
+    notif_data.notification = vim.notify(M._format_message(val.message, val.percentage), "info", {
+      replace = notif_data.notification,
+      hide_from_history = false,
+    })
+  elseif val.kind == "end" and notif_data then
+    notif_data.notification =
+        vim.notify(val.message and M._format_message(val.message) or "Complete", "info", {
+          icon = "",
+          replace = notif_data.notification,
+          timeout = 3000,
+        })
+    notif_data.spinner = nil
+  end
+end
+
 return M

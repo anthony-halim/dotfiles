@@ -140,11 +140,7 @@ return {
       {
         "<leader>ss",
         function()
-          local local_opts = {}
-          if require("utils.utils").git_dir_cwd() ~= "" then
-            local_opts = { tool = "git" }
-          end
-          require("mini.pick").builtin.grep_live(local_opts)
+          require("utils.pickers").mini_pick.git_greplive_with_fallback()
         end,
         desc = "Search grep",
       },
