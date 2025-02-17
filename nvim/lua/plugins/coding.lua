@@ -14,9 +14,9 @@ return {
         preset = "enter",
       },
       snippets = { preset = 'luasnip' },
-      sources = {
-        -- Disable cmdline completions
-        cmdline = {},
+      cmdline = {
+        -- Disable cmdline
+        enabled = false
       },
       completion = {
         documentation = {
