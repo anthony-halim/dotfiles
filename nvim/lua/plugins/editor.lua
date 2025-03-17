@@ -178,6 +178,10 @@ return {
         desc = "Resume search",
       },
     },
+    init = function ()
+      -- Override vim.ui.select
+      vim.ui.select = require("mini.pick").ui_select
+    end
   },
 
   -- highlights text that has changed since the list git commit
