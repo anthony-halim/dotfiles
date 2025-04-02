@@ -717,8 +717,8 @@ log::separator
 setup_gitdelta
 
 # fzf setup
-log::separator
-setup_fzf
+# log::separator
+# setup_fzf
 
 # Lazygit installation
 log::separator
