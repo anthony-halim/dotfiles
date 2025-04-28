@@ -350,8 +350,8 @@ setup_neovim() {
 		git_bin_pattern="nvim-macos.tar.gz"
 		git_bin_path="nvim-macos/bin/nvim"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		git_bin_pattern="nvim-linux64.tar.gz"
-		git_bin_path="nvim-linux64/bin/nvim"
+		git_bin_pattern="nvim-linux-x86_64.tar.gz"
+		git_bin_path="nvim-linux-x86_64/bin/nvim"
 	fi
 
 	pkg_install_predicate_func() {
