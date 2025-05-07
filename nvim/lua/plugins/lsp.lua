@@ -134,9 +134,9 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "folke/lazydev.nvim", ft = "lua", opts = {} },
+      { "folke/lazydev.nvim",                ft = "lua",        opts = {} },
       "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
+      { "williamboman/mason-lspconfig.nvim", version = "^1.0.0" },
 
       -- LSP search functionalities
       "echasnovski/mini.extra",
@@ -177,7 +177,7 @@ return {
       -- Ensure the servers above are installed
       local mason_lspconfig = require("mason-lspconfig")
       mason_lspconfig.setup({
-        automatic_installation = true,
+        automatic_enable = true,
         ensure_installed = vim.tbl_keys(opts.servers),
       })
 
@@ -205,6 +205,7 @@ return {
   {
     "williamboman/mason.nvim",
     cmd = "Mason",
+    version = "^1.0.0",
     keys = {
       { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" },
     },
