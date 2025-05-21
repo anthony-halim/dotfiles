@@ -86,35 +86,6 @@ local function lsp_set_keymap(bufnr, key_opt)
   end
 end
 
--- Configs and setups when a LSP attaches to a buffer.
-local function lsp_on_attach_bufnr(_, bufnr)
-  -- Setup keymaps
-  for _, key_opt in ipairs(lsp_keymaps) do
-    lsp_set_keymap(bufnr, key_opt)
-  end
-
-  -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-    vim.lsp.buf.format()
-  end, { desc = "Format current buffer with LSP" })
-
-  -- Setup floating window for LSP diagnostics on cursor hold
-  vim.api.nvim_create_autocmd("CursorHold", {
-    buffer = bufnr,
-    callback = function()
-      local opts = {
-        focusable = false,
-        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-        border = "none",
-        source = "always",
-        prefix = " ",
-        scope = "cursor",
-      }
-      vim.diagnostic.open_float(nil, opts)
-    end,
-  })
-end
-
 return {
   {
     "folke/lazydev.nvim",
@@ -134,31 +105,16 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "folke/lazydev.nvim",                ft = "lua",        opts = {} },
-      "williamboman/mason.nvim",
-      { "williamboman/mason-lspconfig.nvim", version = "^1.0.0" },
+      { "folke/lazydev.nvim", ft = "lua", opts = {} },
+      "mason-org/mason.nvim",
+      "mason-org/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
 
       -- LSP search functionalities
       "echasnovski/mini.extra",
       "saghen/blink.cmp",
     },
     opts = {
-      -- options for vim.diagnostic.config()
-      diagnostics = {
-        update_in_insert = false,
-        virtual_text = false, -- We use floating window
-        severity_sort = true,
-        signs = {
-          text = {
-            [vim.diagnostic.severity.ERROR] = require("config").options.icons.diagnostics.Error,
-            [vim.diagnostic.severity.WARN] = require("config").options.icons.diagnostics.Warn,
-            [vim.diagnostic.severity.HINT] = require("config").options.icons.diagnostics.Hint,
-            [vim.diagnostic.severity.INFO] = require("config").options.icons.diagnostics.Info,
-          },
-        },
-      },
-
-      -- list of servers
       servers = {
         lua_ls = {
           Lua = {
@@ -170,42 +126,92 @@ return {
     },
 
     config = function(_, opts)
-      -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
+      --  This function gets run when an LSP attaches to a particular buffer.
+      --    That is to say, every time a new file is opened that is associated with
+      --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
+      --    function will be executed to configure the current buffer
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+        callback = function(event)
+          -- Setup keymaps
+          for _, key_opt in ipairs(lsp_keymaps) do
+            lsp_set_keymap(event.buf, key_opt)
+          end
 
-      -- Ensure the servers above are installed
-      local mason_lspconfig = require("mason-lspconfig")
-      mason_lspconfig.setup({
-        automatic_enable = true,
-        ensure_installed = vim.tbl_keys(opts.servers),
-      })
+          -- Create a command `:Format` local to the LSP buffer
+          vim.api.nvim_buf_create_user_command(event.buf, "Format", function(_)
+            vim.lsp.buf.format()
+          end, { desc = "Format current buffer with LSP" })
 
-      -- Setup handlers
-      mason_lspconfig.setup_handlers({
-        function(server_name)
-          require("lspconfig")[server_name].setup({
-            capabilities = capabilities,
-            on_attach = lsp_on_attach_bufnr,
-            settings = opts.servers[server_name],
-            filetypes = (opts.servers[server_name] or {}).filetypes,
+          -- Setup floating window for LSP diagnostics on cursor hold
+          vim.api.nvim_create_autocmd("CursorHold", {
+            buffer = event.buf,
+            callback = function()
+              local diagnostics_opts = {
+                focusable = false,
+                close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+                border = "rounded",
+                source = "always",
+                prefix = " ",
+                scope = "cursor",
+              }
+              vim.diagnostic.open_float(nil, diagnostics_opts)
+            end,
           })
         end,
       })
 
       -- Setup diagnostics
+      -- See :help vim.diagnostic.Opts
       for name, icon in pairs(require("config").options.icons.diagnostics) do
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
       end
-      vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
+
+      vim.diagnostic.config {
+        severity_sort = true,
+        float = { border = 'rounded', source = 'if_many' },
+        signs = vim.g.have_nerd_font and {
+          text = {
+            [vim.diagnostic.severity.ERROR] = require("config").options.icons.diagnostics.Error,
+            [vim.diagnostic.severity.WARN] = require("config").options.icons.diagnostics.Warn,
+            [vim.diagnostic.severity.HINT] = require("config").options.icons.diagnostics.Hint,
+            [vim.diagnostic.severity.INFO] = require("config").options.icons.diagnostics.Info,
+          },
+        } or {},
+        virtual_text = false, -- We use floating window
+      }
+
+      -- LSP servers and clients are able to communicate to each other what features they support.
+      --  By default, Neovim doesn't support everything that is in the LSP specification.
+      --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
+      --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+      local ensure_installed = vim.tbl_keys(opts.servers or {})
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      require('mason-lspconfig').setup {
+        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_enable = true,
+        automatic_installation = false,
+        handlers = {
+          function(server_name)
+            local server = opts.servers[server_name] or {}
+            -- This handles overriding only values explicitly passed
+            -- by the server configuration above. Useful when disabling
+            -- certain features of an LSP (for example, turning off formatting for ts_ls)
+            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+            require('lspconfig')[server_name].setup(server)
+          end,
+        },
+      }
     end,
   },
 
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = "Mason",
-    version = "^1.0.0",
     keys = {
       { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" },
     },
