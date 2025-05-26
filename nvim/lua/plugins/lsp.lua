@@ -60,6 +60,11 @@ local lsp_keymaps = {
     desc = "Type definition",
   },
   {
+    key = "<leader>cf",
+    func = vim.lsp.buf.format,
+    desc = "Format current buffer",
+  },
+  {
     key = "<leader>csd",
     func = function() require("mini.extra").pickers.lsp({ scope = "document_symbol" }) end,
     desc = "Document symbols",
@@ -137,11 +142,6 @@ return {
           for _, key_opt in ipairs(lsp_keymaps) do
             lsp_set_keymap(event.buf, key_opt)
           end
-
-          -- Create a command `:Format` local to the LSP buffer
-          vim.api.nvim_buf_create_user_command(event.buf, "Format", function(_)
-            vim.lsp.buf.format()
-          end, { desc = "Format current buffer with LSP" })
 
           -- Setup floating window for LSP diagnostics on cursor hold
           vim.api.nvim_create_autocmd("CursorHold", {
