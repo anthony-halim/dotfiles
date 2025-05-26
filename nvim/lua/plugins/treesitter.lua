@@ -2,7 +2,6 @@ return {
   {
     -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
-    version = false, -- last release is way too old and doesn't work on Windows
     branch = "main",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
@@ -139,6 +138,5 @@ return {
         },
       },
     },
-    main = "nvim-treesitter.configs",
   },
 }
