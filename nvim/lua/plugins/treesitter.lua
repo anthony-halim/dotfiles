@@ -2,7 +2,8 @@ return {
   {
     -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
-    branch = "main",
+    branch = "master",
+    main = "nvim-treesitter.configs",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
@@ -11,12 +12,10 @@ return {
     cmd = { "TSUpdateSync" },
     opts = {
       ensure_installed = {
-        "bash",
         "c",
         "html",
         "javascript",
         "jsdoc",
-        "json",
         "lua",
         "luadoc",
         "luap",
@@ -29,7 +28,6 @@ return {
         "typescript",
         "vim",
         "vimdoc",
-        "yaml",
         "kdl",
       },
 
