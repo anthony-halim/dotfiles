@@ -151,9 +151,9 @@ setup_fzf() {
 	# Binary target pattern
 	local git_bin_pattern
 	if [[ "${OSTYPE}" =~ ^darwin ]]; then
-		git_bin_pattern="fzf-{{ git_tag }}-darwin_amd64.tar.gz"
+		git_bin_pattern="fzf-{{ truncated_git_tag }}-darwin_amd64.tar.gz"
 	elif [[ "${OSTYPE}" =~ ^linux ]]; then
-		git_bin_pattern="fzf-{{ git_tag }}-linux_amd64.tar.gz"
+		git_bin_pattern="fzf-{{ truncated_git_tag }}-linux_amd64.tar.gz"
 	fi
 
 	pkg_install_predicate_func() {
@@ -717,8 +717,8 @@ log::separator
 setup_gitdelta
 
 # fzf setup
-# log::separator
-# setup_fzf
+log::separator
+setup_fzf
 
 # Lazygit installation
 log::separator

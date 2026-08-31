@@ -8,7 +8,7 @@ fi
 
 if command -v "eza" &>/dev/null; then
   alias ls="eza"
-  alias ll="eza -alrg --icons"
+  alias ll="eza -alrg --icons auto"
 else
   alias ll="ls -alrt"
 fi

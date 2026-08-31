@@ -2,7 +2,7 @@ return {
   -- Autocompletion
   {
     "saghen/blink.cmp",
-    version = "1.*",
+    version = "1.5.*",
     dependencies = {
       "echasnovski/mini.icons",
       { "L3MON4D3/LuaSnip", version = "v2.*" },
