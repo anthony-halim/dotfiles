@@ -171,14 +171,14 @@ return {
       vim.diagnostic.config {
         severity_sort = true,
         float = { border = 'rounded', source = 'if_many' },
-        signs = vim.g.have_nerd_font and {
+        signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = require("config").options.icons.diagnostics.Error,
             [vim.diagnostic.severity.WARN] = require("config").options.icons.diagnostics.Warn,
             [vim.diagnostic.severity.HINT] = require("config").options.icons.diagnostics.Hint,
             [vim.diagnostic.severity.INFO] = require("config").options.icons.diagnostics.Info,
           },
-        } or {},
+        },
         virtual_text = false, -- We use floating window
       }
 
@@ -240,41 +240,6 @@ return {
       else
         ensure_installed()
       end
-    end,
-  },
-
-  -- Formatter
-  {
-    "stevearc/conform.nvim",
-    event = { "BufWritePre" },
-    cmd = { "ConformInfo" },
-    opts = {
-      -- Formatters are run sequentially
-      formatters_by_ft = {
-        lua = { "stylua" },
-        -- Use the "*" filetype to run formatters on all filetypes.
-        -- ["*"] = { "codespell" },
-        -- Use the "_" filetype to run formatters on filetypes that don't
-        -- have other formatters configured.
-        ["_"] = { "trim_whitespace", "trim_newlines" },
-      },
-      format_on_save = function(bufnr)
-        -- Check global toggle
-        if not vim.g.autoformat then
-          return
-        end
-
-        -- Disable autoformat for files in a certain path
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
-        if bufname:match("/node_modules/") then
-          return
-        end
-
-        return { timeout_ms = 3000, lsp_format = "fallback" }
-      end,
-    },
-    init = function()
-      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
   },
 }

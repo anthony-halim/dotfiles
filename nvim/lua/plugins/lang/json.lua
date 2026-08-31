@@ -21,17 +21,16 @@ return {
     dependencies = {
       "b0o/SchemaStore.nvim",
     },
-    opts = {
-      servers = {
-        jsonls = {
-          settings = {
-            json = {
-              schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
-            },
+    opts = function(_, opts)
+      opts.servers = opts.servers or {}
+      opts.servers.jsonls = {
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
           },
         },
-      },
-    },
+      }
+    end,
   },
 }
