@@ -165,7 +165,6 @@ do
   require("lazy").setup({
     spec = {
       { import = "plugins" },
-      { import = "plugins.lang" },
     },
     defaults = {
       lazy = false,
@@ -361,7 +360,206 @@ end
 -- LSP keymaps and pickers, server configuration, Mason tools installations
 -- ============================================================
 do
+  vim.pack.add({
+    "https://github.com/b0o/SchemaStore.nvim",
+    "https://github.com/echasnovski/mini.extra",
+    "https://github.com/neovim/nvim-lspconfig",
+    "https://github.com/mason-org/mason.nvim",
+    "https://github.com/mason-org/mason-lspconfig.nvim",
+  })
 
+  -- ============================================================
+  -- LSP installation
+  -- ============================================================
+
+  -- List of all LSP servers to install.
+  --- @type table<string, vim.lsp.Config>
+  local lsp_confs = {
+    bashls = {
+      filetypes = { "bash", "sh", "zsh" },
+    },
+    cue = {},
+    gopls = {
+      linksInHover = false,
+      analyses = {
+        unusedparams = true,
+      },
+      usePlaceholders = false,
+      semanticTokens = true,
+      completeUnimported = true,
+      codelenses = {
+        gc_details = true,
+      },
+      staticcheck = true,
+    },
+    jsonls = {
+      settings = {
+        schemas = require("schemastore").json.schemas(),
+        validate = { enable = true },
+      },
+    },
+    terraformls = {},
+    tflint = {},
+    pyright = {
+      settings = {
+        python = {
+          analysis = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+          },
+        },
+      },
+    },
+    ruff = {
+      on_attach = function(client, _)
+        -- Disable hover in ruff in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+      end,
+    },
+    stylua = {}, -- Used to format Lua code
+    lua_ls = {
+      -- Special Lua Config, as recommended by neovim help docs
+      on_init = function(client)
+        client.server_capabilities.documentFormattingProvider = false -- Disable formatting (formatting is done by stylua)
+
+        if client.workspace_folders then
+          local path = client.workspace_folders[1].name
+          if
+            path ~= vim.fn.stdpath("config")
+            and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
+          then
+            return
+          end
+        end
+
+        local current_settings = client.config.settings
+        client.config.settings.Lua = vim.tbl_deep_extend(
+          "force",
+          current_settings.Lua, ---@diagnostic disable-line: need-check-nil, param-type-mismatch
+          {
+            runtime = {
+              version = "LuaJIT",
+              path = { "lua/?.lua", "lua/?/init.lua" },
+            },
+            workspace = {
+              checkThirdParty = false,
+              -- Only scan Neovim core runtime APIs to keep workspace diagnostics efficient
+              library = { vim.env.VIMRUNTIME },
+            },
+          }
+        )
+      end,
+      settings = {
+        Lua = {
+          format = { enable = false }, -- Disable formatting (formatting is done by stylua)
+          workspace = { checkThirdParty = false },
+          telemetry = { enable = false },
+        },
+      },
+    },
+    yamlls = {
+      settings = {
+        yaml = {
+          schemaStore = {
+            -- Disable built-in schemaStore support to use our schemastore
+            enable = false,
+            -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+            url = "",
+          },
+          schemas = require("schemastore").yaml.schemas(),
+        },
+      },
+    },
+  }
+
+  -- Handle automatic installations
+  local ensure_installed = {}
+  for name, _ in pairs(lsp_confs) do
+    table.insert(ensure_installed, name)
+  end
+  require("mason").setup({})
+  require("mason-lspconfig").setup({
+    ensure_installed = ensure_installed,
+    automatic_enable = true,
+  })
+
+  -- Handle LSP server configuration
+  for name, server in pairs(lsp_confs) do
+    vim.lsp.config(name, server)
+  end
+
+  -- Keymap to open Mason UI
+  vim.keymap.set("n", "<leader>cm", "<cmd>Mason<cr>", { desc = "Mason" })
+
+  -- ============================================================
+  -- LSP diagnostics on gutter
+  -- ============================================================
+
+  -- Set up diagnostic sign icons
+  for name, icon in pairs(require("config").options.icons.diagnostics) do
+    name = "DiagnosticSign" .. name
+    vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+  end
+  vim.diagnostic.config({
+    severity_sort = true,
+    float = { border = "rounded", source = "if_many" },
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = require("config").options.icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = require("config").options.icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = require("config").options.icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = require("config").options.icons.diagnostics.Info,
+      },
+    },
+    virtual_text = false, -- We use floating open_float instead
+  })
+
+  -- ============================================================
+  -- LSP buffer integration
+  -- ============================================================
+
+  -- This function gets run when an LSP attaches to a particular buffer.
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("custom-lsp-attach", { clear = true }),
+    callback = function(event)
+      -- Helper that sets the mode, buffer, and prefix LSP for us
+      local map = function(keys, func, desc, mode)
+        mode = mode or "n"
+        vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+      end
+
+      map("<leader>cr", vim.lsp.buf.rename, "Code rename")
+      map("<leader>ck", vim.lsp.buf.signature_help, "Code signature")
+      map("<leader>cf", vim.lsp.buf.format, "Format current buffer")
+      map("K", vim.lsp.buf.hover, "Hover documentation")
+
+      -- From mini.extra
+      map("gd", function()
+        require("mini.extra").pickers.lsp({ scope = "definition" })
+      end, "Goto definition")
+      map("gD", function()
+        require("mini.extra").pickers.lsp({ scope = "declaration" })
+      end, "Goto declaration")
+      map("gr", function()
+        require("mini.extra").pickers.lsp({ scope = "references" })
+      end, "Goto references")
+
+      -- Setup floating window for LSP diagnostics on cursor hold
+      vim.api.nvim_create_autocmd("CursorHold", {
+        buffer = event.buf,
+        callback = function()
+          vim.diagnostic.open_float(nil, {
+            focusable = false,
+            close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+            border = "rounded",
+            source = "always",
+            prefix = " ",
+            scope = "cursor",
+          })
+        end,
+      })
+    end,
+  })
 end
 
 -- ============================================================
@@ -372,6 +570,25 @@ do
     "https://github.com/stevearc/conform.nvim",
   })
 
+  -- Start with global/general formatters
+  -- TODO: Unify the config for:
+  --  - filetype -> formatter
+  --  - language -> LSP server
+  --  - LSP server & their settings
+  -- All of these are specific per language.
+  local formatters_by_ft = {
+    cue = { "cueimports" },
+    sh = { "shfmt" },
+    zsh = { "shfmt" },
+    lua = { "stylua" },
+    go = { "goimports" },
+    python = { "ruff_format" },
+    terraform = { "terraform_fmt" },
+    tf = { "terraform_fmt" },
+    ["terraform-vars"] = { "terraform_fmt" },
+    ["_"] = { "trim_whitespace", "trim_newlines" },
+  }
+
   require("conform").setup({
     format_on_save = function(_)
       if not vim.g.autoformat then
@@ -380,19 +597,11 @@ do
       return { timeout_ms = 3000 }
     end,
     default_format_opts = { lsp_format = "fallback" },
-    formatters_by_ft = {
-      ["_"] = { "trim_whitespace", "trim_newlines" },
-    },
+    formatters_by_ft = formatters_by_ft,
   })
 
   -- Set formatexpr for gq range formatting
   vim.o.formatexpr = "v:lua.require('conform').formatexpr()"
-end
-
--- ============================================================
--- Autocomplete 
--- ============================================================
-do
 end
 
 -- ============================================================
@@ -402,6 +611,9 @@ do
   vim.pack.add({
     { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   })
+
+  -- Force Neovim to fully mount Treesitter's runtime directories (like queries/) on boot
+  vim.cmd("packadd nvim-treesitter")
 
   -- Ensure basic parsers are installed
   local parsers = { "bash", "diff", "lua", "luadoc", "markdown", "markdown_inline", "query" }
@@ -418,8 +630,8 @@ do
     vim.treesitter.start(buf, language)
 
     -- Enable treesitter based folds
-    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    vim.wo.foldmethod = 'expr'
+    vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    vim.wo.foldmethod = "expr"
 
     -- Check if treesitter indentation is available for this language, and if so enable it
     -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
@@ -457,4 +669,7 @@ do
       end
     end,
   })
+
+  -- Register standard custom filetype language mappings
+  vim.treesitter.language.register("terraform", "terraform-vars")
 end
