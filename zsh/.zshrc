@@ -38,26 +38,32 @@ setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
 setopt SHARE_HISTORY             # Share history between all sessions.
 
+#####################################
+# ZSH Plugins via Zap
+#####################################
+
 # Enable zap
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 
-# Load zap plugins
-plug "Aloxaf/fzf-tab"
 plug "zsh-users/zsh-autosuggestions"
 plug "zsh-users/zsh-syntax-highlighting"
-plug "zap-zsh/sudo"
 plug "jeffreytse/zsh-vi-mode"
 
-# fzf-tab settings
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':fzf-tab:*' switch-group '<' '>'
+plug "zap-zsh/sudo"
+# Bind [Esc] [Esc] to sudo plugin
+bindkey -M emacs '\e\e' sudo-command-line
+bindkey -M vicmd '\e\e' sudo-command-line
+bindkey -M viins '\e\e' sudo-command-line
+
+plug "Aloxaf/fzf-tab"
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'   # Case-insensitive completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"  # Matching terminal colour
+zstyle ':fzf-tab:*' switch-group '<' '>'                 # Use <, >, to jump between groups
 
 # Load add on settings and behaviours
 safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
 safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
 safe_source "${ZSH_CONFIG}/functions/cmd.zsh"
-safe_source "${ZSH_CONFIG}/bindkeys.zsh"
 safe_source "${ZSH_CONFIG}/aliases.zsh"
 
 # Load local config files
