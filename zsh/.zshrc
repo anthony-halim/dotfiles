@@ -61,6 +61,69 @@ bindkey -M vicmd '\e\e' sudo-command-line
 bindkey -M viins '\e\e' sudo-command-line
 
 #####################################
+# General Aliases
+#####################################
+
+alias src="source $HOME/.zshrc"
+alias ll="ls -alrt"
+
+#####################################
+# WSL integration
+#####################################
+
+if command -v "explorer.exe" &>/dev/null; then
+    alias open="explorer.exe"
+fi
+
+#####################################
+# Eza integration
+#####################################
+
+if command -v eza &>/dev/null; then
+    alias ls="eza"
+    alias ll="eza -alrg --icons auto"
+fi
+
+#####################################
+# Kubectl integration
+#####################################
+
+if command -v kubectl &>/dev/null; then
+    alias k="kubectl"
+    alias kcc="kubectl config use-context"
+    source <(kubectl completion zsh)
+fi
+
+#####################################
+# Bat ZSH integration
+#####################################
+
+if command -v batcat &>/dev/null; then
+    alias cat="batcat --paging=never"
+elif command -v bat &>/dev/null; then
+    alias cat="bat --paging=never"
+fi
+
+#####################################
+# Neovim ZSH integration
+#####################################
+
+if command -v nvim &>/dev/null; then
+    export EDITOR="nvim"
+
+    alias nv="nvim"
+    alias vim="nvim"
+fi
+
+#####################################
+# Lazygit ZSH integration
+#####################################
+
+if command -v lazygit &>/dev/null; then
+    alias gg="lazygit"
+fi
+
+#####################################
 # FZF ZSH integration
 #####################################
 
@@ -91,11 +154,20 @@ if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
 
+#####################################
+# Zellij ZSH integration
+#####################################
+
+if command -v zellij &>/dev/null; then
+    export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
+
+    alias ze="zellij"
+    alias zea="zellij attach -c"
+fi
+
 # Load add on settings and behaviours
-safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
 safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
 safe_source "${ZSH_CONFIG}/functions/cmd.zsh"
-safe_source "${ZSH_CONFIG}/aliases.zsh"
 
 # Load local config files
 if [[ -d "${ZSH_LOCAL_CONFIG}" ]]

@@ -1,8 +1,4 @@
 path_append PATH "${HOME}/.local/bin"
-export EDITOR="nvim"
-
-# Zellij
-export ZELLIJ_CONFIG_DIR="${HOME}/.config/zellij"
 
 # Pyenv
 [[ -d "${HOME}/.pyenv" ]] && {
