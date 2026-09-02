@@ -39,11 +39,16 @@ setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history
 setopt SHARE_HISTORY             # Share history between all sessions.
 
 #####################################
-# ZSH Plugins via Zap
+# Zap (ZSH plugin manager)
 #####################################
 
-# Enable zap
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+ZAP_PATH="${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+if [[ ! -f "$ZAP_PATH" ]]; then
+    echo "Error: Zap plugin manager is not installed."
+    echo "Please run './setup.sh' to set up all dependencies."
+    return 1 
+fi
+source "$ZAP_PATH"
 
 plug "zsh-users/zsh-autosuggestions"
 plug "zsh-users/zsh-syntax-highlighting"
@@ -54,6 +59,10 @@ plug "zap-zsh/sudo"
 bindkey -M emacs '\e\e' sudo-command-line
 bindkey -M vicmd '\e\e' sudo-command-line
 bindkey -M viins '\e\e' sudo-command-line
+
+#####################################
+# FZF ZSH integration
+#####################################
 
 plug "Aloxaf/fzf-tab"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'   # Case-insensitive completion
@@ -74,6 +83,10 @@ then
   done
   unset conf
 fi
+
+#####################################
+# Starship ZSH integration
+#####################################
 
 # Enable starship
 # Check that the function `starship_zle-keymap-select()` is defined.
