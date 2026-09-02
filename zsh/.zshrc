@@ -81,13 +81,15 @@ fi
 # Starship ZSH integration
 #####################################
 
-# Enable starship
-# Check that the function `starship_zle-keymap-select()` is defined.
-# xref: https://github.com/starship/starship/issues/3418
-type starship_zle-keymap-select >/dev/null || \
-  {
+if command -v starship &>/dev/null; then
+    # Check that the function `starship_zle-keymap-select()` is defined.
+    # xref: https://github.com/starship/starship/issues/3418
+    if [[ "${widgets[zle-keymap-select]#user:}" == "starship_zle-keymap-select" || \
+          "${widgets[zle-keymap-select]#user:}" == "starship_zle-keymap-select-wrapped" ]]; then
+        zle -N zle-keymap-select "";
+    fi
     eval "$(starship init zsh)"
-  }
+fi
 
 # Load add on settings and behaviours
 safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
