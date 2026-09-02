@@ -17,7 +17,6 @@ GIT_USER=""
 GIT_USER_EMAIL=""
 GIT_USER_LOCAL_FILE=""
 GOLANG_TAG="latest"
-LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
 REPO_PERSONAL_DIR="$HOME/repos/personal"
 REPO_WORK_DIR="$HOME/repos/work"
 
@@ -755,7 +754,6 @@ setup_gitbundler
 # Create required directories
 log::separator
 log::log "directories: setting up directories"
-dir::create_with_confirmation "$LOCAL_CONFIG_DIR" "directory to place uncommitted configurations (functions, aliases, env). Any *.zsh files in this directory will automatically be sourced."
 dir::create_with_confirmation "$REPO_PERSONAL_DIR" "personal repository directory."
 dir::create_with_confirmation "$REPO_WORK_DIR" "work repository directory."
 log::success "directories: success!"
