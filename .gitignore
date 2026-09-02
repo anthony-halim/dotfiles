@@ -2,5 +2,5 @@
 .idea
 
 # Local configs that for machine specific configurations
-zsh/local_config
+zsh/.zshrc.local
 nvim/after/

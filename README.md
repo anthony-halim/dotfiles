@@ -15,7 +15,6 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 - WSL2 - Ubuntu 20.04, on Windows 11
 - Ubuntu 22.04, Jammy LTS
-- ~~Mac OS Big Sur~~ (not tested)
 
 ---
 
@@ -103,7 +102,6 @@ For those have not checked out [z](https://github.com/rupa/z), I recommend tryin
 
   - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
   - The Neovim has been configured to include LSP, auto-completion, UI and quality of life plugins that I use often.
-  - Note taking with [Telekasten.nvim](https://github.com/renerocksai/telekasten.nvim)
 </details>
 
 <details>
@@ -151,27 +149,13 @@ Refer to [Setup](#setup) for details.
 
 #### (Optional) Add custom local configurations
 
-The followings **will not** be committed to the repository and are suitable to add a local/machine specific configuration.
+The followings **will not** be committed to the repository and are suitable to add local/machine specific configurations.
 
-##### `zsh/local_config/exports.zsh`
+##### `zsh/.zshrc.local`
 
-This file is to load local environment variables.
-Environment variables must be loaded before the rest of shell configuration is done as it dictates the behaviour.
+This file is used to load all of your local/machine-specific environment variables, aliases, or overrides. It is loaded early during ZSH initialization.
 
-The following environment variables are supported.
-
-<details>
-  <summary>Notes</summary>
-
-
-  | Name                       | Type                   | Defaults                 | Description     |
-  |--------------------------- | ---------------------- | ------------------------ | --------------- |
-  | NOTES_DEFAULT_VAULT        | "personal"\|"work"     | "personal"               | Default vault (notes directory) to be used on load. |
-  | NOTES_WORK_VAULT           | string                 | "$HOME/notes/work"       | Path to work notes vault (notes directory).         |
-  | NOTES_PERSONAL_VAULT       | string                 | "$HOME/notes/personal"   | Path to personal notes vault (notes directory)      |
-  | NOTES_DEFAULT_GIT_UPSTREAM | string                 | "origin"                 | Default git upstream to commit notes to.            |
-  | NOTES_DEFAULT_GIT_BRANCH   | string                 | "main"                   | Default git branch to commit notes to.              |
-</details>
+The following local environment variables can be exported inside it:
 
 <details>
   <summary>ZSH</summary>
@@ -188,13 +172,8 @@ The following environment variables are supported.
 
   | Name                   | Type                   | Defaults                       | Description     |
   |----------------------- | ---------------------- | ------------------------------ | --------------- |
-  | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
-  | ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
+  | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start. Will attempt to attach to existing session. |
 </details>
-
-##### `zsh/local_config/*.zsh`
-
-Any `*.zsh` file in this directory will be automatically loaded during ZSH initialisation. You can use this to add additional aliases or functions.
 
 ##### `nvim/after/`
 
