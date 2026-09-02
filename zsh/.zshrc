@@ -64,10 +64,18 @@ bindkey -M viins '\e\e' sudo-command-line
 # FZF ZSH integration
 #####################################
 
-plug "Aloxaf/fzf-tab"
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'   # Case-insensitive completion
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"  # Matching terminal colour
-zstyle ':fzf-tab:*' switch-group '<' '>'                 # Use <, >, to jump between groups
+if command -v fzf &>/dev/null; then
+    export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+      --color=bg+:#232634,pointer:#ef9f76
+      --border="rounded" --border-label-pos="0"
+      --padding="1" --margin="1" --prompt="  " --marker=""
+      --pointer="" --info="right"'
+
+    plug "Aloxaf/fzf-tab"
+    zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'   # Case-insensitive completion
+    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"  # Matching terminal colour
+    zstyle ':fzf-tab:*' switch-group '<' '>'                 # Use <, >, to jump between groups
+fi
 
 # Load add on settings and behaviours
 safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
