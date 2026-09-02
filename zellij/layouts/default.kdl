@@ -33,12 +33,12 @@ layout {
                 mode_search       "#[fg=$bg,bg=$success] 󱎸  {name} "
 
                 // Datetime panel with dimmed background contrast
-                datetime          "#[bg=$bg_brighter,fg=$fg] {format} "
+                datetime          "#[bg=$bg_bright,fg=$fg] {format} "
                 datetime_format   "%A, %d %b %Y %H:%M"
                 datetime_timezone "Asia/Singapore"
 
                 // Unselected and active tabs using index mapping
-                tab_normal   "#[fg=$fg,bg=$bg_brighter,bold,italic] {index} #[fg=$fg,bg=$bg,bold,italic] {name} "
+                tab_normal   "#[fg=$fg,bg=$bg_bright,bold,italic] {index} #[fg=$fg,bg=$bg,bold,italic] {name} "
                 tab_active   "#[fg=$bg,bg=$accent,bold] {index} #[fg=$fg_bright,bg=$bg,bold] {name} "
             }
         }
