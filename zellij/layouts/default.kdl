@@ -1,59 +1,45 @@
-// Catppuccin-frappe Wezterm colour
-// See: https://github.com/catppuccin/wezterm/blob/main/plugin/init.lua
-//	frappe = {
-// 	rosewater = "#f2d5cf",
-// 	flamingo = "#eebebe",
-// 	pink = "#f4b8e4",
-// 	mauve = "#ca9ee6",
-// 	red = "#e78284",
-// 	maroon = "#ea999c",
-// 	peach = "#ef9f76",
-// 	yellow = "#e5c890",
-// 	green = "#a6d189",
-// 	teal = "#81c8be",
-// 	sky = "#99d1db",
-// 	sapphire = "#85c1dc",
-// 	blue = "#8caaee",
-// 	lavender = "#babbf1",
-// 	text = "#c6d0f5",
-// 	subtext1 = "#b5bfe2",
-// 	subtext0 = "#a5adce",
-// 	overlay2 = "#949cbb",
-// 	overlay1 = "#838ba7",
-// 	overlay0 = "#737994",
-// 	surface2 = "#626880",
-// 	surface1 = "#51576d",
-// 	surface0 = "#414559",
-// 	base = "#303446",
-// 	mantle = "#292c3c",
-// 	crust = "#232634",
-// },
-
 layout {
     default_tab_template {
         children
         pane size=1 borderless=true {
             plugin location="file:zjstatus.wasm" {
-                format_left  "{mode} #[bg=#232634,fg=green,bold]{session} {tabs}"
+                // --- ANSI Color Index Definitions ---
+                // Maps variables directly to terminal-defined theme colors
+                color_bg         "0"   // Terminal Background (Dark/Black)
+                color_bg_bright  "8"   // Terminal Bright Background (Gray/Subtle)
+                color_fg         "7"   // Terminal Main Foreground (White/Light gray)
+                color_fg_bright  "15"  // Terminal Bright Foreground (Pure White)
+                color_accent     "4"   // Terminal Primary Accent (Standard Blue)
+                color_critical   "1"   // Terminal Alert Color (Standard Red)
+                color_success    "2"   // Terminal Success Color (Standard Green)
+                color_warn       "3"   // Terminal Warning Color (Standard Yellow)
+                color_info       "6"   // Terminal Secondary Accent (Standard Cyan)
+                color_locked     "5"   // Terminal System Accent (Standard Magenta)
+
+                // Render structure referencing variables using '$'
+                format_left  "{mode} #[bg=$bg,fg=$success,bold]{session} {tabs}"
                 format_right "{datetime}"
-                format_space "#[bg=#232634]"
+                format_space "#[bg=$bg]"
 
-                mode_normal       "#[bg=cyan] "
-                mode_locked       "#[fg=#232634,bg=magenta] 󰌾  {name} "
-                mode_pane         "#[fg=#232634,bg=red] 󱏂  {name} "
-                mode_tab          "#[fg=#232634,bg=red] 󱂬  {name} "
-                mode_session      "#[fg=#232634,bg=magenta] 󰨣  {name} "
-                mode_resize       "#[fg=#232634,bg=green] 󰩨  {name} "
-                mode_scroll       "#[fg=#232634,bg=green] 󰦨  {name} "
-                mode_enter_search "#[fg=#232634,bg=green] 󱎸 󰏫  {name} "
-                mode_search       "#[fg=#232634,bg=green] 󱎸  {name} "
+                // Mode setups using aliases
+                mode_normal       "#[bg=$info] "
+                mode_locked       "#[fg=$bg,bg=$locked] 󰌾  {name} "
+                mode_pane         "#[fg=$bg,bg=$critical] 󱏂  {name} "
+                mode_tab          "#[fg=$bg,bg=$critical] 󱂬  {name} "
+                mode_session      "#[fg=$bg,bg=$locked] 󰨣  {name} "
+                mode_resize       "#[fg=$bg,bg=$success] 󰩨  {name} "
+                mode_scroll       "#[fg=$bg,bg=$success] 󰦨  {name} "
+                mode_enter_search "#[fg=$bg,bg=$success] 󱎸 󰏫  {name} "
+                mode_search       "#[fg=$bg,bg=$success] 󱎸  {name} "
 
-                datetime          "#[bg=#414559,fg=#b5bfe2] {format} "
+                // Datetime panel with dimmed background contrast
+                datetime          "#[bg=$bg_brighter,fg=$fg] {format} "
                 datetime_format   "%A, %d %b %Y %H:%M"
                 datetime_timezone "Asia/Singapore"
 
-                tab_normal   "#[fg=#c6d0f5,bg=#414559,bold,italic] {index} #[fg=#b5bfe2,bg=#232634,bold,italic] {name} "
-                tab_active   "#[fg=#ffffff,bg=blue,bold] {index} #[fg=#ffffff,bg=#232634,bold] {name} "
+                // Unselected and active tabs using index mapping
+                tab_normal   "#[fg=$fg,bg=$bg_brighter,bold,italic] {index} #[fg=$fg,bg=$bg,bold,italic] {name} "
+                tab_active   "#[fg=$bg,bg=$accent,bold] {index} #[fg=$fg_bright,bg=$bg,bold] {name} "
             }
         }
     }
