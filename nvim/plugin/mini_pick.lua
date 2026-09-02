@@ -1,7 +1,7 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.icons",
-  "https://github.com/echasnovski/mini.extra",
-  "https://github.com/echasnovski/mini.pick",
+  "https://github.com/nvim-mini/mini.icons",
+  "https://github.com/nvim-mini/mini.extra",
+  "https://github.com/nvim-mini/mini.pick",
 })
 
 -- Configure and setup mini.pick

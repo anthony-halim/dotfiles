@@ -1,5 +1,5 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini-git",
+  "https://github.com/nvim-mini/mini-git",
 })
 
 -- Configure and setup mini-git

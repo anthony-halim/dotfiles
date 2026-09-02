@@ -1,8 +1,8 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.sessions",
-  "https://github.com/echasnovski/mini.pick",
-  "https://github.com/echasnovski/mini.extra",
-  "https://github.com/echasnovski/mini.starter",
+  "https://github.com/nvim-mini/mini.sessions",
+  "https://github.com/nvim-mini/mini.pick",
+  "https://github.com/nvim-mini/mini.extra",
+  "https://github.com/nvim-mini/mini.starter",
 })
 
 -- Configure and setup mini.starter
@@ -46,7 +46,6 @@ options.items = {
     section = "Shortcuts",
   },
   { name = "New file", action = "enew", section = "Shortcuts" },
-  { name = "Lazy",     action = "Lazy", section = "Shortcuts" },
   { name = "Quit",     action = "qall", section = "Shortcuts" },
 }
 

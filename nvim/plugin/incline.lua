@@ -1,5 +1,5 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.icons",
+  "https://github.com/nvim-mini/mini.icons",
   "https://github.com/b0o/incline.nvim",
 })
 
@@ -26,8 +26,10 @@ require("incline").setup({
 
     -- Diagnostic labels
     local diagnostic_labels = {}
+    local counts = vim.diagnostic.count(props.buf)
     for severity, icon in pairs(icons_config.diagnostics) do
-      local n = #vim.diagnostic.get(props.buf, { severity = vim.diagnostic.severity[string.upper(severity)] })
+      local sev_enum = vim.diagnostic.severity[string.upper(severity)]
+      local n = counts[sev_enum] or 0
       if n > 0 then
         table.insert(diagnostic_labels, { icon .. " " .. n .. " ", group = "DiagnosticSign" .. severity })
       end

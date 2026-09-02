@@ -18,7 +18,7 @@ function M.generate_session_name_cwd()
 
   -- Trim trailing whitespaces
   local session_name_short = vim.fn.fnamemodify(session_name, ":t")
-  session_name_short = string.gsub(session_name_short, '^%s*(.-)%s*$', '%1')
+  session_name_short = string.gsub(session_name_short, "^%s*(.-)%s*$", "%1")
   return session_name_short
 end
 
@@ -88,42 +88,110 @@ function M._format_message(message, percentage)
   return (percentage and percentage .. "%\t" or "") .. (message or "")
 end
 
-function M.lsp_progress(_, result, ctx)
-  local client_id = ctx.client_id
-
-  local val = result.value
-  if not val.kind then
+--- LSP progress handler for LspProgress autocommand.
+---@param ev table The autocommand event payload.
+function M.lsp_progress(ev)
+  if not ev or not ev.data or not ev.data.params then
+    return
+  end
+  local client_id = ev.data.client_id
+  local params = ev.data.params
+  local val = params.value
+  if not val or not val.kind then
     return
   end
 
-  local notif_data = M._get_notif_data(client_id, result.token)
+  local token = params.token
+  local notif_data = M._get_notif_data(client_id, token)
 
   if val.kind == "begin" then
     local message = M._format_message(val.message, val.percentage)
+    local client = vim.lsp.get_client_by_id(client_id)
+    local client_name = client and client.name or "LSP"
 
-    notif_data.notification = vim.notify(message, "info", {
-      title = M._format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
+    notif_data.notification = vim.notify(message, vim.log.levels.INFO, {
+      title = M._format_title(val.title, client_name),
       icon = M._spinner_frames[1],
       timeout = false,
       hide_from_history = false,
     })
     notif_data.spinner = 1
 
-    M._update_spinner(client_id, result.token)
-  elseif val.kind == "report" and notif_data then
-    notif_data.notification = vim.notify(M._format_message(val.message, val.percentage), "info", {
+    M._update_spinner(client_id, token)
+  elseif val.kind == "report" and notif_data and notif_data.notification then
+    notif_data.notification = vim.notify(M._format_message(val.message, val.percentage), vim.log.levels.INFO, {
       replace = notif_data.notification,
       hide_from_history = false,
     })
-  elseif val.kind == "end" and notif_data then
-    notif_data.notification =
-        vim.notify(val.message and M._format_message(val.message) or "Complete", "info", {
-          icon = "",
-          replace = notif_data.notification,
-          timeout = 3000,
-        })
+  elseif val.kind == "end" and notif_data and notif_data.notification then
+    notif_data.notification = vim.notify(val.message and M._format_message(val.message) or "Complete", vim.log.levels.INFO, {
+      icon = "",
+      replace = notif_data.notification,
+      timeout = 3000,
+    })
     notif_data.spinner = nil
   end
+end
+
+-- Internal state of centered float term
+M._term_state = { win = -1, buf = -1 }
+
+--- Toggle a centered native floating terminal window.
+---@param cmd string|nil the command to run (e.g. "lazygit"), or nil for the default shell.
+function M.toggle_terminal(cmd)
+  -- If the window is already open and valid, close it
+  if vim.api.nvim_win_is_valid(M._term_state.win) then
+    vim.api.nvim_win_close(M._term_state.win, true)
+    return
+  end
+
+  -- Reuse the existing terminal buffer if valid, otherwise create a new one
+  if not vim.api.nvim_buf_is_valid(M._term_state.buf) then
+    M._term_state.buf = vim.api.nvim_create_buf(false, true)
+  end
+
+  -- Calculate optimized dimensions (centered, 95% width & height)
+  local width = math.floor(vim.o.columns * 0.95)
+  local height = math.floor(vim.o.lines * 0.95)
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+
+  -- Open the floating window
+  M._term_state.win = vim.api.nvim_open_win(M._term_state.buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+    title = string.format(" %s ", cmd and string.upper(string.sub(cmd, 1, 1)) .. string.sub(cmd, 2) or "Terminal"),
+    title_pos = "center",
+  })
+
+  -- If it's a fresh buffer, open the terminal job
+  if vim.bo[M._term_state.buf].buftype ~= "terminal" then
+    vim.fn.jobstart(cmd or vim.o.shell, {
+      term = true,
+      on_exit = function(_, exit_code, _)
+        if exit_code == 0 then
+          -- Process exited successfully: close floating window and delete buffer automatically
+          if vim.api.nvim_win_is_valid(M._term_state.win) then
+            vim.api.nvim_win_close(M._term_state.win, true)
+          end
+          if vim.api.nvim_buf_is_valid(M._term_state.buf) then
+            vim.api.nvim_buf_delete(M._term_state.buf, { force = true })
+          end
+        end
+      end,
+    })
+
+    -- Ensure buffer is marked cleanly and ignored by buffer removers or session saving
+    vim.bo[M._term_state.buf].buflisted = false
+  end
+
+  -- Automatically enter insert mode
+  vim.cmd("startinsert")
 end
 
 return M

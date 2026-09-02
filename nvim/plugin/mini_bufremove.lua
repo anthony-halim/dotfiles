@@ -1,5 +1,5 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.bufremove",
+  "https://github.com/nvim-mini/mini.bufremove",
 })
 
 -- Configure and setup mini.bufremove

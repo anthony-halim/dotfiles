@@ -1,5 +1,5 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.diff",
+  "https://github.com/nvim-mini/mini.diff",
 })
 
 -- Configure mini.diff

@@ -1,5 +1,5 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.icons",
+  "https://github.com/nvim-mini/mini.icons",
   "https://github.com/nvim-lualine/lualine.nvim",
 })
 
@@ -25,5 +25,5 @@ require("lualine").setup({
       { "filetype" },
     },
   },
-  extensions = { "nvim-tree", "lazy" },
+  extensions = {},
 })

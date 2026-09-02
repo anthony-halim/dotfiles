@@ -1,6 +1,6 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.icons",
-  "https://github.com/echasnovski/mini.files",
+  "https://github.com/nvim-mini/mini.icons",
+  "https://github.com/nvim-mini/mini.files",
 })
 
 -- Configure and setup mini.files

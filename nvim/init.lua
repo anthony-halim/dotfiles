@@ -142,7 +142,6 @@ do
   vim.o.shiftwidth = 2 -- Size of an indent
 end
 
-
 -- ============================================================
 -- Keymaps
 -- ============================================================
@@ -178,6 +177,11 @@ do
   -- Powerful <esc>
   vim.keymap.set({ "i", "n" }, "<esc>", "<cmd>nohlsearch<CR><esc>")
   vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" }) -- For terminal mode
+
+  -- Floating terminal integration
+  vim.keymap.set("n", "<leader>gg", function()
+    require("utils.utils").toggle_terminal("lazygit")
+  end, { desc = "LazyGit", silent = true })
 
   -- Diagnostics
   vim.keymap.set("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
@@ -271,7 +275,7 @@ end
 -- ============================================================
 do
   vim.pack.add({
-    "https://github.com/echasnovski/mini.icons",
+    "https://github.com/nvim-mini/mini.icons",
     "https://github.com/catppuccin/nvim",
   })
 
@@ -300,7 +304,7 @@ end
 do
   vim.pack.add({
     "https://github.com/b0o/SchemaStore.nvim",
-    "https://github.com/echasnovski/mini.extra",
+    "https://github.com/nvim-mini/mini.extra",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/mason-org/mason.nvim",
     "https://github.com/mason-org/mason-lspconfig.nvim",
@@ -433,11 +437,6 @@ do
   -- LSP diagnostics on gutter
   -- ============================================================
 
-  -- Set up diagnostic sign icons
-  for name, icon in pairs(require("config").options.icons.diagnostics) do
-    name = "DiagnosticSign" .. name
-    vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
-  end
   vim.diagnostic.config({
     severity_sort = true,
     float = { border = "rounded", source = "if_many" },

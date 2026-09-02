@@ -17,5 +17,10 @@ require("notify").setup({
 -- Override standard vim.notify with nvim-notify
 vim.notify = require("notify")
 
--- Integrate LSP progress notifications
-vim.lsp.handlers["$/progress"] = require("utils.utils").lsp_progress
+-- Integrate LSP progress notifications natively
+vim.api.nvim_create_autocmd("LspProgress", {
+  group = vim.api.nvim_create_augroup("LspProgressNotify", { clear = true }),
+  callback = function(ev)
+    require("utils.utils").lsp_progress(ev)
+  end,
+})

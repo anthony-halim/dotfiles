@@ -1,5 +1,5 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.sessions",
+  "https://github.com/nvim-mini/mini.sessions",
 })
 
 -- Configure and setup mini.sessions

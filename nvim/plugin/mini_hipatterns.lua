@@ -1,6 +1,6 @@
 vim.pack.add({
-  "https://github.com/echasnovski/mini.extra",
-  "https://github.com/echasnovski/mini.hipatterns",
+  "https://github.com/nvim-mini/mini.extra",
+  "https://github.com/nvim-mini/mini.hipatterns",
 })
 
 -- Configure and setup mini.hipatterns
