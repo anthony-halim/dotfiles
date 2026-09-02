@@ -2,15 +2,17 @@
 export ZSH="${HOME}/.config/zsh"
 ZSH_CONFIG="${ZSH}/config"
 ZSH_LOCAL_CONFIG="${ZSH}/local_config"
-ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
 
 # Load requirements, fail if files not found
 source "${ZSH_CONFIG}/functions/utils.zsh"
 
 # If there are global and local export file, load it first. 
 # This affects subsequent behaviours of function effects.
-safe_source "${ZSH_CONFIG}/exports.zsh"
 safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
+
+#####################################
+# Core setups
+#####################################
 
 # Enable colors
 autoload -Uz colors && colors
@@ -18,7 +20,7 @@ autoload -Uz colors && colors
 # Allow comments as suffix to commands e.g. echo test # test
 setopt interactive_comments
 
-HISTFILE="$ZSH_HISTORY_CACHE"
+HISTFILE="${HOME}/.cache/.zsh_history"
 SAVEHIST=100000
 HISTSIZE=99999
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
@@ -29,6 +31,12 @@ setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded
 setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
 setopt SHARE_HISTORY             # Share history between all sessions.
+
+# Aliases
+alias src="source $HOME/.zshrc"
+alias ll="ls -alrt"
+
+path_append PATH "${HOME}/.local/bin"
 
 #####################################
 # Zap (ZSH plugin manager)
@@ -53,18 +61,38 @@ bindkey -M vicmd '\e\e' sudo-command-line
 bindkey -M viins '\e\e' sudo-command-line
 
 #####################################
-# General Aliases
-#####################################
-
-alias src="source $HOME/.zshrc"
-alias ll="ls -alrt"
-
-#####################################
 # WSL integration
 #####################################
 
 if command -v "explorer.exe" &>/dev/null; then
     alias open="explorer.exe"
+fi
+
+#####################################
+# Pyenv integration
+#####################################
+
+if [[ -d "${HOME}/.pyenv" ]]; then
+	export PYENV_ROOT="${HOME}/.pyenv"
+	path_append PATH "$PYENV_ROOT/bin"
+	eval "$(pyenv init -)"
+fi
+
+#####################################
+# Go integration
+#####################################
+
+if [[ -x "/usr/local/go/bin/go" ]]; then
+	path_append GOPATH "${HOME}/go"
+	path_append PATH "/usr/local/go/bin" "${HOME}/go/bin"
+fi
+
+#####################################
+# Rust integration
+#####################################
+
+if [[ -f "${HOME}/.cargo/env" ]]; then
+	source "${HOME}/.cargo/env"
 fi
 
 #####################################
