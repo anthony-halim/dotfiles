@@ -41,10 +41,7 @@ truncate_to_repo = false
 [directory.substitutions]
 "~/repos/personal" = " 󰳐 "
 "~/repos/work" = "󰃖 󰳐 "
-"~/notes/personal" = "  "
-"~/notes/work" = "󰃖  "
 "~/repos" = "󰳐 "
-"~/notes" = " "
 "~" = " "
 
 [status]
