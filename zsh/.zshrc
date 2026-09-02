@@ -110,6 +110,12 @@ if command -v kubectl &>/dev/null; then
     alias k="kubectl"
     alias kcc="kubectl config use-context"
     source <(kubectl completion zsh)
+
+    path_append KUBECONFIG "${HOME}/.kube/config"
+    # shellcheck disable=0-9999
+    for file in "${HOME}/.kube/configs/"*.yaml(.N); do
+      path_append KUBECONFIG "$file"
+    done
 fi
 
 #####################################
