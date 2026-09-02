@@ -77,6 +77,18 @@ if command -v fzf &>/dev/null; then
     zstyle ':fzf-tab:*' switch-group '<' '>'                 # Use <, >, to jump between groups
 fi
 
+#####################################
+# Starship ZSH integration
+#####################################
+
+# Enable starship
+# Check that the function `starship_zle-keymap-select()` is defined.
+# xref: https://github.com/starship/starship/issues/3418
+type starship_zle-keymap-select >/dev/null || \
+  {
+    eval "$(starship init zsh)"
+  }
+
 # Load add on settings and behaviours
 safe_source "${ZSH_CONFIG}/functions/autocompletion.zsh"
 safe_source "${ZSH_CONFIG}/functions/budget_z.zsh"
@@ -91,16 +103,4 @@ then
   done
   unset conf
 fi
-
-#####################################
-# Starship ZSH integration
-#####################################
-
-# Enable starship
-# Check that the function `starship_zle-keymap-select()` is defined.
-# xref: https://github.com/starship/starship/issues/3418
-type starship_zle-keymap-select >/dev/null || \
-  {
-    eval "$(starship init zsh)"
-  }
 
