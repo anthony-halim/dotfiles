@@ -1,4 +1,4 @@
-# 🦔 Dotfiles
+# Dotfiles
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/anthony-halim/dotfiles)
 ![GitHub commit month activity](https://img.shields.io/github/commit-activity/m/anthony-halim/dotfiles)
@@ -11,7 +11,7 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 ---
 
-## 🖥️ Supported OS
+## Supported OS
 
 - WSL2 - Ubuntu 20.04, on Windows 11
 - Ubuntu 22.04, Jammy LTS
@@ -19,7 +19,7 @@ This repository holds my local configurations. Feel free to take ideas from it t
 
 ---
 
-## ✨ Features
+## Features
 
 The features integrated within this repository stems from my workflows.
 
@@ -39,7 +39,7 @@ For those have not checked out [z](https://github.com/rupa/z), I recommend tryin
 
 ---
 
-## 🧱 Components
+## Components
 
 #### Terminal: [Wezterm](https://wezfurlong.org/wezterm/index.html) (Terminal emulator), [Zellij](https://github.com/zellij-org/zellij) (Session manager), [ZSH](https://en.wikipedia.org/wiki/Z_shell) (Shell), [Zap](https://www.zapzsh.org/) (ZSH plugin manager), [Starship](https://starship.rs/) (prompt)
 
@@ -113,17 +113,17 @@ For those have not checked out [z](https://github.com/rupa/z), I recommend tryin
   ![image](https://github.com/anthony-halim/dotfiles/assets/50617144/a56fb5c1-da8a-4b36-bde0-53dddc2d0540)
 </details>
 
-#### Programming languages and utilities: Golang, Python, Rust
+#### Programming languages and utilities: Golang, Python
 
 <details>
   <br/>
 
-  - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [Rust](https://www.rust-lang.org/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
+  - Programming languages and their utility tools that I often use e.g. [Golang](https://go.dev/), [pyenv](https://github.com/pyenv/pyenv) are installed by default.
 </details>
 
 ---
 
-## 🌱  Usage
+## Usage
 
 #### Git clone this repository
 
@@ -196,29 +196,10 @@ The following environment variables are supported.
 
 Any `*.zsh` file in this directory will be automatically loaded during ZSH initialisation. You can use this to add additional aliases or functions.
 
-##### `nvim/lua/local_config/(options|keymaps|autocmds).lua`
+##### `nvim/after/`
 
-<details>
-  <summary>options.lua</summary>
-
-  Load local Neovim options.
-</details>
-
-<details>
-  <summary>keymaps.lua</summary>
-
-  Load local Neovim keymaps.
-</details>
-
-<details>
-  <summary>autocmds.lua</summary>
-
-  Load local Neovim autocmds.
-</details>
-
-##### `nvim/lua/local_plugins/(^init).lua`
-
-Any `*.lua`, except `init.lua`, will be loaded into Neovim. You can use this to overwrite/extend existing plugins, as well as adding new plugins.
+All configuration files added here are ignored by Git. Follows native loading of Neovim e.g., `nvim/after/plugin`, `nvim/after/lsp`, `nvim/after/ftplugin`
+are loaded automatically. You can use this to override or add-on additional Neovim capabilities.
 
 #### (Optional) Swap Keys
 
@@ -256,7 +237,7 @@ The default key bindings are not the most ergonomic for programmers, and we can 
 
 ---
 
-## ⚙️ Setup
+## Setup
 
 ```sh
 ./setup.sh [-h] [-v] [--git_user git_user] [--git_user_email git_user_email] [--git_user_local_file path_to_file]
@@ -289,7 +270,7 @@ Below is a screenshot of a snippet of the script run:
 
 ---
 
-## 🤔 FAQ
+## FAQ
 
 **Q: Why not use third-party keyboard managers?**
 
@@ -300,11 +281,6 @@ Below is a screenshot of a snippet of the script run:
 > If you are using third-party software, an idea for customisation is:
 > - On `Caps Lock` tap, map it as `Esc`.
 > - On `Caps Lock` hold, map it as `Ctrl`.
-
-
-**Q: The Diatheke module is not installed correctly.**
-> Try to completely uninstall module `installmgr -u <module_name>` and rerun `./setup.sh` again.
-
 
 **Q: The [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) Neovim plugin is not installed correctly.**
 > Try to upgrade `Node` and `npm` to the latest version and restart Neovim.

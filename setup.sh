@@ -18,7 +18,6 @@ GIT_USER_EMAIL=""
 GIT_USER_LOCAL_FILE=""
 GOLANG_TAG="latest"
 LOCAL_CONFIG_DIR="$HOME/.config/zsh/local_config"
-LOCAL_NVIM_CONFIG_DIR="$HOME/.config/nvim/lua/local_config"
 REPO_PERSONAL_DIR="$HOME/repos/personal"
 REPO_WORK_DIR="$HOME/repos/work"
 
@@ -368,6 +367,49 @@ setup_neovim() {
 
 	pkg_current_tag_func() {
 		echo "$(nvim --version | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
+	}
+
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+}
+
+setup_treesitter() {
+	local pkg_name="Tree-sitter"
+	local pkg_description="incremental parsing system for programming tools"
+	local git_repo="https://github.com/tree-sitter/tree-sitter"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_path="tree-sitter"
+
+	# Binary target pattern
+	local git_bin_pattern
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		if [[ "$(uname -m)" == "arm64" ]]; then
+			git_bin_pattern="tree-sitter-cli-macos-arm64.zip"
+		else
+			git_bin_pattern="tree-sitter-cli-macos-x64.zip"
+		fi
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		if [[ "$(uname -m)" == "aarch64" ]]; then
+			git_bin_pattern="tree-sitter-cli-linux-arm64.zip"
+		else
+			git_bin_pattern="tree-sitter-cli-linux-x64.zip"
+		fi
+	fi
+
+	pkg_install_predicate_func() {
+		if [[ ! $(command -v tree-sitter) ]]; then
+			echo 0
+		else
+			echo 1
+		fi
+	}
+
+	pkg_configure_func() {
+		return
+	}
+
+	pkg_current_tag_func() {
+		echo "$(tree-sitter --version | cut -d' ' -f2)"
 	}
 
 	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
@@ -740,6 +782,11 @@ setup_go "$GOLANG_TAG"
 log::separator
 setup_neovim
 
+# Tree-sitter installation
+# TODO: Update to GLIBC 2.39 to support latest setup_treesitter first
+# log::separator
+# setup_treesitter
+
 # Gitbundler installation
 log::separator
 setup_gitbundler
@@ -748,7 +795,6 @@ setup_gitbundler
 log::separator
 log::log "directories: setting up directories"
 dir::create_with_confirmation "$LOCAL_CONFIG_DIR" "directory to place uncommitted configurations (functions, aliases, env). Any *.zsh files in this directory will automatically be sourced."
-dir::create_with_confirmation "$LOCAL_NVIM_CONFIG_DIR" "directory to place uncommitted Neovim configurations. (options|keymaps|autocmds).lua files in this directory will automatically be sourced."
 dir::create_with_confirmation "$REPO_PERSONAL_DIR" "personal repository directory."
 dir::create_with_confirmation "$REPO_WORK_DIR" "work repository directory."
 log::success "directories: success!"
