@@ -1,34 +1,3 @@
-# Catppuccin-frappe Wezterm colour
-# See: https://github.com/catppuccin/wezterm/blob/main/plugin/init.lua
-#	frappe = {
-# 	rosewater = "#f2d5cf",
-# 	flamingo = "#eebebe",
-# 	pink = "#f4b8e4",
-# 	mauve = "#ca9ee6",
-# 	red = "#e78284",
-# 	maroon = "#ea999c",
-# 	peach = "#ef9f76",
-# 	yellow = "#e5c890",
-# 	green = "#a6d189",
-# 	teal = "#81c8be",
-# 	sky = "#99d1db",
-# 	sapphire = "#85c1dc",
-# 	blue = "#8caaee",
-# 	lavender = "#babbf1",
-# 	text = "#c6d0f5",
-# 	subtext1 = "#b5bfe2",
-# 	subtext0 = "#a5adce",
-# 	overlay2 = "#949cbb",
-# 	overlay1 = "#838ba7",
-# 	overlay0 = "#737994",
-# 	surface2 = "#626880",
-# 	surface1 = "#51576d",
-# 	surface0 = "#414559",
-# 	base = "#303446",
-# 	mantle = "#292c3c",
-# 	crust = "#232634",
-# },
-
 format = """
 $username\
 $hostname\
@@ -48,21 +17,21 @@ right_format = """$time"""
 disabled = false
 
 [username]
-style_user = "fg:#c6d0f5 bg:#414559"
-style_root = "italic fg:#292c3c bg:#86c1dc"
+style_user = "fg:white bg:bright-black"
+style_root = "italic fg:black bg:bright-blue"
 format = '[ $user ]($style)'
 disabled = false
 show_always = true
 
 [hostname]
 ssh_only = true
-style = "fg:#c6d0f5 bg:#414559"
+style = "fg:white bg:bright-black"
 format = '[$ssh_symbol$hostname ]($style)'
 disabled = false
 
 [directory]
 read_only = "󰌾"
-style = "fg:#292c3c bg:blue"
+style = "fg:black bg:blue"
 format = "[ $path ]($style) "
 truncation_length = 5
 truncation_symbol = ".../"
@@ -86,7 +55,7 @@ disabled = false
 
 [git_branch]
 symbol = " "
-style = "fg:#292c3c bg:#99d1db"
+style = "fg:black bg:cyan"
 format = '[ $symbol [$branch](italic $style)]($style)'
 
 [git_status]
@@ -98,18 +67,18 @@ modified = '!${count}'
 staged = '+${count}'
 deleted = '✘${count}'
 renamed = '»${count}'
-style = "bold fg:#292c3c bg:#99d1db"
+style = "bold fg:black bg:cyan"
 format = '[ $all_status$ahead_behind ]($style) '
 ignore_submodules = true
 
 [git_state]
 disabled = false
-style = "fg:#292c3c bg:#ea999c"
+style = "fg:black bg:bright-red"
 format = '[ $state [$progress_current/$progress_total](italic $style) ]($style) '
 
 # Kubernetes
 
 [kubernetes]
-style = "fg:white bg:#414559"
+style = "fg:white bg:bright-black"
 format = '[ $symbol[$context( \($namespace\))](italic $style) ]($style) '
 disabled = false
