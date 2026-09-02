@@ -1,16 +1,13 @@
 export ZSH="${HOME}/.config/zsh"
-ZSH_LOCAL_CONFIG="${ZSH}/local_config"
+
+# Load core utilities and custom functions
+source "${ZSH}/functions.zsh"
+# Load machine-specific settings and overrides if present
+safe_source "${ZSH}/.zshrc.local"
 
 #####################################
 # Core setups
 #####################################
-
-# Load core utilities and custom functions
-source "${ZSH}/functions.zsh"
-
-# If there are global and local export file, load it first. 
-# This affects subsequent behaviours of function effects.
-safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
 
 # Enable colors
 autoload -Uz colors && colors
@@ -217,13 +214,3 @@ if command -v zellij &>/dev/null; then
     zellij_tab_name_update_by_git_repo
     chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 fi
-
-# Load local config files
-if [[ -d "${ZSH_LOCAL_CONFIG}" ]]
-then 
-  for conf in "${ZSH_LOCAL_CONFIG}/"*.zsh(.N); do
-    source "${conf}"
-  done
-  unset conf
-fi
-
