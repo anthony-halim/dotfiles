@@ -28,8 +28,3 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 [[ -f "${HOME}/.cargo/env" ]] && {
 	source "${HOME}/.cargo/env"
 }
-
-# Sword
-[[ -d "${HOME}/.sword" ]] && {
-	export SWORD_PATH="${HOME}/.sword"
-}

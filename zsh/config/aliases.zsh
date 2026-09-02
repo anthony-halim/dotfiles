@@ -22,20 +22,12 @@ fi
   alias zea="zellij attach -c"
 }
 
-alias sush="sudo su -"
-
 alias src="source $HOME/.zshrc"
-
-alias syncclock="sudo hwclock -s"
 
 alias nv="nvim"
 
 alias vim="nvim"
 
 alias gg="lazygit"
-
-alias sshconf="cat $HOME/.ssh/config"
-
-alias gitconf="git config --list --show-origin"
 
 alias kcc="kubectl config use-context"
