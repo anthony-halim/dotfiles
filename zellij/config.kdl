@@ -123,7 +123,7 @@ plugins {
     welcome-screen location="zellij:session-manager" {
         welcome_screen false
     }
-    zjstatus location="file:zjstatus.wasm" {
+    zjstatus location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
         permissions {
             ReadApplicationState
             ChangeApplicationState
