@@ -2,7 +2,7 @@ layout {
     default_tab_template {
         children
         pane size=1 borderless=true {
-            plugin location="file:zjstatus.wasm" {
+            plugin location="zjstatus" {
                 // --- ANSI Color Index Definitions ---
                 // Maps variables directly to terminal-defined theme colors
                 color_bg         "0"   // Terminal Background (Dark/Black)
@@ -17,7 +17,7 @@ layout {
                 color_locked     "5"   // Terminal System Accent (Standard Magenta)
 
                 // Render structure referencing variables using '$'
-                format_left  "{mode} #[bg=$bg,fg=$success,bold]{session} {tabs}"
+                format_left  "{mode}#[bg=$bg,fg=$success,bold] {session} {tabs}"
                 format_right "{datetime}"
                 format_space "#[bg=$bg]"
 

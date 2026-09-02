@@ -121,7 +121,14 @@ plugins {
     strider location="zellij:strider"
     tab-bar location="zellij:tab-bar"
     welcome-screen location="zellij:session-manager" {
-        welcome_screen true
+        welcome_screen false
+    }
+    zjstatus location="file:zjstatus.wasm" {
+        permissions {
+            ReadApplicationState
+            ChangeApplicationState
+            RunCommands
+        }
     }
 }
 
@@ -141,7 +148,8 @@ simplified_ui true
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-theme "catppuccin-mocha"
+theme_dark "catppuccin-frappe"
+theme_light "catppuccin-latte"
  
 // Choose the base input mode of zellij.
 // Default: normal
