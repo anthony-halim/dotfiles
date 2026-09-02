@@ -6,19 +6,11 @@ ZSH_HISTORY_CACHE="${HOME}/.cache/.zsh_history"
 
 # Load requirements, fail if files not found
 source "${ZSH_CONFIG}/functions/utils.zsh"
-source "${ZSH_CONFIG}/functions/zellij_utils.zsh"
 
 # If there are global and local export file, load it first. 
 # This affects subsequent behaviours of function effects.
 safe_source "${ZSH_CONFIG}/exports.zsh"
 safe_source "${ZSH_LOCAL_CONFIG}/exports.zsh"
-
-# Auto start zellij
-zellij_autostart
-
-# Register tab name update for zellij
-zellij_tab_name_update_by_git_repo
-chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 
 # Enable colors
 autoload -Uz colors && colors
@@ -163,6 +155,35 @@ if command -v zellij &>/dev/null; then
 
     alias ze="zellij"
     alias zea="zellij attach -c"
+
+    # Auto rename zellij tab if in Git repository
+    zellij_tab_name_update_by_git_repo() {
+        [[ -z "$ZELLIJ" ]] && return
+
+        local tab_name
+        if git rev-parse --is-inside-work-tree &>/dev/null; then
+            tab_name="git - $(basename "$(git rev-parse --show-toplevel)")"
+        else
+            tab_name="${PWD##*/}"
+            [[ "$PWD" == "$HOME" ]] && tab_name="~"
+        fi
+        command nohup zellij action rename-tab "$tab_name" &>/dev/null
+    }
+
+    # Auto start/attach zellij
+    zellij_autostart() {
+        [[ -n "$ZELLIJ" ]] && return
+
+        # Attach to existing session if possible, else start a new one.
+        if [[ "$ZELLIJ_AUTO_START" == "true" ]]; then
+            zellij attach -c || zellij
+        fi
+    }
+
+    # Execute autostart and register renaming hook
+    zellij_autostart
+    zellij_tab_name_update_by_git_repo
+    chpwd_functions+=(zellij_tab_name_update_by_git_repo)
 fi
 
 # Load add on settings and behaviours

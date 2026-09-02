@@ -188,8 +188,7 @@ The following environment variables are supported.
 
   | Name                   | Type                   | Defaults                       | Description     |
   |----------------------- | ---------------------- | ------------------------------ | --------------- |
-  | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start.    |
-  | ZELLIJ_AUTO_ATTACH     | bool                   | false                          | Automatically attach to zellij session if any.|
+  | ZELLIJ_AUTO_START      | bool                   | false                          | Automatically start zellij on shell start. Will attempt to attach to existing session. |
 </details>
 
 ##### `zsh/local_config/*.zsh`
