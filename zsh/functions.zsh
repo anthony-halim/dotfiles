@@ -135,12 +135,12 @@ goto () {
     fi
   fi
 
-  # Split user input into query terms
+  # First try ZSH native in-memory matching:
+  # - Split user input into query terms
+  # - Filter lines that contain ALL query terms (case-insensitive substring)
   local -a terms
-  terms=( $=q )
-
-  # Filter lines that contain ALL query terms (case-insensitive substring)
   local -a matches
+  terms=( $=q )
   matches=( "${_goto_cache_lines[@]}" )
   setopt local_options extended_glob
   for term in "${terms[@]}"; do
@@ -150,7 +150,6 @@ goto () {
   # Handle the match count. If it's exactly one match, we avoid
   # spawning fzf and directly go to the directory. Else, we spawn fzf.
   if (( $#matches == 1 )); then
-    # Exactly one match -> go directly (0ms, no process spawning!)
     cd "${matches[1]}"
   else
     cd "$(fzf --height=25% --layout=reverse --border-label="Go to" -1 +m -q "$q" < "${directory_cache}")"
