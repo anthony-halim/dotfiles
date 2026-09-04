@@ -193,10 +193,10 @@ if command -v zellij &>/dev/null; then
 
         local tab_name
         if git rev-parse --is-inside-work-tree &>/dev/null; then
-            tab_name=" $(basename "$(git rev-parse --show-toplevel)")"
+            tab_name="󰳐 $(basename "$(git rev-parse --show-toplevel)")"
         else
             tab_name="${PWD##*/}"
-            [[ "$PWD" == "$HOME" ]] && tab_name="~"
+            [[ "$PWD" == "$HOME" ]] && tab_name=" "
         fi
         command nohup zellij action rename-tab "$tab_name" &>/dev/null
     }
