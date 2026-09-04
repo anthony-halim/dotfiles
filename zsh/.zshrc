@@ -45,6 +45,8 @@ if [[ ! -f "$ZAP_PATH" ]]; then
 fi
 source "$ZAP_PATH"
 
+# Async autocomplete to help with latency. Must be set before plugging the zsh-autosuggestions.
+export ZSH_AUTOSUGGEST_USE_ASYNC=true 
 plug "zsh-users/zsh-autosuggestions"
 plug "zsh-users/zsh-syntax-highlighting"
 plug "jeffreytse/zsh-vi-mode"
