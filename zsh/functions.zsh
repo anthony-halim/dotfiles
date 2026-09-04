@@ -63,6 +63,9 @@ path_prepend() {
 
 ## Budget version of z: https://github.com/rupa/z
 
+# Global in-memory cache for bookmarks
+typeset -a _goto_cache_lines
+
 # Bookmarks current directory.
 #
 # Usage: 
@@ -75,7 +78,7 @@ path_prepend() {
 # Flags/Options
 #       --remove-all    FLAG    clear all bookmarked directories. 
 bm () {
-  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/.dirjump}"
+  local directory_cache="${ZSH_DIRJUMP:-$HOME/.cache/.dirjump}"
   local purge_cache_mode=false
 
   while :; do
@@ -92,6 +95,7 @@ bm () {
     [[ -f "${directory_cache}" ]] && {
       rm -rf "${directory_cache}" && echo "-> Removed cache: ${directory_cache}" 
     }
+    _goto_cache_lines=() # Clear in-memory cache
     return
   fi
 
@@ -102,6 +106,7 @@ bm () {
   else
     echo "$PWD" >> "${directory_cache}"
     echo "-> ${PWD} bookmarked"
+    _goto_cache_lines=() # Reset memory cache to force re-read
   fi
 }
 
@@ -114,9 +119,8 @@ bm () {
 #   # foo is partial/full name of path to directory
 #   goto foo
 goto () {
-  local directory_cache="${(P)ZSH_DIRJUMP:-$HOME/.cache/.dirjump}"
-  q=" $*"
-  q=${q// -/ !}
+  local directory_cache="${ZSH_DIRJUMP:-$HOME/.cache/.dirjump}"
+  local q="$*"
 
   # go to $HOME if argument is empty or just empty spaces
   if [[ -z "${q// }" ]]; then
@@ -124,8 +128,33 @@ goto () {
     return
   fi
 
-  # allows typing "to foo -bar", which becomes "foo !bar" in the fzf query
-  cd "$(fzf --height=25% --layout=reverse --border-label="Go to" -1 +m -q "$q" < "${directory_cache}")"
+  # Lazy-load cache lines from disk once per session (or after a `bm` update)
+  if (( $#_goto_cache_lines == 0 )); then
+    if [[ -f "${directory_cache}" ]]; then
+      _goto_cache_lines=( ${(f)"$(< "${directory_cache}")"} )
+    fi
+  fi
+
+  # Split user input into query terms
+  local -a terms
+  terms=( $=q )
+
+  # Filter lines that contain ALL query terms (case-insensitive substring)
+  local -a matches
+  matches=( "${_goto_cache_lines[@]}" )
+  setopt local_options extended_glob
+  for term in "${terms[@]}"; do
+    matches=( ${(M)matches:#(#i)*${term}*} )
+  done
+
+  # Handle the match count. If it's exactly one match, we avoid
+  # spawning fzf and directly go to the directory. Else, we spawn fzf.
+  if (( $#matches == 1 )); then
+    # Exactly one match -> go directly (0ms, no process spawning!)
+    cd "${matches[1]}"
+  else
+    cd "$(fzf --height=25% --layout=reverse --border-label="Go to" -1 +m -q "$q" < "${directory_cache}")"
+  fi
 }
 
 # Fuzzy search and select on shell command history.
