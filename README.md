@@ -14,7 +14,7 @@ This repository holds my local configurations. Feel free to take ideas from it t
 ## Supported OS
 
 - WSL2 - Ubuntu 20.04, on Windows 11
-- Ubuntu 22.04, Jammy LTS
+- Ubuntu Noble 24.04.4 LTS
 
 ---
 
