@@ -109,7 +109,7 @@ setup_dependencies() {
 		echo 0
 	}
 	install_func() {
-		local dependencies=("wget" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger" "tldr")
+		local dependencies=("wget" "unzip" "ripgrep" "fd" "bat" "git" "ipcalc" "finger" "tldr" "wl-clipboard")
 		for dependency in "${dependencies[@]}"; do
 			log::info "Installing '$dependency'"
 			if [[ "${OSTYPE}" =~ ^darwin ]]; then
@@ -743,9 +743,8 @@ log::separator
 setup_neovim
 
 # Tree-sitter installation
-# TODO: Update to GLIBC 2.39 to support latest setup_treesitter first
-# log::separator
-# setup_treesitter
+log::separator
+setup_treesitter
 
 # Gitbundler installation
 log::separator
