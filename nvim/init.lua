@@ -607,6 +607,41 @@ do
     end,
   })
 
-  -- Register standard custom filetype language mappings
+  -- Register custom filetype language mappings
   vim.treesitter.language.register("terraform", "terraform-vars")
+
+  -- Register custom filetypes
+  vim.filetype.add({
+    extension = {
+      tmpl = "gotmpl",
+      tpl = "gotmpl",
+      gotmpl = "gotmpl",
+    },
+  })
+
+  -- Utility to inject parser at runtime
+  vim.api.nvim_create_user_command("TSInject", function(opts)
+    local target_ft = vim.bo.filetype
+     -- If there is no filetype, assign "text" as a fallback base
+    if target_ft == "" or not target_ft then
+      target_ft = "text"
+      vim.bo.filetype = "text"
+    end
+
+    local parser_to_inject = opts.args
+    -- Inject the additional parser while preserving the original parser
+    local injection_query = string.format(
+      [[
+      ; extends
+      ((text) @injection.content
+       (#set! injection.language "%s")
+       (#set! injection.combined))
+      ]],
+      parser_to_inject
+    )
+    vim.treesitter.query.set(target_ft, "injections", injection_query)
+
+    -- Force syntax recalculation
+    vim.cmd("edit!")
+  end, { nargs = 1 })
 end
