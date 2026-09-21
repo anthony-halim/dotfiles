@@ -36,7 +36,7 @@ do
   vim.opt.shortmess:append({ S = true, C = true }) -- 'S' silence search count warning, 'C' silence scan progress messages
 
   -- Status line settings
-  vim.o.laststatus = 3 -- Global statusline regardless of splits
+  vim.o.laststatus = 2 -- Show statusline on each window 
 
   -- Insert-mode autocomplete settings
   vim.o.completeopt = "menu,menuone,noselect"
@@ -92,10 +92,10 @@ do
   vim.o.signcolumn = "yes"
 
   -- Decrease update time
-  vim.o.updatetime = 100
+  vim.o.updatetime = 150
 
   -- Decrease mapped sequence wait time
-  vim.o.timeoutlen = 100
+  vim.o.timeoutlen = 150
 
   -- Configure how new splits should be opened
   vim.o.splitright = true -- Put new windows below current
@@ -154,8 +154,6 @@ do
   vim.keymap.set("n", "gJ", [[<C-I>]], { desc = "Jump to next" })
 
   -- Better up/down
-  vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-  vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
   vim.keymap.set({ "n", "x" }, "<C-d>", "<C-d>zz", { desc = "Move half page down" })
   vim.keymap.set({ "n", "x" }, "<C-u>", "<C-u>zz", { desc = "Move half page up" })
 
@@ -622,7 +620,7 @@ do
   -- Utility to inject parser at runtime
   vim.api.nvim_create_user_command("TSInject", function(opts)
     local target_ft = vim.bo.filetype
-     -- If there is no filetype, assign "text" as a fallback base
+    -- If there is no filetype, assign "text" as a fallback base
     if target_ft == "" or not target_ft then
       target_ft = "text"
       vim.bo.filetype = "text"

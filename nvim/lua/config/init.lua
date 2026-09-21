@@ -9,6 +9,11 @@ M.options = {
       Hint = " ",
       Info = " ",
     },
+    git = {
+      add = " ",
+      change = " ",
+      delete = " ",
+    },
   },
 }
 

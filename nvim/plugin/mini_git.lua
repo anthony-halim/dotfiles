@@ -34,3 +34,14 @@ vim.api.nvim_create_autocmd("User", {
     vim.wo[win_blame].cursorbind, vim.wo[win_src].cursorbind = true, true
   end,
 })
+
+-- Change how the Git summary string is formatted
+vim.api.nvim_create_autocmd("User", {
+  pattern = "MiniGitUpdated",
+  callback = function(data)
+    -- Utilize buffer-local table summary
+    local summary = vim.b[data.buf].minigit_summary
+    -- Only show the branch name
+    vim.b[data.buf].minigit_summary_string = summary.head_name or ""
+  end,
+})
