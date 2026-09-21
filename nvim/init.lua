@@ -92,10 +92,10 @@ do
   vim.o.signcolumn = "yes"
 
   -- Decrease update time
-  vim.o.updatetime = 250
+  vim.o.updatetime = 100
 
   -- Decrease mapped sequence wait time
-  vim.o.timeoutlen = 300
+  vim.o.timeoutlen = 100
 
   -- Configure how new splits should be opened
   vim.o.splitright = true -- Put new windows below current

@@ -11,6 +11,11 @@ if wezterm.config_builder then
   config = wezterm.config_builder()
 end
 
+-- Performance and refresh Rate
+config.max_fps = 120
+config.animation_fps = 120
+config.front_end = "OpenGL"
+
 -- Start in Ubuntu for WSL
 local wsl_domains = wezterm.default_wsl_domains()
 if #wsl_domains > 0 then
