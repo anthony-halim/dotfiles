@@ -14,32 +14,34 @@ require("mini.statusline").setup({
 
       local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
       local git = MiniStatusline.section_git({ trunc_width = 40 })
-      local filename = '%f%m%r'
+      local filename = "%f%m%r"
       local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
       local diff = MiniStatusline.section_diff({ trunc_width = 75 })
       local lsp = MiniStatusline.section_lsp({ trunc_width = 75 })
       local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
-      local location = "%l│%L" -- '<cursor line>|<total lines>'
+      local location = "%l:%c│%L" -- '<cursor line>:<cursor column>|<total lines>'
       local search = MiniStatusline.section_searchcount({ trunc_width = 75 })
 
       return MiniStatusline.combine_groups({
         { hl = mode_hl, strings = { string.upper(mode) } },
-        { hl = "MiniStatuslineDevinfo", strings = { git } },
+        { hl = "MiniStatuslineDevinfo", strings = { git, lsp } },
         "%<", -- Mark general truncate point
         { hl = "MiniStatuslineFilename", strings = { filename } },
         "%=", -- End left alignment
-        { hl = "MiniStatuslineFilename", strings = { diagnostics, diff, lsp } },
+        { hl = "MiniStatuslineFilename", strings = { diagnostics, diff } },
         { hl = "MiniStatuslineFileinfo", strings = { fileinfo } },
         { hl = mode_hl, strings = { search, location } },
       })
     end,
-    inactive = function ()
+    inactive = function()
       local MiniStatusline = require("mini.statusline")
-      local filename = '%f%m%r'
+      local filename = "%t%m%r"
+      local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+      local diff = MiniStatusline.section_diff({ trunc_width = 75 })
       return MiniStatusline.combine_groups({
         "%=", -- End left alignment
-        { hl = "MiniStatuslineFilename", strings = { filename } },
+        { hl = "MiniStatuslineFilename", strings = { diagnostics, diff, filename } },
       })
-    end
+    end,
   },
 })
