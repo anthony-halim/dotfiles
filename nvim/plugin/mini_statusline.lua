@@ -38,7 +38,7 @@ require("mini.statusline").setup({
       local filename = '%f%m%r'
       return MiniStatusline.combine_groups({
         "%=", -- End left alignment
-        { hl = "MiniStatusInactive", strings = { filename } },
+        { hl = "MiniStatuslineFilename", strings = { filename } },
       })
     end
   },
