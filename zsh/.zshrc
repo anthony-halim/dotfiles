@@ -164,6 +164,14 @@ if command -v fzf &>/dev/null; then
 fi
 
 #####################################
+# Zoxide ZSH integration
+#####################################
+
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+#####################################
 # Starship ZSH integration
 #####################################
 

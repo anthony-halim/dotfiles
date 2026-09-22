@@ -28,14 +28,6 @@ My workflows use different machines with slightly different configuration, tools
 
 See adding [custom local configs](#optional-add-custom-local-configurations).
 
-#### Budget version of [z](https://github.com/rupa/z) for directory traverse: `bm` and `goto`
-
-For those have not checked out [z](https://github.com/rupa/z), I recommend trying it out for fast travels between directories. This repository provides a *budget version* of `z`, powered by [fzf](https://github.com/junegunn/fzf): `bm (bookmark)` and `goto`.
-
-- `bm` bookmarks the current directory.
-- `goto` fast travels to the directory e.g. `goto foo`, where `foo` is a fuzzy match to the full path.
-- On name conflict, `fzf` window will be spawned.
-
 ---
 
 ## Components
@@ -156,15 +148,6 @@ The followings **will not** be committed to the repository and are suitable to a
 This file is used to load all of your local/machine-specific environment variables, aliases, or overrides. It is loaded early during ZSH initialization.
 
 The following local environment variables can be exported inside it:
-
-<details>
-  <summary>ZSH</summary>
-
-
-  | Name                   | Type                   | Defaults                       | Description     |
-  |----------------------- | ---------------------- | ------------------------------ | --------------- |
-  | ZSH_DIRJUMP            | string                 | "$HOME/.cache/.dirjump"        | Path to file to store bookmarked directories. |
-</details>
 
 <details>
   <summary>Zellij</summary>

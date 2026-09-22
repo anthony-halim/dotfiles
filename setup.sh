@@ -173,6 +173,41 @@ setup_fzf() {
 	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
+setup_zoxide() {
+	local pkg_name="zoxide"
+	local pkg_description="smarter cd command"
+	local git_repo="https://github.com/ajeetdsouza/zoxide"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_path="zoxide"
+
+	# Binary target pattern
+	local git_bin_pattern
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+		git_bin_pattern="zoxide-{{ truncated_git_tag }}-x86_64-apple-darwin.tar.gz"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+		git_bin_pattern="zoxide-{{ truncated_git_tag }}-x86_64-unknown-linux-musl.tar.gz"
+	fi
+
+	pkg_install_predicate_func() {
+		if [[ ! $(command -v zoxide) ]]; then
+			echo 0
+		else
+			echo 1
+		fi
+	}
+
+	pkg_configure_func() {
+		return
+	}
+
+	pkg_current_tag_func() {
+		echo "$(zoxide --version | cut -d' ' -f2)"
+	}
+
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+}
+
 setup_eza() {
 	local pkg_name="eza"
 	local pkg_description="modern, maintained replacement for ls"
@@ -721,6 +756,10 @@ setup_gitdelta
 # fzf setup
 log::separator
 setup_fzf
+
+# Zoxide installation
+log::separator
+setup_zoxide
 
 # Lazygit installation
 log::separator
