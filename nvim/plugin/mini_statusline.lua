@@ -5,6 +5,8 @@ vim.pack.add({
   "https://github.com/nvim-mini/mini.statusline",
 })
 
+local utils = require("utils.utils")
+
 -- Configure and setup mini.statusline
 require("mini.statusline").setup({
   use_icons = true,
@@ -14,7 +16,7 @@ require("mini.statusline").setup({
 
       local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
       local git = MiniStatusline.section_git({ trunc_width = 40 })
-      local filename = "%f%m%r"
+      local filename = utils.git_relative_path()
       local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
       local diff = MiniStatusline.section_diff({ trunc_width = 75 })
       local lsp = MiniStatusline.section_lsp({ trunc_width = 75 })
@@ -35,12 +37,13 @@ require("mini.statusline").setup({
     end,
     inactive = function()
       local MiniStatusline = require("mini.statusline")
-      local filename = "%t%m%r"
+      local filename = utils.git_relative_path()
       local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
       local diff = MiniStatusline.section_diff({ trunc_width = 75 })
       return MiniStatusline.combine_groups({
         "%=", -- End left alignment
-        { hl = "MiniStatuslineFilename", strings = { diagnostics, diff, filename } },
+        { hl = "MiniStatuslineFilename", strings = { diagnostics, diff } },
+        { hl = "MiniStatuslineFileinfo", strings = { filename } },
       })
     end,
   },

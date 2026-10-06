@@ -44,6 +44,15 @@ function M.git_dir_cwd()
   return M._git_repo_cache[cwd]
 end
 
+--- Returns the buffer's file path relative to the Git repository root (falls back to '%f').
+---@return string
+function M.git_relative_path()
+  local path = vim.api.nvim_buf_get_name(0)
+  local root = vim.fs.root(0, ".git")
+  local rel = (root and path ~= "") and vim.fs.relpath(root, path) or "%f"
+  return rel .. "%m%r"
+end
+
 -- nvim-notify integration
 
 M._client_notifs = {}
