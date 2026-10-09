@@ -414,6 +414,41 @@ setup_treesitter() {
 	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
 }
 
+setup_grpcurl() {
+	local pkg_name="grpcurl"
+	local pkg_description="command-line tool for interacting with gRPC servers"
+	local git_repo="https://github.com/fullstorydev/grpcurl"
+	local git_tag="latest"
+	local git_tag_pattern="v*.*.*"
+	local git_bin_path="grpcurl"
+
+	# Binary target pattern
+	local git_bin_pattern
+	if [[ "${OSTYPE}" =~ ^darwin ]]; then
+        git_bin_pattern="grpcurl_{{ truncated_git_tag }}_osx_x86_64.tar.gz"
+	elif [[ "${OSTYPE}" =~ ^linux ]]; then
+        git_bin_pattern="grpcurl_{{ truncated_git_tag }}_linux_x86_64.tar.gz"
+	fi
+
+	pkg_install_predicate_func() {
+		if [[ ! $(command -v grpcurl) ]]; then
+			echo 0
+		else
+			echo 1
+		fi
+	}
+
+	pkg_configure_func() {
+		return
+	}
+
+	pkg_current_tag_func() {
+		echo "$(grpcurl -version 2>&1 | head -n 1 | cut -d' ' -f2)"
+	}
+
+	pkg::manage_by_git_release_bin "$pkg_name" "$pkg_description" pkg_install_predicate_func pkg_configure_func pkg_current_tag_func "$git_repo" "$git_tag" "$git_tag_pattern" "$git_bin_pattern" "$git_bin_path"
+}
+
 setup_zsh() {
 	# Installation
 	need_installation_predicate() {
@@ -784,6 +819,10 @@ setup_neovim
 # Tree-sitter installation
 log::separator
 setup_treesitter
+
+# grpcurl installation
+log::separator
+setup_grpcurl
 
 # Gitbundler installation
 log::separator
