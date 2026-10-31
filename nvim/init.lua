@@ -31,7 +31,7 @@ do
 
   -- Command line settings
   vim.o.showmode = false -- Don't show the mode, since it's already in the status line
-  vim.o.cmdheight = 0 -- Only show command-line bar when in use
+  vim.o.cmdheight = 0 -- Only show command bar when in use (works best with vim._core.ui2 to avoid window resize jitter and 'Press ENTER' prompts)
   vim.o.wildmode = "longest:full,full" -- Completion behaviour
   vim.opt.shortmess:append({ S = true, C = true }) -- 'S' silence search count warning, 'C' silence scan progress messages
 
@@ -272,6 +272,9 @@ end
 -- Core UI
 -- ============================================================
 do
+  -- Modern UI layer: decouples cmdline/messages into floating overlays to prevent layout jumping
+  require("vim._core.ui2").enable()
+
   vim.pack.add({
     "https://github.com/nvim-mini/mini.icons",
     "https://github.com/catppuccin/nvim",

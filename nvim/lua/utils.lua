@@ -14,8 +14,8 @@ end
 ---@return string
 function M.git_relative_path()
   local path = vim.api.nvim_buf_get_name(0)
-  local root = vim.fs.root(0, ".git")
-  local rel = (root and path ~= "") and vim.fs.relpath(root, path) or "%f"
+  local root = M.git_dir_cwd()
+  local rel = (root ~= "" and path ~= "") and vim.fs.relpath(root, path) or "%f"
   return rel .. "%m%r"
 end
 
@@ -23,26 +23,27 @@ end
 -- Floating Terminal
 -- ============================================================
 
-M._term_state = { win = -1, buf = -1 }
+local term_state = { win = -1, buf = -1 }
 
 --- Toggle a centered native floating terminal window.
 ---@param cmd string|nil the command to run (e.g. "lazygit"), or nil for the default shell.
 function M.toggle_terminal(cmd)
-  if vim.api.nvim_win_is_valid(M._term_state.win) then
-    vim.api.nvim_win_close(M._term_state.win, true)
+  if vim.api.nvim_win_is_valid(term_state.win) then
+    vim.api.nvim_win_close(term_state.win, true)
     return
   end
 
-  if not vim.api.nvim_buf_is_valid(M._term_state.buf) then
-    M._term_state.buf = vim.api.nvim_create_buf(false, true)
+  if not vim.api.nvim_buf_is_valid(term_state.buf) then
+    term_state.buf = vim.api.nvim_create_buf(false, true)
   end
 
   local width = math.floor(vim.o.columns * 0.95)
   local height = math.floor(vim.o.lines * 0.95)
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
+  local title = cmd and cmd:gsub("^%l", string.upper) or "Terminal"
 
-  M._term_state.win = vim.api.nvim_open_win(M._term_state.buf, true, {
+  term_state.win = vim.api.nvim_open_win(term_state.buf, true, {
     relative = "editor",
     width = width,
     height = height,
@@ -50,26 +51,26 @@ function M.toggle_terminal(cmd)
     col = col,
     style = "minimal",
     border = "rounded",
-    title = string.format(" %s ", cmd and string.upper(string.sub(cmd, 1, 1)) .. string.sub(cmd, 2) or "Terminal"),
+    title = string.format(" %s ", title),
     title_pos = "center",
   })
 
-  if vim.bo[M._term_state.buf].buftype ~= "terminal" then
+  if vim.bo[term_state.buf].buftype ~= "terminal" then
     vim.fn.jobstart(cmd or vim.o.shell, {
       term = true,
       on_exit = function(_, exit_code, _)
         if exit_code == 0 then
-          if vim.api.nvim_win_is_valid(M._term_state.win) then
-            vim.api.nvim_win_close(M._term_state.win, true)
+          if vim.api.nvim_win_is_valid(term_state.win) then
+            vim.api.nvim_win_close(term_state.win, true)
           end
-          if vim.api.nvim_buf_is_valid(M._term_state.buf) then
-            vim.api.nvim_buf_delete(M._term_state.buf, { force = true })
+          if vim.api.nvim_buf_is_valid(term_state.buf) then
+            vim.api.nvim_buf_delete(term_state.buf, { force = true })
           end
         end
       end,
     })
 
-    vim.bo[M._term_state.buf].buflisted = false
+    vim.bo[term_state.buf].buflisted = false
   end
 
   vim.cmd("startinsert")
