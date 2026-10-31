@@ -6,7 +6,6 @@ vim.pack.add({
 })
 
 -- Configure and setup mini.starter
-local utils = require("utils.utils")
 local sessions = require("mini.sessions")
 local options = {}
 
@@ -30,18 +29,14 @@ options.items = {
   {
     name = "Find file",
     action = function()
-      require("utils.pickers").mini_pick.gitfiles_with_fallback()
+      require("mini.pick").registry.git_files()
     end,
     section = "Shortcuts",
   },
   {
     name = "Search grep",
     action = function()
-      local local_opts = {}
-      if require("utils.utils").git_dir_cwd() ~= "" then
-        local_opts = { tool = "git" }
-      end
-      require("mini.pick").builtin.grep_live(local_opts)
+      require("mini.pick").registry.git_greplive()
     end,
     section = "Shortcuts",
   },
@@ -51,8 +46,8 @@ options.items = {
 
 -- Add additional shortcut to reload current directory
 -- session if present
-local session_name = utils.generate_session_name_cwd()
-if sessions.detected[utils.generate_session_name_cwd()] ~= nil then
+local session_name = sessions.get_current_session_name()
+if sessions.detected[session_name] ~= nil then
   table.insert(options.items, 0, {
     name = "Restore session",
     action = function()

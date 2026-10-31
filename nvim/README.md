@@ -12,11 +12,8 @@ nvim/
 ├── plugin/                  # Standalone plugin configurations (auto-loaded by Neovim)
 ├── ftplugin/                # Buffer-specific settings (auto-loaded per filetype)
 ├── lua/
-│   ├── config/
-│   │   └── init.lua         # Shared static settings (diagnostic/git icons, constants)
-│   └── utils/
-│       ├── pickers.lua      # Custom search pickers (Git files with fallback, grep)
-│       └── utils.lua        # Floating terminal, session name helpers, LSP progress
+│   ├── config.lua           # Shared static settings (diagnostic/git icons, constants)
+│   └── utils.lua            # Floating terminal, git helpers, LSP progress
 └── after/                   # (Git-ignored) Machine-specific overrides for work/home
 ```
 
@@ -57,9 +54,4 @@ The loading sequence is as follows:
 
 ## Pending Items
 
-- [ ] `stylua` is currently registered in `lsp_confs` in `init.lua` as if it were an LSP. Since it is a CLI formatter (not an LSP server), remove `stylua = {}` from `lsp_confs`. `conform.nvim` already handles running `stylua`.
 - [ ] Language settings are split between `lsp_confs` and `conform.nvim`'s `formatters_by_ft`. Consolidate into a unified mapping: `Language <-> FileType <-> LSP Server <-> Formatter`.
-- [ ] Split the general `utils.lua` file into domain-focused modules:
-  - `lua/dev/terminal.lua`: Centered floating terminal logic (`toggle_terminal`).
-  - `lua/dev/git.lua`: Git root and worktree checks.
-  - `lua/dev/lsp.lua`: LSP progress spinner and notification handling.

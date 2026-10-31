@@ -1,7 +1,4 @@
-local M = {}
-
-M.options = {
-  -- icons used by other plugins
+local M = {
   icons = {
     diagnostics = {
       Error = " ",

@@ -15,7 +15,7 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "MiniDiffUpdated",
   callback = function(data)
     local summary = vim.b[data.buf].minidiff_summary
-    local git_icons = require("config").options.icons.git
+    local git_icons = require("config").icons.git
     local sumary_string = {}
     if summary.add > 0 then
       table.insert(sumary_string, git_icons.add .. summary.add)

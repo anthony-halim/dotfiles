@@ -2,16 +2,25 @@ vim.pack.add({
   "https://github.com/nvim-mini/mini.sessions",
 })
 
+local MiniSessions = require("mini.sessions")
+local utils = require("utils")
+
 -- Configure and setup mini.sessions
-require("mini.sessions").setup({
+MiniSessions.setup({
   autoread = false,
   autowrite = false, -- Disable default autocmd
 })
 
+--- Get session name tied to the Git project root (fallback to cwd)
+---@return string session name
+MiniSessions.get_current_session_name = function()
+  local dir = utils.git_dir_cwd()
+  local root = dir ~= "" and dir or vim.fn.getcwd()
+  return vim.fn.fnamemodify(root, ":t")
+end
+
 -- Custom auto-saving session logic on VimLeavePre
 do
-  local utils = require("utils.utils")
-  local sessions = require("mini.sessions")
   local augroup = vim.api.nvim_create_augroup("MiniSessions", {})
 
   local autowrite = function()
@@ -41,8 +50,8 @@ do
       return
     end
 
-    local session_name = utils.generate_session_name_cwd()
-    sessions.write(session_name, { force = true })
+    local session_name = MiniSessions.get_current_session_name()
+    MiniSessions.write(session_name, { force = true })
   end
 
   vim.api.nvim_create_autocmd(

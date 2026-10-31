@@ -21,6 +21,6 @@ vim.notify = require("notify")
 vim.api.nvim_create_autocmd("LspProgress", {
   group = vim.api.nvim_create_augroup("LspProgressNotify", { clear = true }),
   callback = function(ev)
-    require("utils.utils").lsp_progress(ev)
+    require("utils").lsp_progress(ev)
   end,
 })

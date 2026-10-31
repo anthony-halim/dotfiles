@@ -178,7 +178,7 @@ do
 
   -- Floating terminal integration
   vim.keymap.set("n", "<leader>gg", function()
-    require("utils.utils").toggle_terminal("lazygit")
+    require("utils").toggle_terminal("lazygit")
   end, { desc = "LazyGit", silent = true })
 
   -- Diagnostics
@@ -356,7 +356,6 @@ do
         client.server_capabilities.hoverProvider = false
       end,
     },
-    stylua = {}, -- Used to format Lua code
     lua_ls = {
       -- Special Lua Config, as recommended by neovim help docs
       on_init = function(client)
@@ -412,15 +411,19 @@ do
     },
   }
 
-  -- Handle automatic installations
-  local ensure_installed = {}
+  -- Handle automatic installations.
+  -- stylua is included by default so Mason auto-installs it without needing an extra plugin like mason-tool-installer.nvim,
+  -- while excluding it from automatic_enable ensures it doesn't attach as an LSP server (conform.nvim handles formatting).
+  local ensure_installed = { "stylua" }
   for name, _ in pairs(lsp_confs) do
     table.insert(ensure_installed, name)
   end
   require("mason").setup({})
   require("mason-lspconfig").setup({
     ensure_installed = ensure_installed,
-    automatic_enable = true,
+    automatic_enable = {
+      exclude = { "stylua" },
+    },
   })
 
   -- Handle LSP server configuration
@@ -440,10 +443,10 @@ do
     float = { border = "rounded", source = "if_many" },
     signs = {
       text = {
-        [vim.diagnostic.severity.ERROR] = require("config").options.icons.diagnostics.Error,
-        [vim.diagnostic.severity.WARN] = require("config").options.icons.diagnostics.Warn,
-        [vim.diagnostic.severity.HINT] = require("config").options.icons.diagnostics.Hint,
-        [vim.diagnostic.severity.INFO] = require("config").options.icons.diagnostics.Info,
+        [vim.diagnostic.severity.ERROR] = require("config").icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = require("config").icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = require("config").icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = require("config").icons.diagnostics.Info,
       },
     },
     virtual_text = false, -- We use floating open_float instead
