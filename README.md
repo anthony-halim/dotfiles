@@ -87,13 +87,14 @@ See adding [custom local configs](#optional-add-custom-local-configurations).
   ![credit to source repository](https://tldr.sh/assets/img/screenshot.png)
 </details>
 
-#### Editor: [Neovim](neovim.io) (Text editor)
+#### Editor: [Neovim](https://neovim.io) (Text editor)
 
 <details>
   <br/>
 
   - Neovim is able to be extensively configured to become a `Personal Development Environment (PDE)`, and having to not use multiple IDE for individual languages is much welcomed.
   - The Neovim has been configured to include LSP, auto-completion, UI and quality of life plugins that I use often.
+  - See [nvim/README.md](nvim/README.md) for architectural details, boot lifecycle, and custom commands.
 </details>
 
 <details>
