@@ -247,6 +247,29 @@ do
     })
   end, {})
 
+  -- Update packages managed by vim.pack
+  vim.api.nvim_create_user_command("PackUpdate", function(opts)
+    vim.pack.update(nil, { force = opts.bang })
+  end, { bang = true, desc = "Update packages (use ! to force without confirmation)" })
+
+  -- Remove unused packages from disk and lockfile
+  vim.api.nvim_create_user_command("PackClean", function()
+    local inactive = vim.iter(vim.pack.get())
+      :filter(function(x)
+        return not x.active
+      end)
+      :map(function(x)
+        return x.spec.name
+      end)
+      :totable()
+    if #inactive == 0 then
+      vim.notify("No unused packages to clean.", vim.log.levels.INFO)
+      return
+    end
+    vim.pack.del(inactive)
+    vim.notify("Cleaned unused packages: " .. table.concat(inactive, ", "), vim.log.levels.INFO)
+  end, { desc = "Remove inactive packages from disk and lockfile" })
+
   -- Post-update/install build hooks for specific packages
   vim.api.nvim_create_autocmd("PackChanged", {
     group = augroup("pack_hooks"),

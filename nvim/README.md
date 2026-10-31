@@ -52,6 +52,16 @@ The loading sequence is as follows:
 1. In `init.lua`, locate the `lsp_confs` table under the `LSP installation` section. Add your server (Mason will auto-install it via `ensure_installed`).
 2. If the language needs code formatting, add it to `formatters_by_ft` under the `conform.nvim` section in `init.lua`.
 
+**Custom Commands**
+
+- `:PackUpdate`: Inspect pending updates and commit changelogs in a diff buffer (`:w` to apply, `:q` to cancel).
+- `:PackUpdate!`: Force-update all packages immediately without confirmation.
+- `:PackClean`: Prune inactive/removed plugins from disk and `nvim-pack-lock.json`.
+- `:AutoFormatToggle`: Toggle automatic format-on-save on or off globally.
+
 ## Pending Items
 
 - [ ] Language settings are split between `lsp_confs` and `conform.nvim`'s `formatters_by_ft`. Consolidate into a unified mapping: `Language <-> FileType <-> LSP Server <-> Formatter`.
+- [ ] (Blocked until upgrade to 0.13) Remove `checktime` autocmd in `init.lua` (`autoread` uses native OS filesystem watchers).
+- [ ] (Blocked until upgrade to 0.13) Remove `vim.keymap.set("n", "Q", "<nop>")` in `init.lua` to enable native multi-cursor support.
+- [ ] (Blocked until upgrade to 0.13) Explore replacing browser-based `markdown-preview.nvim` with native terminal image preview (`vim.ui.img`).
