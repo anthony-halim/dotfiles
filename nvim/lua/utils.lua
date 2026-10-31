@@ -79,90 +79,63 @@ end
 -- LSP Progress Notifications
 -- ============================================================
 
-M._client_notifs = {}
-M._spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+local notifs = {}
+local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
 
-function M._get_notif_data(client_id, token)
-  if not M._client_notifs[client_id] then
-    M._client_notifs[client_id] = {}
-  end
-
-  if not M._client_notifs[client_id][token] then
-    M._client_notifs[client_id][token] = {}
-  end
-
-  return M._client_notifs[client_id][token]
-end
-
-function M._update_spinner(client_id, token)
-  local notif_data = M._get_notif_data(client_id, token)
-
-  if notif_data.spinner then
-    local new_spinner = (notif_data.spinner + 1) % #M._spinner_frames
-    notif_data.spinner = new_spinner
-
-    notif_data.notification = vim.notify(nil, nil, {
+local function update_spinner(key)
+  local data = notifs[key]
+  if data and data.spinner then
+    data.spinner = (data.spinner % #spinner_frames) + 1
+    data.notif = vim.notify(nil, nil, {
       hide_from_history = true,
-      icon = M._spinner_frames[new_spinner],
-      replace = notif_data.notification,
+      icon = spinner_frames[data.spinner],
+      replace = data.notif,
     })
-
     vim.defer_fn(function()
-      M._update_spinner(client_id, token)
+      update_spinner(key)
     end, 100)
   end
-end
-
-function M._format_title(title, client_name)
-  return client_name .. (#title > 0 and ": " .. title or "")
-end
-
-function M._format_message(message, percentage)
-  return (percentage and percentage .. "%\t" or "") .. (message or "")
 end
 
 --- LSP progress handler for LspProgress autocommand.
 ---@param ev table The autocommand event payload.
 function M.lsp_progress(ev)
-  if not ev or not ev.data or not ev.data.params then
-    return
-  end
-  local client_id = ev.data.client_id
-  local params = ev.data.params
-  local val = params.value
+  local params = ev and ev.data and ev.data.params
+  local val = params and params.value
   if not val or not val.kind then
     return
   end
 
-  local token = params.token
-  local notif_data = M._get_notif_data(client_id, token)
+  local key = ev.data.client_id .. ":" .. tostring(params.token)
+  local data = notifs[key] or {}
+  notifs[key] = data
+
+  local msg = (val.percentage and val.percentage .. "%\t" or "") .. (val.message or "")
 
   if val.kind == "begin" then
-    local message = M._format_message(val.message, val.percentage)
-    local client = vim.lsp.get_client_by_id(client_id)
-    local client_name = client and client.name or "LSP"
-
-    notif_data.notification = vim.notify(message, vim.log.levels.INFO, {
-      title = M._format_title(val.title, client_name),
-      icon = M._spinner_frames[1],
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local title = (client and client.name or "LSP") .. (val.title and ": " .. val.title or "")
+    data.notif = vim.notify(msg, vim.log.levels.INFO, {
+      title = title,
+      icon = spinner_frames[1],
       timeout = false,
-      hide_from_history = false,
     })
-    notif_data.spinner = 1
-
-    M._update_spinner(client_id, token)
-  elseif val.kind == "report" and notif_data and notif_data.notification then
-    notif_data.notification = vim.notify(M._format_message(val.message, val.percentage), vim.log.levels.INFO, {
-      replace = notif_data.notification,
-      hide_from_history = false,
+    data.spinner = 1
+    update_spinner(key)
+  elseif val.kind == "report" and data.notif then
+    data.notif = vim.notify(msg, vim.log.levels.INFO, {
+      replace = data.notif,
     })
-  elseif val.kind == "end" and notif_data and notif_data.notification then
-    notif_data.notification = vim.notify(val.message and M._format_message(val.message) or "Complete", vim.log.levels.INFO, {
+  elseif val.kind == "end" and data.notif then
+    data.spinner = nil
+    data.notif = vim.notify(val.message or "Complete", vim.log.levels.INFO, {
       icon = "",
-      replace = notif_data.notification,
-      timeout = 3000,
+      replace = data.notif,
+      timeout = 2500,
     })
-    notif_data.spinner = nil
+    vim.defer_fn(function()
+      notifs[key] = nil
+    end, 3000)
   end
 end
 
