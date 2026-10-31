@@ -51,6 +51,13 @@ The loading sequence is as follows:
 
 1. In `init.lua`, locate the `lsp_confs` table under the `LSP installation` section. Add your server (Mason will auto-install it via `ensure_installed`).
 2. If the language needs code formatting, add it to `formatters_by_ft` under the `conform.nvim` section in `init.lua`.
+3. If the language needs file extension aliases or parser mappings, register them in `init.lua` via `vim.filetype.add` or `vim.treesitter.language.register`. Treesitter parsers available in `nvim-treesitter` install automatically on buffer open.
+
+**How to Add a Plugin**
+
+1. Create a standalone file in `plugin/<plugin_name>.lua` (or add to `init.lua` if it is a core dependency like LSP or Treesitter).
+2. Call `vim.pack.add(...)` with the Git URL, run `setup()`, and bind any plugin keymaps.
+3. Run `:PackUpdate` to clone/build the plugin and write the commit pin to `nvim-pack-lock.json`.
 
 **Custom Commands**
 
@@ -58,6 +65,7 @@ The loading sequence is as follows:
 - `:PackUpdate!`: Force-update all packages immediately without confirmation.
 - `:PackClean`: Prune inactive/removed plugins from disk and `nvim-pack-lock.json`.
 - `:AutoFormatToggle`: Toggle automatic format-on-save on or off globally.
+- `:TSInject <parser>`: Inject a Treesitter parser into the current buffer's filetype at runtime (e.g., `:TSInject gotmpl`) and recalculate syntax.
 
 ## Pending Items
 
