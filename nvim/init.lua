@@ -31,7 +31,7 @@ do
 
   -- Command line settings
   vim.o.showmode = false -- Don't show the mode, since it's already in the status line
-  vim.o.cmdheight = 0 -- Only show command-line bar when in use
+  vim.o.cmdheight = 0 -- Only show command bar when in use (works best with vim._core.ui2 to avoid window resize jitter and 'Press ENTER' prompts)
   vim.o.wildmode = "longest:full,full" -- Completion behaviour
   vim.opt.shortmess:append({ S = true, C = true }) -- 'S' silence search count warning, 'C' silence scan progress messages
 
@@ -178,7 +178,7 @@ do
 
   -- Floating terminal integration
   vim.keymap.set("n", "<leader>gg", function()
-    require("utils.utils").toggle_terminal("lazygit")
+    require("utils").toggle_terminal("lazygit")
   end, { desc = "LazyGit", silent = true })
 
   -- Diagnostics
@@ -247,6 +247,29 @@ do
     })
   end, {})
 
+  -- Update packages managed by vim.pack
+  vim.api.nvim_create_user_command("PackUpdate", function(opts)
+    vim.pack.update(nil, { force = opts.bang })
+  end, { bang = true, desc = "Update packages (use ! to force without confirmation)" })
+
+  -- Remove unused packages from disk and lockfile
+  vim.api.nvim_create_user_command("PackClean", function()
+    local inactive = vim.iter(vim.pack.get())
+      :filter(function(x)
+        return not x.active
+      end)
+      :map(function(x)
+        return x.spec.name
+      end)
+      :totable()
+    if #inactive == 0 then
+      vim.notify("No unused packages to clean.", vim.log.levels.INFO)
+      return
+    end
+    vim.pack.del(inactive)
+    vim.notify("Cleaned unused packages: " .. table.concat(inactive, ", "), vim.log.levels.INFO)
+  end, { desc = "Remove inactive packages from disk and lockfile" })
+
   -- Post-update/install build hooks for specific packages
   vim.api.nvim_create_autocmd("PackChanged", {
     group = augroup("pack_hooks"),
@@ -272,6 +295,9 @@ end
 -- Core UI
 -- ============================================================
 do
+  -- Modern UI layer: decouples cmdline/messages into floating overlays to prevent layout jumping
+  require("vim._core.ui2").enable()
+
   vim.pack.add({
     "https://github.com/nvim-mini/mini.icons",
     "https://github.com/catppuccin/nvim",
@@ -356,7 +382,6 @@ do
         client.server_capabilities.hoverProvider = false
       end,
     },
-    stylua = {}, -- Used to format Lua code
     lua_ls = {
       -- Special Lua Config, as recommended by neovim help docs
       on_init = function(client)
@@ -412,15 +437,19 @@ do
     },
   }
 
-  -- Handle automatic installations
-  local ensure_installed = {}
+  -- Handle automatic installations.
+  -- stylua is included by default so Mason auto-installs it without needing an extra plugin like mason-tool-installer.nvim,
+  -- while excluding it from automatic_enable ensures it doesn't attach as an LSP server (conform.nvim handles formatting).
+  local ensure_installed = { "stylua" }
   for name, _ in pairs(lsp_confs) do
     table.insert(ensure_installed, name)
   end
   require("mason").setup({})
   require("mason-lspconfig").setup({
     ensure_installed = ensure_installed,
-    automatic_enable = true,
+    automatic_enable = {
+      exclude = { "stylua" },
+    },
   })
 
   -- Handle LSP server configuration
@@ -440,10 +469,10 @@ do
     float = { border = "rounded", source = "if_many" },
     signs = {
       text = {
-        [vim.diagnostic.severity.ERROR] = require("config").options.icons.diagnostics.Error,
-        [vim.diagnostic.severity.WARN] = require("config").options.icons.diagnostics.Warn,
-        [vim.diagnostic.severity.HINT] = require("config").options.icons.diagnostics.Hint,
-        [vim.diagnostic.severity.INFO] = require("config").options.icons.diagnostics.Info,
+        [vim.diagnostic.severity.ERROR] = require("config").icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = require("config").icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = require("config").icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = require("config").icons.diagnostics.Info,
       },
     },
     virtual_text = false, -- We use floating open_float instead

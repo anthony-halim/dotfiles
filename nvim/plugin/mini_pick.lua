@@ -4,8 +4,11 @@ vim.pack.add({
   "https://github.com/nvim-mini/mini.pick",
 })
 
+local MiniPick = require("mini.pick")
+local utils = require("utils")
+
 -- Configure and setup mini.pick
-require("mini.pick").setup({
+MiniPick.setup({
   delay = {
     busy = 10,
   },
@@ -21,24 +24,51 @@ require("mini.pick").setup({
 })
 
 -- Override vim.ui.select natively with mini.pick's UI selector
-vim.ui.select = require("mini.pick").ui_select
+vim.ui.select = MiniPick.ui_select
+
+-- ============================================================
+-- Custom Pickers
+-- ============================================================
+
+-- Git files picker with fallback to all files if not inside a git repo
+MiniPick.registry.git_files = function(opts)
+  local git_dir = utils.git_dir_cwd()
+  if git_dir ~= "" then
+    local merged_opts = vim.tbl_deep_extend("force", { path = git_dir }, opts or {})
+    require("mini.extra").pickers.git_files(merged_opts)
+  else
+    MiniPick.builtin.files()
+  end
+end
+
+-- Live grep picker restricted to git root if inside a git repo
+MiniPick.registry.git_greplive = function(opts)
+  local local_opts = {}
+  local source_opts = {}
+  local git_dir = utils.git_dir_cwd()
+  if git_dir ~= "" then
+    local_opts = { tool = "git" }
+    source_opts = { source = { cwd = git_dir } }
+  end
+  MiniPick.builtin.grep_live(local_opts, vim.tbl_deep_extend("force", source_opts, opts or {}))
+end
 
 -- Define all fuzzy finder keymaps (Normal Mode)
 vim.keymap.set("n", "<leader>fb", function()
-  require("mini.pick").builtin.buffers()
+  MiniPick.builtin.buffers()
 end, { desc = "Find buffers", silent = true })
 
 vim.keymap.set("n", "<leader>ff", function()
-  require("utils.pickers").mini_pick.gitfiles_with_fallback()
+  MiniPick.registry.git_files()
 end, { desc = "Find files", silent = true })
 
 vim.keymap.set("n", "<leader>fF", function()
-  require("utils.pickers").mini_pick.gitfiles_with_fallback({ scope = "ignored" })
+  MiniPick.registry.git_files({ scope = "ignored" })
 end, { desc = "Find hidden files", silent = true })
 
 vim.keymap.set("n", "<leader>fd", function()
   local opts = { source = { cwd = vim.fn.expand("%:p:h") } }
-  require("mini.pick").builtin.files({}, opts)
+  MiniPick.builtin.files({}, opts)
 end, { desc = "Find files in buffer directory", silent = true })
 
 vim.keymap.set("n", "<leader>sb", function()
@@ -46,16 +76,16 @@ vim.keymap.set("n", "<leader>sb", function()
 end, { desc = "Search fuzzy current buffer", silent = true })
 
 vim.keymap.set("n", "<leader>ss", function()
-  require("utils.pickers").mini_pick.git_greplive_with_fallback()
+  MiniPick.registry.git_greplive()
 end, { desc = "Search grep", silent = true })
 
 vim.keymap.set("n", "<leader>sd", function()
   local opts = { source = { cwd = vim.fn.expand("%:p:h") } }
   local local_opts = {}
-  if require("utils.utils").git_dir_cwd() ~= "" then
+  if utils.git_dir_cwd() ~= "" then
     local_opts = { tool = "git" }
   end
-  require("mini.pick").builtin.grep_live(local_opts, opts)
+  MiniPick.builtin.grep_live(local_opts, opts)
 end, { desc = "Search grep in buffer directory", silent = true })
 
 vim.keymap.set("n", "<leader>sx", function()
@@ -63,9 +93,9 @@ vim.keymap.set("n", "<leader>sx", function()
 end, { desc = "Search diagnostics", silent = true })
 
 vim.keymap.set("n", "<leader>sh", function()
-  require("mini.pick").builtin.help()
+  MiniPick.builtin.help()
 end, { desc = "Search help", silent = true })
 
 vim.keymap.set("n", "<leader>sr", function()
-  require("mini.pick").builtin.resume()
+  MiniPick.builtin.resume()
 end, { desc = "Resume search", silent = true })
